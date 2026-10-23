@@ -5,152 +5,158 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>筆電產線 3D 模擬器</title>
 <style>
+  /* 配色與字體（暖色微縮模型風格） */
   :root{
-    --panel:rgba(255,255,255,.95);
-    --text:#1e293b; --muted:#64748b; --line:#e2e8f0;
-    --accent:#2563eb; --accent-soft:#dbeafe;
-    --shadow:0 8px 28px rgba(15,23,42,.14);
-    --r:14px;
+    --bg:#E7D9CD;
+    --panel:rgba(255,253,250,.95); --panel-soft:#FFF8F4; --panel-tint:#FFF1E8;
+    --text:#282322; --text-2:#4A423F; --muted:#7A706A; --line:#E6DAD0;
+    --ink:#282322; --ink-hover:#3A3330;
+    --coral:#DB6A41; --coral-dark:#B84F2D; --coral-soft:#FBE3D7;
+    --sage:#6F9B78; --sage-soft:#E6F0E7; --yellow-soft:#FBF0D3;
+    --shadow:0 12px 32px rgba(67,49,39,.11);
+    --r:20px;
+    --serif:Georgia,"Times New Roman",serif;
+    --mono:ui-monospace,"Cascadia Mono",Consolas,monospace;
   }
   *{box-sizing:border-box}
-  html,body{margin:0;height:100%;overflow:hidden;background:#dde4ec;color:var(--text);
-    font-family:"Microsoft JhengHei","PingFang TC","Noto Sans TC","Heiti TC",system-ui,sans-serif;}
+  html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--text);
+    font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei","Heiti TC",system-ui,sans-serif;}
   #scene{position:fixed;inset:0}
   #scene canvas{display:block;width:100%;height:100%;outline:none;touch-action:none}
   button{font:inherit;cursor:pointer;color:inherit}
-  .card{background:var(--panel);border:1px solid rgba(255,255,255,.8);border-radius:var(--r);box-shadow:var(--shadow);backdrop-filter:blur(8px)}
+  button:focus-visible{outline:3px solid rgba(219,106,65,.35);outline-offset:2px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
 
   /* ---------- 上方標題列 ---------- */
   #topbar{position:fixed;top:12px;left:12px;right:12px;display:flex;justify-content:space-between;align-items:flex-start;gap:10px;pointer-events:none;z-index:6}
   #topbar>*{pointer-events:auto}
-  .brand{display:flex;gap:12px;align-items:center;padding:9px 16px 9px 10px}
-  .brand .logo{width:42px;height:42px;border-radius:11px;background:linear-gradient(135deg,#2563eb,#14b8a6);display:grid;place-items:center;color:#fff;font-weight:800;font-size:16px;letter-spacing:.5px;flex:none}
-  .brand h1{margin:0;font-size:19px;letter-spacing:.5px}
+  .brand{display:flex;gap:12px;align-items:center;padding:10px 18px 10px 10px;backdrop-filter:blur(10px)}
+  .brand .logo{width:44px;height:44px;border-radius:13px;background:var(--coral);display:grid;place-items:center;color:var(--ink);font-weight:900;font-size:15px;letter-spacing:.5px;flex:none}
+  .brand h1{margin:0;font-size:20px;font-weight:900;letter-spacing:.5px}
   .brand p{margin:2px 0 0;font-size:12.5px;color:var(--muted)}
-  .modes{display:flex;gap:4px;padding:5px;flex-wrap:wrap;justify-content:flex-end}
-  .seg{border:0;background:transparent;padding:9px 13px;border-radius:10px;color:var(--muted);font-weight:700;font-size:14px;white-space:nowrap}
-  .seg.active{background:var(--accent);color:#fff}
-  .seg:hover:not(.active){background:#f1f5f9;color:var(--text)}
+  .modes{display:flex;gap:4px;padding:5px;flex-wrap:wrap;justify-content:flex-end;backdrop-filter:blur(10px)}
+  .seg{border:0;background:transparent;padding:9px 14px;border-radius:13px;color:var(--text-2);font-weight:700;font-size:14px;white-space:nowrap}
+  .seg.active{background:var(--ink);color:#FFFDFA}
+  .seg:hover:not(.active){background:var(--panel-tint)}
 
-  /* ---------- 左側站點清單 ---------- */
-  #stationPanel{position:fixed;left:12px;top:86px;bottom:134px;width:232px;display:flex;flex-direction:column;z-index:5;overflow:hidden}
-  .panel-head{display:flex;justify-content:space-between;align-items:center;padding:11px 12px 8px 14px;font-weight:800;font-size:14.5px;border-bottom:1px solid var(--line)}
-  .mini{border:0;background:#f1f5f9;border-radius:8px;width:30px;height:28px;font-size:14px}
-  .mini:hover{background:#e2e8f0}
-  #stationList{overflow-y:auto;padding:6px 8px 10px;flex:1}
-  .zone-head{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:800;color:var(--muted);margin:10px 6px 4px}
-  .zone-head .dot{width:10px;height:10px;border-radius:50%}
-  .st-item{display:flex;align-items:center;gap:8px;width:100%;border:0;background:transparent;text-align:left;padding:6px 8px;border-radius:9px;font-size:13.5px}
-  .st-item:hover{background:#f1f5f9}
-  .st-item .num{flex:none;width:22px;height:22px;border-radius:7px;display:grid;place-items:center;font-size:11.5px;font-weight:800;background:color-mix(in srgb,var(--c) 16%,white);color:var(--c)}
-  .st-item .nm{flex:1}
-  .st-item .ck{opacity:0;color:#16a34a;font-weight:800}
+  /* ---------- 左側清單 ---------- */
+  #stationPanel{position:fixed;left:12px;top:86px;bottom:134px;width:236px;display:flex;flex-direction:column;z-index:5;overflow:hidden}
+  .panel-head{display:flex;justify-content:space-between;align-items:center;padding:13px 12px 10px 16px;font-weight:900;font-size:15px;border-bottom:1px solid var(--line)}
+  .mini{border:1px solid var(--line);background:#FFFDFA;border-radius:10px;width:30px;height:28px;font-size:14px}
+  .mini:hover{background:var(--panel-tint)}
+  #stationList{overflow-y:auto;padding:6px 8px 12px;flex:1}
+  .zone-head{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:800;color:var(--muted);margin:12px 8px 4px;letter-spacing:.5px}
+  .zone-head .dot{width:9px;height:9px;border-radius:50%}
+  .st-item{display:flex;align-items:center;gap:10px;width:100%;border:0;border-left:3px solid transparent;background:transparent;text-align:left;padding:6px 8px;border-radius:10px;font-size:13.5px}
+  .st-item:hover{background:var(--panel-tint)}
+  .st-item .num{flex:none;width:24px;font-family:var(--serif);font-style:italic;font-weight:700;font-size:15px;color:color-mix(in srgb,var(--c) 78%,#282322)}
+  .st-item .nm{flex:1;color:var(--text-2)}
+  .st-item .ck{opacity:0;color:var(--sage);font-weight:900}
   .st-item.done .ck{opacity:1}
   .st-item.done .nm{color:var(--muted)}
-  .st-item.current{background:var(--accent-soft)}
-  .st-item.current .nm{font-weight:800;color:#1d4ed8}
+  .st-item.current{background:var(--coral-soft);border-left-color:var(--coral)}
+  .st-item.current .nm{font-weight:800;color:var(--ink)}
   #stationPanel.collapsed{bottom:auto;width:auto}
   #stationPanel.collapsed #stationList{display:none}
   #stationPanel.collapsed .panel-head{border-bottom:0;gap:10px}
 
   /* ---------- 右側說明卡 ---------- */
-  #infoCard{position:fixed;right:12px;top:86px;width:368px;max-height:calc(100% - 86px - 134px);overflow-y:auto;z-index:5;padding:16px 18px 18px}
-  #infoCard .zone-tag{display:inline-block;font-size:12px;font-weight:800;padding:4px 10px;border-radius:999px;background:color-mix(in srgb,var(--c) 14%,white);color:var(--c)}
-  #infoCard h2{margin:10px 0 2px;font-size:22px;display:flex;align-items:center;gap:10px}
-  #infoCard h2 .num{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;font-size:15px;background:var(--c);color:#fff;flex:none}
-  #infoCard .en{color:var(--muted);font-size:13px;margin-left:42px}
-  #infoCard h3{font-size:14.5px;margin:14px 0 4px}
-  #infoCard p{margin:0;font-size:14.5px;line-height:1.75;color:#334155}
-  #infoCard .status{margin-top:12px;padding:9px 12px;border-radius:10px;background:#f8fafc;border:1px solid var(--line);font-size:13.5px;line-height:1.7}
-  #infoCard .status b{color:#0f172a}
-  .pbar{display:inline-block;vertical-align:middle;width:110px;height:8px;border-radius:99px;background:#e2e8f0;overflow:hidden;margin:0 6px}
-  .pbar i{display:block;height:100%;background:linear-gradient(90deg,#22c55e,#16a34a)}
-  #infoCard .tip{margin-top:14px;background:#fffbeb;border:1px solid #fde68a;border-radius:11px;padding:10px 12px}
-  #infoCard .tip b{font-size:13.5px;color:#92400e}
-  #infoCard .tip p{font-size:13.5px;margin-top:3px;color:#78350f}
-  #infoCard .result{margin-top:12px;display:flex;flex-direction:column;gap:2px;padding:10px 12px;border-radius:11px;background:#ecfdf5;border:1px solid #a7f3d0}
-  #infoCard .result span{font-size:12px;color:#047857;font-weight:700}
-  #infoCard .result b{font-size:15px;color:#065f46}
+  #infoCard{position:fixed;right:12px;top:86px;width:368px;max-height:calc(100% - 86px - 134px);overflow-y:auto;z-index:5;padding:18px 20px 20px}
+  #infoCard .zone-tag{display:inline-block;font-size:12px;font-weight:800;padding:4px 11px;border-radius:999px;background:color-mix(in srgb,var(--c) 15%,#FFFDFA);color:color-mix(in srgb,var(--c) 70%,#282322)}
+  #infoCard h2{margin:10px 0 2px;font-size:23px;font-weight:900;display:flex;align-items:baseline;gap:10px}
+  #infoCard h2 .num{font-family:var(--serif);font-style:italic;font-weight:700;font-size:27px;color:color-mix(in srgb,var(--c) 78%,#282322);flex:none}
+  #infoCard .en{color:var(--muted);font-size:13px}
+  #infoCard h3{font-size:14.5px;font-weight:800;margin:16px 0 4px}
+  #infoCard p{margin:0;font-size:14.5px;line-height:1.8;color:var(--text-2)}
+  #infoCard .status{margin-top:12px;padding:10px 12px;border-radius:12px;background:var(--panel-soft);border:1px solid var(--line);font-size:13.5px;line-height:1.7}
+  #infoCard .status b{color:var(--ink)}
+  .pbar{display:inline-block;vertical-align:middle;width:110px;height:8px;border-radius:99px;background:#EFE3D9;overflow:hidden;margin:0 6px}
+  .pbar i{display:block;height:100%;background:var(--sage)}
+  #infoCard .tip{margin-top:14px;background:var(--yellow-soft);border:1px solid #F0D99A;border-radius:14px;padding:11px 13px}
+  #infoCard .tip b{font-size:13.5px;color:#8A5A12}
+  #infoCard .tip p{font-size:13.5px;margin-top:3px;color:#6B4A16}
+  #infoCard .result{margin-top:12px;display:flex;flex-direction:column;gap:2px;padding:10px 13px;border-radius:14px;background:var(--sage-soft);border:1px solid #CFE2D3}
+  #infoCard .result span{font-size:12px;color:#3F6B4A;font-weight:700}
+  #infoCard .result b{font-size:15px;color:#2F5238}
   #infoCard .welcome h2{font-size:21px}
-  #infoCard ul{margin:8px 0 0;padding-left:20px;font-size:14px;line-height:1.85;color:#334155}
+  #infoCard ul{margin:8px 0 0;padding-left:20px;font-size:14px;line-height:1.85;color:var(--text-2)}
   .done-badge{font-size:44px;text-align:center;margin:6px 0}
 
   /* ---------- 下方控制列 ---------- */
-  #controls{position:fixed;left:12px;right:12px;bottom:12px;padding:10px 14px 12px;z-index:6}
+  #controls{position:fixed;left:12px;right:12px;bottom:12px;padding:11px 16px 13px;z-index:6}
   .ctl-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-  .btn{border:1px solid var(--line);background:#fff;border-radius:10px;padding:8px 13px;font-weight:700;font-size:14px;white-space:nowrap}
-  .btn:hover{background:#f8fafc}
-  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;min-width:92px}
-  .btn.primary:hover{background:#1d4ed8}
-  .speed{display:flex;align-items:center;gap:2px;background:#f1f5f9;border-radius:10px;padding:3px;margin-left:6px}
+  .btn{border:1px solid var(--line);background:#FFFDFA;border-radius:12px;padding:8px 14px;font-weight:700;font-size:14px;white-space:nowrap;color:var(--text)}
+  .btn:hover{background:var(--panel-tint)}
+  .btn.primary{background:var(--ink);border-color:var(--ink);color:#FFFDFA;min-width:92px}
+  .btn.primary:hover{background:var(--ink-hover)}
+  .speed{display:flex;align-items:center;gap:2px;background:var(--panel-soft);border:1px solid var(--line);border-radius:12px;padding:3px;margin-left:6px}
   .speed span{font-size:12.5px;color:var(--muted);padding:0 6px;font-weight:700}
-  .speed button{border:0;background:transparent;border-radius:8px;padding:6px 9px;font-size:13px;font-weight:700;color:var(--muted)}
-  .speed button.active{background:#fff;color:var(--accent);box-shadow:0 1px 3px rgba(0,0,0,.12)}
-  .chk{display:flex;align-items:center;gap:6px;font-size:13.5px;font-weight:700;color:#334155;margin-left:6px;cursor:pointer;user-select:none}
-  .chk input{width:16px;height:16px;accent-color:var(--accent)}
+  .speed button{border:0;background:transparent;border-radius:9px;padding:6px 9px;font-size:13px;font-weight:700;color:var(--muted)}
+  .speed button.active{background:#FFFDFA;color:var(--coral-dark);box-shadow:0 1px 3px rgba(67,49,39,.18)}
+  .chk{display:flex;align-items:center;gap:6px;font-size:13.5px;font-weight:700;color:var(--text-2);margin-left:6px;cursor:pointer;user-select:none}
+  .chk input{width:16px;height:16px;accent-color:var(--coral)}
   .prog-text{margin-left:auto;font-size:13.5px;color:var(--muted);font-weight:700;white-space:nowrap}
-  .prog-text b{color:var(--text)}
+  .prog-text b{color:var(--ink)}
   #timeline{position:relative;height:30px;margin-top:10px;cursor:pointer;user-select:none;touch-action:none}
-  #tlZones{position:absolute;left:0;right:0;top:9px;height:12px;border-radius:99px;overflow:hidden;display:flex;opacity:.35}
+  #tlZones{position:absolute;left:0;right:0;top:9px;height:12px;border-radius:99px;overflow:hidden;display:flex;opacity:.32}
   #tlZones div{height:100%}
   #tlFill{position:absolute;left:0;top:9px;height:12px;border-radius:99px;overflow:hidden;width:0}
   #tlFill .inner{display:flex;height:100%}
   #tlFill .inner div{height:100%}
   #tlTicks{position:absolute;left:0;right:0;top:0;bottom:0;pointer-events:none}
-  #tlTicks i{position:absolute;top:6px;width:2px;height:18px;background:rgba(255,255,255,.9);border-radius:2px;margin-left:-1px}
-  #tlLabels{position:absolute;left:0;right:0;top:-2px;height:10px;pointer-events:none}
-  #tlHandle{position:absolute;top:4px;width:22px;height:22px;margin-left:-11px;border-radius:50%;background:#fff;border:3px solid var(--accent);box-shadow:0 2px 6px rgba(0,0,0,.25);left:0;pointer-events:none}
+  #tlTicks i{position:absolute;top:6px;width:2px;height:18px;background:rgba(255,253,250,.95);border-radius:2px;margin-left:-1px}
+  #tlHandle{position:absolute;top:4px;width:22px;height:22px;margin-left:-11px;border-radius:50%;background:#FFFDFA;border:3px solid var(--ink);box-shadow:0 2px 6px rgba(67,49,39,.3);left:0;pointer-events:none}
 
   /* ---------- 說明視窗與載入畫面 ---------- */
-  .modal{position:fixed;inset:0;background:rgba(15,23,42,.45);display:grid;place-items:center;z-index:20;padding:16px}
+  .modal{position:fixed;inset:0;background:rgba(40,35,34,.45);display:grid;place-items:center;z-index:20;padding:16px}
   .modal.hidden{display:none}
-  .modal .card{max-width:560px;width:100%;padding:22px 24px;max-height:90vh;overflow:auto}
-  .modal h2{margin:0 0 6px;font-size:21px}
-  .modal p,.modal li{font-size:14.5px;line-height:1.8;color:#334155}
-  .modal kbd{background:#f1f5f9;border:1px solid #cbd5e1;border-bottom-width:2px;border-radius:6px;padding:1px 7px;font-size:12.5px;font-family:inherit}
+  .modal .card{max-width:560px;width:100%;padding:24px 26px;max-height:90vh;overflow:auto}
+  .modal h2{margin:0 0 6px;font-size:21px;font-weight:900}
+  .modal p,.modal li{font-size:14.5px;line-height:1.8;color:var(--text-2)}
+  .modal kbd{background:var(--panel-soft);border:1px solid var(--line);border-bottom-width:2px;border-radius:6px;padding:1px 7px;font-size:12.5px;font-family:inherit}
   .modal .close{margin-top:12px}
-  #loading{position:fixed;inset:0;background:#dde4ec;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;z-index:30;transition:opacity .6s}
+  #loading{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;z-index:30;transition:opacity .6s}
   #loading.hidden{opacity:0;pointer-events:none}
-  #loading p{font-size:16px;color:#334155;font-weight:700;text-align:center;line-height:1.7;padding:0 20px}
-  .spinner{width:46px;height:46px;border:5px solid #cbd5e1;border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite}
+  #loading p{font-size:16px;color:var(--text-2);font-weight:700;text-align:center;line-height:1.7;padding:0 20px}
+  .spinner{width:46px;height:46px;border:5px solid #D9C9BC;border-top-color:var(--coral);border-radius:50%;animation:spin 1s linear infinite}
   @keyframes spin{to{transform:rotate(360deg)}}
-  #pauseBadge{position:fixed;left:50%;top:86px;transform:translateX(-50%);background:rgba(15,23,42,.82);color:#fff;padding:8px 16px;border-radius:999px;font-size:14px;font-weight:700;z-index:6;display:none;cursor:pointer}
+  #pauseBadge{position:fixed;left:50%;top:86px;transform:translateX(-50%);background:rgba(40,35,34,.86);color:#FFFDFA;padding:8px 16px;border-radius:999px;font-size:14px;font-weight:700;z-index:6;display:none;cursor:pointer}
   .day-mode #pauseBadge{top:142px}
 
   /* ---------- 人員一日 ---------- */
-  #dayBar{position:fixed;left:50%;top:86px;transform:translateX(-50%);display:none;align-items:center;gap:12px;padding:8px 16px;z-index:6;white-space:nowrap}
+  #dayBar{position:fixed;left:50%;top:86px;transform:translateX(-50%);display:none;align-items:center;gap:12px;padding:8px 16px;z-index:6;white-space:nowrap;backdrop-filter:blur(10px)}
   .day-mode #dayBar{display:flex}
-  #dayBar .clock{font-size:26px;font-weight:800;font-variant-numeric:tabular-nums;color:#0f172a;letter-spacing:1px}
+  #dayBar .clock{font-size:26px;font-weight:900;font-variant-numeric:tabular-nums;color:var(--ink);letter-spacing:1px}
   #dayBar .scene{font-size:15px;font-weight:800}
-  #dayBar .out{font-size:13px;color:#475569;font-weight:700}
-  #dayBar .tl-note{font-size:11.5px;color:#94a3b8;font-weight:700;border:1px solid #e2e8f0;border-radius:6px;padding:1px 6px}
-  .pill{font-size:12.5px;font-weight:800;padding:3px 10px;border-radius:999px;background:#dcfce7;color:#166534}
-  .pill.stop{background:#fef9c3;color:#854d0e}
-  .pill.alarm{background:#fee2e2;color:#b91c1c}
-  .pp-item{display:flex;align-items:center;gap:10px;width:100%;border:0;background:transparent;text-align:left;padding:6px 8px;border-radius:10px}
-  .pp-item:hover{background:#f1f5f9}
-  .pp-item.current{background:var(--accent-soft)}
-  .pp-item .av{width:40px;height:40px;border-radius:50%;object-fit:cover;flex:none;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.22)}
-  .av.ph,.portrait.ph{display:grid;place-items:center;background:color-mix(in srgb,var(--c) 18%,white);color:var(--c);font-weight:800;font-size:16px}
+  #dayBar .out{font-size:13px;color:var(--text-2);font-weight:700}
+  #dayBar .tl-note{font-family:var(--mono);font-size:10.5px;letter-spacing:1px;color:var(--coral-dark);font-weight:700;border:1px solid #EBCFC1;background:var(--panel-tint);border-radius:6px;padding:2px 6px}
+  .pill{font-size:12.5px;font-weight:800;padding:3px 10px;border-radius:999px;background:var(--sage-soft);color:#3F6B4A}
+  .pill.stop{background:var(--yellow-soft);color:#8A5A12}
+  .pill.alarm{background:#F8DDD6;color:#9E3326}
+  .pp-item{display:flex;align-items:center;gap:10px;width:100%;border:0;border-left:3px solid transparent;background:transparent;text-align:left;padding:6px 8px;border-radius:12px}
+  .pp-item:hover{background:var(--panel-tint)}
+  .pp-item.current{background:var(--coral-soft);border-left-color:var(--coral)}
+  .pp-item .av{width:40px;height:40px;border-radius:50%;object-fit:cover;flex:none;border:2px solid #FFFDFA;box-shadow:0 1px 4px rgba(67,49,39,.25)}
+  .av.ph,.portrait.ph{display:grid;place-items:center;background:color-mix(in srgb,var(--c) 18%,#FFFDFA);color:color-mix(in srgb,var(--c) 75%,#282322);font-weight:800;font-size:16px}
   .pp-txt{display:flex;flex-direction:column;min-width:0;line-height:1.35}
   .pp-txt b{font-size:14px}
-  .pp-txt small{font-size:12px;color:#64748b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px}
+  .pp-txt small{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px}
   .person-head{display:flex;gap:14px;align-items:center;padding-right:28px}
-  .portrait{width:108px;height:108px;border-radius:16px;object-fit:cover;flex:none;box-shadow:0 4px 14px rgba(0,0,0,.2)}
+  .portrait{width:108px;height:108px;border-radius:18px;object-fit:cover;flex:none;box-shadow:0 6px 16px rgba(67,49,39,.22)}
   .portrait.ph{font-size:42px}
   #infoCard .person-head h2{margin:8px 0 2px}
-  #infoCard .person-head .en{margin-left:0;font-size:12px}
+  #infoCard .person-head .en{font-size:12px}
   .close-x{position:absolute;right:14px;top:14px}
   .sched{margin:6px 0 0;padding:0;list-style:none;font-size:13.5px}
-  .sched li{display:flex;gap:10px;padding:5px 8px;border-radius:8px;color:#334155;line-height:1.5}
-  .sched li b{font-variant-numeric:tabular-nums;color:#0f172a;flex:none}
-  .sched li.past{color:#94a3b8}
-  .sched li.past b{color:#94a3b8}
-  .sched li.now{background:#eff6ff;color:#1d4ed8;font-weight:700}
+  .sched li{display:flex;gap:10px;padding:5px 8px;border-radius:9px;color:var(--text-2);line-height:1.5}
+  .sched li b{font-variant-numeric:tabular-nums;color:var(--ink);flex:none}
+  .sched li.past{color:#B3A79F}
+  .sched li.past b{color:#B3A79F}
+  .sched li.now{background:var(--coral-soft);color:var(--coral-dark);font-weight:700}
   .btn.follow{margin-top:10px;width:100%}
-  .btn.follow.on{background:#1d4ed8;color:#fff;border-color:#1d4ed8}
+  .btn.follow.on{background:var(--ink);color:#FFFDFA;border-color:var(--ink)}
   #infoCard ul.who{font-size:13.5px}
-  #infoCard .hint{margin-top:12px;font-size:13px;color:#64748b}
+  #infoCard .hint{margin-top:12px;font-size:13px;color:var(--muted)}
 
   /* ---------- 響應式：中小螢幕 ---------- */
   @media (max-width:1180px){
@@ -304,12 +310,12 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
  *    想修改解說文字，直接改這一段就可以，不會影響其他程式。
  * =================================================================== */
 const ZONES = [
-  { id: 'pcb', name: 'PCB 打板',    en: 'PCB Fabrication',       color: '#3b82f6' },
-  { id: 'smt', name: 'SMT 表面黏著', en: 'Surface Mount Technology', color: '#10b981' },
-  { id: 'mbt', name: '主機板測試',   en: 'Board Test',            color: '#8b5cf6' },
-  { id: 'asm', name: '系統組裝',     en: 'System Assembly',       color: '#f59e0b' },
-  { id: 'tst', name: '測試品檢',     en: 'Test & QC',             color: '#ef4444' },
-  { id: 'pkg', name: '包裝出貨',     en: 'Packing & Shipping',    color: '#14b8a6' },
+  { id: 'pcb', name: 'PCB 打板',    en: 'PCB Fabrication',       color: '#5B8DB8' },
+  { id: 'smt', name: 'SMT 表面黏著', en: 'Surface Mount Technology', color: '#6F9B78' },
+  { id: 'mbt', name: '主機板測試',   en: 'Board Test',            color: '#8074A7' },
+  { id: 'asm', name: '系統組裝',     en: 'System Assembly',       color: '#D96B45' },
+  { id: 'tst', name: '測試品檢',     en: 'Test & QC',             color: '#D19A35' },
+  { id: 'pkg', name: '包裝出貨',     en: 'Packing & Shipping',    color: '#4D9C97' },
 ];
 
 const STATIONS = [
@@ -641,36 +647,39 @@ const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
-renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMapping = THREE.NeutralToneMapping;   // 保留粉彩色的原色，不會偏黃偏灰
 renderer.toneMappingExposure = 1.0;
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFShadowMap;   // r186 起 PCFSoftShadowMap 已棄用
 container.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0xdde4ec);
-scene.fog = new THREE.Fog(0xdde4ec, 75, 160);
+scene.background = new THREE.Color(0xE8E0CB);
+scene.fog = new THREE.Fog(0xE8E0CB, 140, 380);
 const pmrem = new THREE.PMREMGenerator(renderer);
 scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-scene.environmentIntensity = 0.5;
+scene.environmentIntensity = 0.45;
 
-const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.05, 400);
+const camera = new THREE.PerspectiveCamera(38, window.innerWidth / window.innerHeight, 0.05, 900);   // 視角窄一點，更像桌上的微縮模型
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.08;
 controls.maxPolarAngle = Math.PI * 0.485;
 controls.minDistance = 0.6;
-controls.maxDistance = 95;
+controls.maxDistance = 190;
 
-scene.add(new THREE.HemisphereLight(0xffffff, 0x8a96a3, 1.15));
-const sun = new THREE.DirectionalLight(0xffffff, 1.9);
-sun.position.set(22, 42, 26);
+const hemi = new THREE.HemisphereLight(0xFFF5E4, 0x718D87, 1.45);
+scene.add(hemi);
+const sun = new THREE.DirectionalLight(0xFFEBD0, 2.2);
+sun.position.set(-45, 70, 50);                 // 畫面左前上方
 sun.castShadow = true;
 sun.shadow.mapSize.set(2048, 2048);
-Object.assign(sun.shadow.camera, { left: -34, right: 34, top: 30, bottom: -30, near: 5, far: 110 });
-sun.shadow.bias = -0.0004;
-sun.shadow.normalBias = 0.03;
-scene.add(sun);
+Object.assign(sun.shadow.camera, { left: -50, right: 50, top: 42, bottom: -42, near: 10, far: 220 });
+sun.shadow.bias = -0.0003;
+sun.shadow.normalBias = 0.025;
+sun.shadow.radius = 3;                         // r186 的 PCF 陰影用 radius 控制柔和度
+sun.target.position.set(6, 0, 0);
+scene.add(sun, sun.target);
 
 /* =====================================================================
  * 7. 貼圖（全部用 Canvas 即時畫出來，不需要額外圖檔）
@@ -691,13 +700,13 @@ function barcode(g, x, y, w, h, seed) {
 }
 const TEX = {};
 TEX.floor = makeTex(256, 256, (g, W, H) => {
-  g.fillStyle = '#cfd6dd'; g.fillRect(0, 0, W, H);
+  g.fillStyle = '#E9E4DA'; g.fillRect(0, 0, W, H);
   const R = rng(3);
-  for (let i = 0; i < 600; i++) { g.fillStyle = `rgba(255,255,255,${R() * 0.1})`; g.fillRect(R() * W, R() * H, 2, 2); }
-  g.strokeStyle = '#bec6cf'; g.lineWidth = 3; g.strokeRect(0, 0, W, H);
+  for (let i = 0; i < 600; i++) { g.fillStyle = `rgba(120,100,80,${R() * 0.05})`; g.fillRect(R() * W, R() * H, 2, 2); }
+  g.strokeStyle = '#DCD5C8'; g.lineWidth = 3; g.strokeRect(0, 0, W, H);
 });
 TEX.floor.wrapS = TEX.floor.wrapT = THREE.RepeatWrapping;
-TEX.floor.repeat.set(46, 38);
+TEX.floor.repeat.set(28.7, 19.85);
 
 function drawPCB(mode) {
   return makeTex(1024, 576, (g, W, H) => {
@@ -879,20 +888,19 @@ const std = (color, o = {}) => new THREE.MeshStandardMaterial({ color, roughness
 const basic = o => new THREE.MeshBasicMaterial({ toneMapped: false, ...o });
 const M = {
   floor: std(0xffffff, { map: TEX.floor, roughness: 0.85 }),
-  wall: std(0xeef2f6, { roughness: 0.9 }),
-  pillar: std(0xcbd5e1, { roughness: 0.8 }),
-  body: std(0xeceff3, { roughness: 0.5, metalness: 0.15 }),
-  bodyDark: std(0x3f4a59, { roughness: 0.5, metalness: 0.2 }),
-  frame: std(0x9aa5b4, { roughness: 0.4, metalness: 0.6 }),
-  steel: std(0xc3cad3, { roughness: 0.3, metalness: 0.85 }),
-  steelDark: std(0x5b6573, { roughness: 0.4, metalness: 0.7 }),
-  glass: new THREE.MeshStandardMaterial({ color: 0xd4ecff, transparent: true, opacity: 0.13, roughness: 0.05, metalness: 0.1, depthWrite: false, side: THREE.DoubleSide }),
-  glassOrange: new THREE.MeshStandardMaterial({ color: 0xffb070, emissive: 0xff7a1a, emissiveIntensity: 0.35, transparent: true, opacity: 0.32, depthWrite: false, side: THREE.DoubleSide }),
-  roller: std(0xa8b0ba, { roughness: 0.35, metalness: 0.7 }),
-  rail: std(0x5f6b7a, { roughness: 0.45, metalness: 0.5 }),
-  bed: std(0x2b323c, { roughness: 0.8 }),
-  tray: std(0x3d4a5c, { roughness: 0.6 }),
-  wood: std(0xb48a5a, { roughness: 0.9 }),
+  wall: std(0xF5F0E7, { roughness: 0.95 }),
+  body: std(0xF1ECE2, { roughness: 0.85, metalness: 0.03 }),
+  bodyDark: std(0x4C5554, { roughness: 0.75, metalness: 0.08 }),
+  frame: std(0xA39E94, { roughness: 0.62, metalness: 0.22 }),
+  steel: std(0xCFCAC0, { roughness: 0.5, metalness: 0.35 }),
+  steelDark: std(0x6B6A64, { roughness: 0.6, metalness: 0.25 }),
+  glass: new THREE.MeshStandardMaterial({ color: 0xBBD6D0, transparent: true, opacity: 0.2, roughness: 0.3, metalness: 0, depthWrite: false, side: THREE.DoubleSide }),
+  glassOrange: new THREE.MeshStandardMaterial({ color: 0xF2B184, emissive: 0xE0703A, emissiveIntensity: 0.3, transparent: true, opacity: 0.32, depthWrite: false, side: THREE.DoubleSide }),
+  roller: std(0xCFC7BB, { roughness: 0.5, metalness: 0.35 }),
+  rail: std(0x6E6A62, { roughness: 0.65, metalness: 0.2 }),
+  bed: std(0x4A4540, { roughness: 0.88 }),
+  tray: std(0x5E6B6F, { roughness: 0.8 }),
+  wood: std(0xB8925F, { roughness: 0.92 }),
   copperSheet: std(0xc8794a, { roughness: 0.35, metalness: 0.7 }),
   fr4Edge: std(0xcdbb84, { roughness: 0.7 }),
   copperTop: std(0xd08550, { roughness: 0.3, metalness: 0.75 }),
@@ -902,11 +910,11 @@ const M = {
   solder: std(0xe8eaee, { roughness: 0.18, metalness: 0.95 }),
   comp: std(0xffffff, { roughness: 0.45, metalness: 0.2 }),
   sticker: std(0xffffff, { map: TEX.boardSticker, roughness: 0.6 }),
-  dcover: std(0x4b525c, { roughness: 0.45, metalness: 0.55 }),
-  alu: std(0xb9c0c9, { roughness: 0.35, metalness: 0.65 }),
-  keyboard: std(0xffffff, { map: TEX.keyboard, roughness: 0.45, metalness: 0.35 }),
-  lidTop: std(0xffffff, { map: TEX.lid, roughness: 0.4, metalness: 0.55 }),
-  lidSide: std(0x555d68, { roughness: 0.4, metalness: 0.55 }),
+  dcover: std(0x4b525c, { roughness: 0.55, metalness: 0.35 }),
+  alu: std(0xb9c0c9, { roughness: 0.45, metalness: 0.4 }),
+  keyboard: std(0xffffff, { map: TEX.keyboard, roughness: 0.5, metalness: 0.2 }),
+  lidTop: std(0xffffff, { map: TEX.lid, roughness: 0.5, metalness: 0.35 }),
+  lidSide: std(0x555d68, { roughness: 0.5, metalness: 0.35 }),
   bezel: std(0x0d0f12, { roughness: 0.3 }),
   screenOff: std(0x0b0d10, { roughness: 0.12, metalness: 0.3 }),
   screenRunin: basic({ map: TEX.runin }),
@@ -917,9 +925,9 @@ const M = {
   ssd: std(0xffffff, { map: TEX.ssd, roughness: 0.5 }),
   ram: std(0xffffff, { map: TEX.ram, roughness: 0.5 }),
   pcbGreen: std(0x166534, { roughness: 0.5 }),
-  copper: std(0xc87533, { roughness: 0.3, metalness: 0.85 }),
-  fan: std(0x1f2937, { roughness: 0.5 }),
-  fins: std(0xb9c0c9, { roughness: 0.3, metalness: 0.8 }),
+  copper: std(0xc87533, { roughness: 0.4, metalness: 0.6 }),
+  fan: std(0x1f2937, { roughness: 0.6 }),
+  fins: std(0xb9c0c9, { roughness: 0.45, metalness: 0.45 }),
   greyPaste: std(0x9ca3af, { roughness: 0.9 }),
   snLabel: std(0xffffff, { map: TEX.snLabel, roughness: 0.6 }),
   bag: new THREE.MeshStandardMaterial({ color: 0xe6eef7, transparent: true, opacity: 0.32, roughness: 0.15, depthWrite: false }),
@@ -928,18 +936,18 @@ const M = {
   kraftTop: std(0xffffff, { map: TEX.kraftTop, roughness: 0.9 }),
   tape: std(0xb4824a, { roughness: 0.4, transparent: true, opacity: 0.9 }),
   shipLabel: std(0xffffff, { map: TEX.ship, roughness: 0.6 }),
-  white: std(0xf8fafc, { roughness: 0.6 }),
-  black: std(0x111827, { roughness: 0.6 }),
-  bench: std(0x9aa5b4, { roughness: 0.5, metalness: 0.4 }),
-  benchTop: std(0x4f7f6f, { roughness: 0.8 }),
-  bin: std(0x2563eb, { roughness: 0.6 }),
-  binRed: std(0xef4444, { roughness: 0.6 }),
-  lamp: basic({ color: 0xf8fbff }),
-  robot: std(0xf97316, { roughness: 0.45, metalness: 0.2 }),
-  robotWhite: std(0xe5e7eb, { roughness: 0.45, metalness: 0.2 }),
-  robotDark: std(0x334155, { roughness: 0.5, metalness: 0.3 }),
-  yellow: std(0xfacc15, { roughness: 0.6 }),
-  fencePanel: new THREE.MeshStandardMaterial({ color: 0x334155, transparent: true, opacity: 0.18, depthWrite: false, side: THREE.DoubleSide }),
+  white: std(0xFAF7F0, { roughness: 0.75 }),
+  black: std(0x2A2522, { roughness: 0.7 }),
+  bench: std(0xA39E94, { roughness: 0.65, metalness: 0.2 }),
+  benchTop: std(0x6E9B78, { roughness: 0.9 }),
+  bin: std(0x5B8DB8, { roughness: 0.75 }),
+  binRed: std(0xD96B45, { roughness: 0.75 }),
+  lamp: basic({ color: 0xFFF6E6 }),
+  robot: std(0xD96B45, { roughness: 0.7, metalness: 0.05 }),
+  robotWhite: std(0xEFEAE0, { roughness: 0.7, metalness: 0.05 }),
+  robotDark: std(0x4C5554, { roughness: 0.7, metalness: 0.1 }),
+  yellow: std(0xE4B64B, { roughness: 0.7 }),
+  fencePanel: new THREE.MeshStandardMaterial({ color: 0x4C5554, transparent: true, opacity: 0.16, depthWrite: false, side: THREE.DoubleSide }),
   lampRed: std(0x7f1d1d, { emissive: 0xef4444, emissiveIntensity: 0.15 }),
   lampYellow: std(0x854d0e, { emissive: 0xfacc15, emissiveIntensity: 0.15 }),
   lampGreen: std(0x14532d, { emissive: 0x22c55e, emissiveIntensity: 0.15 }),
@@ -949,11 +957,12 @@ const M = {
   water: new THREE.MeshStandardMaterial({ color: 0x60a5fa, transparent: true, opacity: 0.7, roughness: 0.1 }),
   spark: basic({ color: 0xfff3a0 }),
   marker: std(0xfacc15, { emissive: 0xfacc15, emissiveIntensity: 0.9 }),
-  forklift: std(0xf59e0b, { roughness: 0.5 }),
-  rubber: std(0x1f2937, { roughness: 0.9 }),
+  forklift: std(0xE4B64B, { roughness: 0.65 }),
+  rubber: std(0x2A2522, { roughness: 0.9 }),
 };
 const QC_MATS = [0xff0000, 0x00ff00, 0x0000ff, 0xffffff, 0x101010].map(c => basic({ color: c }));
-const ZMAT = Object.fromEntries(ZONES.map(z => [z.id, std(new THREE.Color(z.color), { roughness: 0.5 })]));
+const ZMAT = Object.fromEntries(ZONES.map(z => [z.id, std(new THREE.Color(z.color), { roughness: 0.8 })]));
+const ROOF = Object.fromEntries(ZONES.map(z => [z.id, std(new THREE.Color(z.color).lerp(new THREE.Color(0xF1ECE2), 0.28), { roughness: 0.85 })]));
 
 /* =====================================================================
  * 9. 建模小工具（幾何體共用，節省記憶體）
@@ -977,12 +986,16 @@ function plane(p, w, h, mat, x, y, z, faceSign = 1) {   // 直立的平面；fac
 function flat(p, w, d, mat, x, y, z) {                    // 平躺、朝上的平面
   const m = new THREE.Mesh(planeGeo(w, d), mat); m.rotation.x = -Math.PI / 2; m.position.set(x, y, z); p.add(m); return m;
 }
-function textSprite(text, sub, color, scale = 1) {
+// 3D 標籤：暖白小卡，左邊用圓點標示區域色；num 會用斜體襯線數字顯示（例如站號）；solid 用在警示牌
+function textSprite(text, sub, color, scale = 1, { num = '', solid = false } = {}) {
   const tex = makeTex(512, 150, (g, W, H) => {
-    g.fillStyle = 'rgba(255,255,255,.95)'; rrect(g, 4, 4, W - 8, H - 8, 26); g.fill();
-    g.fillStyle = color; rrect(g, 4, 4, 22, H - 8, [26, 0, 0, 26]); g.fill();
-    g.fillStyle = '#0f172a'; g.font = `bold 50px ${FONT}`; g.fillText(text, 48, 72);
-    g.fillStyle = '#64748b'; g.font = `28px ${FONT}`; g.fillText(sub, 50, 118);
+    g.fillStyle = solid ? color : 'rgba(255,253,250,.96)'; rrect(g, 6, 6, W - 12, H - 12, 40); g.fill();
+    if (!solid) { g.strokeStyle = '#E2D6CB'; g.lineWidth = 3; rrect(g, 6, 6, W - 12, H - 12, 40); g.stroke(); }
+    g.fillStyle = solid ? '#FFFDFA' : color; g.beginPath(); g.arc(48, 58, 12, 0, Math.PI * 2); g.fill();
+    let x = 74;
+    if (num) { g.fillStyle = '#B84F2D'; g.font = `italic bold 44px Georgia, serif`; g.fillText(num, x, 74); x += g.measureText(num).width + 14; }
+    g.fillStyle = solid ? '#FFFDFA' : '#282322'; g.font = `900 44px ${FONT}`; g.fillText(text, x, 74);
+    g.fillStyle = solid ? 'rgba(255,253,250,.85)' : '#8A7F78'; g.font = `bold 25px ${FONT}`; g.fillText(sub, 76, 116);
   });
   const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, toneMapped: false }));
   sp.scale.set(1.75 * scale, 0.51 * scale, 1);
@@ -990,11 +1003,27 @@ function textSprite(text, sub, color, scale = 1) {
 }
 function banner(text, sub, color, w = 4.6, h = 0.9) {
   const tex = makeTex(1024, 200, (g, W, H) => {
-    g.fillStyle = color; rrect(g, 0, 0, W, H, 24); g.fill();
-    g.fillStyle = '#fff'; g.font = `bold 84px ${FONT}`; g.fillText(text, 40, 112);
-    g.font = `bold 38px ${FONT}`; g.globalAlpha = 0.85; g.fillText(sub, 44, 168);
+    g.fillStyle = '#FFFDFA'; rrect(g, 2, 2, W - 4, H - 4, 40); g.fill();
+    g.strokeStyle = '#E2D6CB'; g.lineWidth = 4; rrect(g, 2, 2, W - 4, H - 4, 40); g.stroke();
+    g.fillStyle = color; rrect(g, 30, 40, 18, H - 80, 9); g.fill();
+    g.fillStyle = '#282322'; g.font = `900 78px ${FONT}`; g.fillText(text, 72, 106);
+    g.fillStyle = '#8A7F78'; g.font = `bold 34px ${FONT}`; g.fillText(sub, 74, 160);
   });
-  return new THREE.Mesh(planeGeo(w, h), basic({ map: tex, side: THREE.DoubleSide }));
+  return new THREE.Mesh(planeGeo(w, h), basic({ map: tex, side: THREE.DoubleSide, transparent: true }));
+}
+// 區域名稱：固定螢幕大小的懸浮標籤（全景也看得清楚）
+function zoneLabel(no, text, sub, color) {
+  const tex = makeTex(640, 150, (g, W, H) => {
+    g.fillStyle = 'rgba(255,253,250,.97)'; rrect(g, 6, 6, W - 12, H - 12, 52); g.fill();
+    g.strokeStyle = '#E2D6CB'; g.lineWidth = 3; rrect(g, 6, 6, W - 12, H - 12, 52); g.stroke();
+    g.fillStyle = color; g.beginPath(); g.arc(70, 75, 44, 0, Math.PI * 2); g.fill();
+    g.fillStyle = '#FFFDFA'; g.font = `italic bold 50px Georgia, serif`; g.textAlign = 'center'; g.fillText(no, 70, 92); g.textAlign = 'left';
+    g.fillStyle = '#282322'; g.font = `900 50px ${FONT}`; g.fillText(text, 134, 78);
+    g.fillStyle = '#8A7F78'; g.font = `bold 26px ${FONT}`; g.fillText(sub, 136, 116);
+  });
+  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, toneMapped: false, sizeAttenuation: false, depthTest: false }));
+  sp.scale.set(0.115, 0.027, 1); sp.renderOrder = 6;
+  return sp;
 }
 function hmiMat(st) {
   const tex = makeTex(256, 160, (g, W, H) => {
@@ -1067,36 +1096,39 @@ function robotArm(parent, x, z, { L1 = 0.9, L2 = 0.8, mat = M.robot, base = 0.3,
 }
 
 /* =====================================================================
- * 10. 工廠建築：地板、牆、柱子、走道線、區域看板
+ * 10. 工廠建築：地坪、矮牆（像剖開的模型）、走道線、區域標籤
  * =================================================================== */
-const floor = new THREE.Mesh(new THREE.PlaneGeometry(92, 76), M.floor);
-floor.rotation.x = -Math.PI / 2; floor.position.set(-2, 0, -1); floor.receiveShadow = true; scene.add(floor);
-box(scene, 56.4, 7, 0.3, M.wall, 3.55, 3.5, -19.6);
-box(scene, 0.3, 7, 38, M.wall, -24.6, 3.5, -0.6);
-for (let i = 0; i < 10; i++) plane(scene, 4.2, 1.1, basic({ color: 0xcfe7ff }), -20 + i * 5.4, 5.6, -19.44);
-const factorySign = banner('筆電智慧工廠', 'SMART LAPTOP FACTORY · 教學模擬', '#1e3a8a', 9, 1.6);
-factorySign.position.set(-6, 3.4, -19.43); scene.add(factorySign);
-// 柱子（中間走道那排避開作業員進出工站的路線）
-for (const [x, z] of [[-10, -9], [0, -9], [10, -9], [-10, 0], [3, 0], [10, 0], [-10, 9], [0, 9], [10, 9]]) {
-  box(scene, 0.5, 7, 0.5, M.pillar, x, 3.5, z);
-  box(scene, 0.52, 0.5, 0.52, M.yellow, x, 0.25, z, false);
+// 工廠地坪：高出人工島 0.35 公尺的平台
+const FLOOR = { x0: -25.2, x1: 32.2, z0: -20.2, z1: 19.5 };
+{
+  const side = std(0xD8D1C5, { roughness: 0.9 });
+  const slab = new THREE.Mesh(new THREE.BoxGeometry(FLOOR.x1 - FLOOR.x0, 0.35, FLOOR.z1 - FLOOR.z0), [side, side, M.floor, side, side, side]);
+  slab.position.set((FLOOR.x0 + FLOOR.x1) / 2, -0.175, (FLOOR.z0 + FLOOR.z1) / 2); slab.receiveShadow = true; scene.add(slab);
 }
+// 矮牆（約 1 公尺高，從上往下看得到廠內）：西側留出碼頭出入口，東側留出員工出入口
+const wallCap = std(0xD8D1C5, { roughness: 0.9 });
+function lowWall(x0, z0, x1, z1) {
+  const w = Math.abs(x1 - x0) || 0.3, d = Math.abs(z1 - z0) || 0.3, cx = (x0 + x1) / 2, cz = (z0 + z1) / 2;
+  box(scene, w, 1.0, d, M.wall, cx, 0.5, cz);
+  box(scene, w + 0.06, 0.08, d + 0.06, wallCap, cx, 1.04, cz, false);
+}
+lowWall(-24.6, -19.6, 31.75, -19.6);
+lowWall(-24.6, -19.6, -24.6, 10.8); lowWall(-24.6, 16.2, -24.6, 18.4);
+lowWall(31.75, -19.6, 31.75, -14.0); lowWall(31.75, -12.0, 31.75, 18.4);
 // 黃色走道線
-const lineMat = std(0xfacc15, { roughness: 0.7 });
+const lineMat = std(0xE4B64B, { roughness: 0.75 });
 for (const z of [-9, 0, 9]) for (const dz of [-1.1, 1.1]) flat(scene, 36, 0.08, lineMat, -2, 0.004, z + dz);
 // 每站地面色塊
 for (const st of STATIONS) {
   const m = flat(scene, st.tileW, 3.6, new THREE.MeshBasicMaterial({ color: st.zoneObj.color, transparent: true, opacity: 0.13, depthWrite: false }), st.x, 0.006, st.z);
   m.renderOrder = -1;
 }
-// 區域吊牌
+// 區域名稱（懸浮在每一區的上方）
 ZONES.forEach((z, zi) => {
   const sts = STATIONS.filter(s => s.zone === z.id);
   const x = sts.reduce((a, s) => a + s.x, 0) / sts.length;
-  const w = sts.length > 1 ? 4.6 : 3.6;
-  const b = banner(`${zi + 1}. ${z.name}區`, z.en, z.color, w, w * 0.195);
-  b.position.set(x, 3.75, sts[0].z); scene.add(b);
-  for (const dx of [-w / 2 + 0.2, w / 2 - 0.2]) cyl(scene, 0.008, 0.008, 3.2, M.frame, x + dx, 3.75 + w * 0.0975 + 1.6, sts[0].z, 6, false);
+  const lb = zoneLabel(String(zi + 1), `${z.name}區`, z.en, z.color);
+  lb.position.set(x, 4.6, sts[0].z); scene.add(lb);
 });
 // 原料倉
 (() => {
@@ -1105,8 +1137,163 @@ ZONES.forEach((z, zi) => {
     box(g, 1.2, 0.13, 1.0, M.wood, 0, 0.065, dz);
     for (let i = 0; i < 14; i++) box(g, 1.1, 0.014, 0.9, M.copperSheet, 0, 0.14 + i * 0.016, dz, i === 13);
   }
-  const s = textSprite('原料倉', 'Raw Material：銅箔基板', '#3b82f6'); s.position.set(0, 1.6, 0); g.add(s);
+  const s = textSprite('原料倉', 'Raw Material：銅箔基板', ZONES[0].color); s.position.set(0, 1.6, 0); g.add(s);
 })();
+
+/* =====================================================================
+ * 10-1. 海上製造園區：人工島、海面、天空、樹木、碼頭、遠景
+ *       （微縮模型風格；只是背景，不影響產線與人員的動作）
+ * =================================================================== */
+const SEA_Y = -2.0;
+const WORLD = {};
+// 天空：上下漸層的大圓球，顏色會跟著人員一日的時間改變
+WORLD.sky = new THREE.Mesh(new THREE.SphereGeometry(600, 32, 16), new THREE.ShaderMaterial({
+  side: THREE.BackSide, depthWrite: false, fog: false,
+  uniforms: { top: { value: new THREE.Color('#C9D8CF') }, hor: { value: new THREE.Color('#E8E0CB') } },
+  vertexShader: 'varying float vY;\nvoid main() { vY = normalize(position).y; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+  fragmentShader: 'uniform vec3 top;\nuniform vec3 hor;\nvarying float vY;\nvoid main() {\n  gl_FragColor = vec4(mix(hor, top, smoothstep(-0.02, 0.5, vY)), 1.0);\n  #include <colorspace_fragment>\n}',
+}));
+WORLD.sky.renderOrder = -10; scene.add(WORLD.sky);
+// 海面：靠近島的地方淺、外圍深；上面再疊一層慢慢飄移的波紋
+{
+  const tex = makeTex(512, 512, (g, W, H) => {
+    const gr = g.createRadialGradient(W / 2, H / 2, 10, W / 2, H / 2, W / 2);
+    gr.addColorStop(0, '#7BBDB8'); gr.addColorStop(0.16, '#66B0B1'); gr.addColorStop(0.45, '#5AA4A9'); gr.addColorStop(1, '#478E95');
+    g.fillStyle = gr; g.fillRect(0, 0, W, H);
+  });
+  WORLD.seaMat = std(0xffffff, { map: tex, roughness: 0.88, metalness: 0 });
+  const sea = new THREE.Mesh(new THREE.PlaneGeometry(1400, 1400), WORLD.seaMat);
+  sea.rotation.x = -Math.PI / 2; sea.position.set(4, SEA_Y, 0); sea.receiveShadow = true; scene.add(sea);
+  const rip = makeTex(256, 256, g => {
+    g.strokeStyle = 'rgba(255,255,255,0.6)'; g.lineWidth = 3; g.lineCap = 'round';
+    const R = rng(41);
+    for (let i = 0; i < 14; i++) { const x = R() * 230, y = 10 + R() * 236, w = 14 + R() * 26; g.beginPath(); g.moveTo(x, y); g.quadraticCurveTo(x + w / 2, y - 5, x + w, y); g.stroke(); }
+  });
+  rip.wrapS = rip.wrapT = THREE.RepeatWrapping; rip.repeat.set(70, 70);
+  WORLD.ripple = new THREE.Mesh(new THREE.PlaneGeometry(1400, 1400), new THREE.MeshBasicMaterial({ map: rip, transparent: true, opacity: 0.32, depthWrite: false }));
+  WORLD.ripple.rotation.x = -Math.PI / 2; WORLD.ripple.position.set(4, SEA_Y + 0.03, 0); scene.add(WORLD.ripple);
+}
+// 圓角矩形（形狀的 y 對應世界座標的 -z），以及把形狀擠出成有厚度的島塊
+function roundRect(x0, z0, x1, z1, r) {
+  const s = new THREE.Shape(), X0 = x0, X1 = x1, Y0 = -z1, Y1 = -z0;
+  s.moveTo(X0 + r, Y0); s.lineTo(X1 - r, Y0); s.quadraticCurveTo(X1, Y0, X1, Y0 + r);
+  s.lineTo(X1, Y1 - r); s.quadraticCurveTo(X1, Y1, X1 - r, Y1);
+  s.lineTo(X0 + r, Y1); s.quadraticCurveTo(X0, Y1, X0, Y1 - r);
+  s.lineTo(X0, Y0 + r); s.quadraticCurveTo(X0, Y0, X0 + r, Y0);
+  return s;
+}
+function slab(shape, topY, depth, topMat, sideMat, bevel = 0) {
+  const geo = new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: bevel > 0, bevelSize: bevel, bevelThickness: bevel, bevelSegments: 2, curveSegments: 10 });
+  geo.rotateX(-Math.PI / 2);                   // 往上擠出
+  const m = new THREE.Mesh(geo, [topMat, sideMat]);
+  m.position.y = topY - depth - bevel; m.receiveShadow = true; scene.add(m);
+  return m;
+}
+{
+  const ISLE_TOP = -0.35;
+  const top = std(0xD2C4AB, { roughness: 0.95 }), side = std(0xA99B82, { roughness: 0.95 });
+  const wetTop = std(0x8C8475, { roughness: 0.95 }), wet = std(0x756F63, { roughness: 0.95 });
+  const grass = std(0x91A77A, { roughness: 0.95 }), grassSide = std(0x7E9468, { roughness: 0.95 });
+  // 主島＋東側的員工花園；下面一層較深的「濕岸」
+  for (const [x0, z0, x1, z1, r] of [[-34, -29, 41, 28, 8], [37, -9, 50, 9, 5]]) {
+    slab(roundRect(x0, z0, x1, z1, r), ISLE_TOP, 1.5, top, side, 0.25);
+    slab(roundRect(x0 - 0.6, z0 - 0.6, x1 + 0.6, z1 + 0.6, r + 0.6), -1.75, 1.4, wetTop, wet);
+  }
+  // 草地
+  const beds = [[-31, -27.3, -12, -21.8], [0, -27.3, 18, -21.8], [22, -27.3, 39, -21.8], [-31, 21, -7, 26.4],
+    [9, 21, 39, 26.4], [-32.6, -19, -26.6, 8.6], [33.6, 12.5, 39.6, 26], [33.6, -27, 39.6, -15.5], [40, -7, 48.4, 7]];
+  for (const [x0, z0, x1, z1] of beds) slab(roundRect(x0, z0, x1, z1, 1.6), ISLE_TOP + 0.07, 0.07, grass, grassSide);
+  // 樹（樹幹＋低多邊形樹冠，用 InstancedMesh 一次畫完）
+  const R = rng(77), trees = [], m4 = new THREE.Matrix4(), q4 = new THREE.Quaternion(), v3 = new THREE.Vector3(), s3 = new THREE.Vector3();
+  for (const [x0, z0, x1, z1] of beds) {
+    const n = Math.max(2, Math.round((x1 - x0) * (z1 - z0) / 26));
+    for (let i = 0, guard = 0; i < n && guard < 200; guard++) {
+      const x = lerp(x0 + 1.4, x1 - 1.4, R()), z = lerp(z0 + 1.4, z1 - 1.4, R());
+      if (trees.some(t => Math.hypot(t.x - x, t.z - z) < 2.6)) continue;
+      trees.push({ x, z, s: 0.85 + R() * 0.7, c: R() }); i++;
+    }
+  }
+  const trunks = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.14, 0.2, 1.5, 6), std(0x8D7359, { roughness: 0.95 }), trees.length);
+  const crowns = new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1, 0), new THREE.MeshStandardMaterial({ roughness: 0.92, flatShading: true }), trees.length * 2);
+  const greens = ['#718D62', '#8FA676', '#A7B68A'].map(c => new THREE.Color(c));
+  trees.forEach((t, i) => {
+    m4.compose(v3.set(t.x, ISLE_TOP + 0.07 + 0.75 * t.s, t.z), q4.identity(), s3.set(t.s, t.s, t.s)); trunks.setMatrixAt(i, m4);
+    const col = greens[Math.floor(t.c * 3)];
+    q4.setFromEuler(new THREE.Euler(0, t.c * 6, 0));
+    m4.compose(v3.set(t.x, ISLE_TOP + 0.07 + (1.5 + 0.9) * t.s, t.z), q4, s3.set(1.25 * t.s, 1.15 * t.s, 1.25 * t.s)); crowns.setMatrixAt(i * 2, m4); crowns.setColorAt(i * 2, col);
+    m4.compose(v3.set(t.x + 0.45 * t.s, ISLE_TOP + 0.07 + 2.9 * t.s, t.z - 0.3 * t.s), q4, s3.set(0.8 * t.s, 0.75 * t.s, 0.8 * t.s)); crowns.setMatrixAt(i * 2 + 1, m4); crowns.setColorAt(i * 2 + 1, col);
+  });
+  trunks.castShadow = crowns.castShadow = true; crowns.receiveShadow = true;
+  scene.add(trunks, crowns);
+  // 南側步道的路燈（晚上會亮）
+  WORLD.bulb = basic({ color: 0xE9E0CF });
+  for (let i = 0; i < 9; i++) {
+    const x = -28 + i * 8;
+    cyl(scene, 0.06, 0.08, 3.4, M.bodyDark, x, ISLE_TOP + 1.7, 20.2, 8);
+    addMesh(scene, sphereGeo(0.2), WORLD.bulb, x, ISLE_TOP + 3.5, 20.2, false);
+  }
+  // 長椅
+  for (const x of [-2, 2.5]) for (const z of [21.5, 25.5]) { box(scene, 1.6, 0.08, 0.5, M.wood, x, ISLE_TOP + 0.45, z); box(scene, 1.5, 0.4, 0.12, M.bodyDark, x, ISLE_TOP + 0.22, z, false); }
+  // 工廠招牌（北側，站在島上）
+  const sign = banner('筆電智慧工廠', 'SMART LAPTOP FACTORY・教學模擬', ZONE_BY_ID.asm.color, 10, 1.8);
+  sign.position.set(-6, ISLE_TOP + 3.2, -23.6); scene.add(sign);
+  for (const dx of [-4.2, 4.2]) cyl(scene, 0.09, 0.09, 2.4, M.bodyDark, -6 + dx, ISLE_TOP + 1.2, -23.65, 8);
+}
+// 西側出貨碼頭＋貨櫃＋貨船（成品從這裡出貨）
+{
+  const deckY = -0.55;
+  box(scene, 19, 0.3, 6, M.wood, -43.5, deckY, 13.5);
+  for (let x = -36; x >= -52; x -= 4) for (const dz of [-2.6, 2.6]) cyl(scene, 0.22, 0.22, 3, M.bodyDark, x, deckY - 1.6, 13.5 + dz, 8);
+  for (let x = -37; x >= -51; x -= 3.5) cyl(scene, 0.18, 0.22, 0.45, M.bodyDark, x, deckY + 0.37, 16.2, 8);   // 繫船柱
+  const cont = ['#D96B45', '#6F9B78', '#5B8DB8', '#D19A35', '#8074A7'].map(c => std(new THREE.Color(c), { roughness: 0.85 }));
+  [[-47, 11.2, 0], [-47, 13.8, 1], [-50.5, 11.2, 2], [-50.5, 13.8, 3], [-47, 11.2, 4, 1], [-50.5, 13.8, 0, 1]].forEach(([x, z, c, lv = 0]) =>
+    box(scene, 3.2, 1.3, 2.4, cont[c], x, deckY + 0.15 + 0.65 + lv * 1.32, z));
+  const ship = new THREE.Group(); ship.position.set(-47, SEA_Y, 21.4); scene.add(ship);
+  const hull = std(0x4C5554, { roughness: 0.8 });
+  box(ship, 24, 2.6, 6.4, hull, 0, 0.9, 0);
+  const bow = cyl(ship, 3.2, 3.2, 2.6, hull, -12, 0.9, 0, 3); bow.rotation.y = -Math.PI / 2;   // 船頭（三角柱）
+  box(ship, 24.2, 0.35, 6.5, ZMAT.asm, 0, 2.05, 0, false);
+  box(ship, 4.2, 3.2, 5.4, M.white, 9, 3.8, 0);
+  box(ship, 4.4, 0.25, 5.6, M.bodyDark, 9, 5.5, 0, false);
+  [[-6, 0], [-2.5, 1], [1, 2], [-6, 3, 1], [-2.5, 4, 1]].forEach(([x, c, lv = 0]) => box(ship, 3.2, 1.3, 5.2, cont[c], x, 2.9 + lv * 1.32, 0));
+  WORLD.ship = ship;
+}
+// 浮標、繞島的小船、遠方小島與風機
+{
+  WORLD.buoys = [];
+  const coral = ZMAT.asm, white = M.white;
+  for (const [x, z] of [[-40, -38], [10, -40], [52, -30], [58, 22], [18, 40], [-30, 38]]) {
+    const b = new THREE.Group(); b.position.set(x, SEA_Y, z); scene.add(b);
+    cyl(b, 0.45, 0.55, 0.7, coral, 0, 0.3, 0, 12); cyl(b, 0.3, 0.42, 0.5, white, 0, 0.9, 0, 12); addMesh(b, cachedGeo('buoyTop', () => new THREE.ConeGeometry(0.28, 0.5, 10)), coral, 0, 1.4, 0);
+    WORLD.buoys.push(b);
+  }
+  const boat = new THREE.Group(); scene.add(boat);
+  box(boat, 2.0, 0.7, 5.2, M.white, 0, 0.25, 0); box(boat, 1.6, 0.9, 1.8, ZMAT.pkg, 0, 1.0, -0.6); box(boat, 2.05, 0.15, 5.25, ZMAT.asm, 0, 0.55, 0, false);
+  WORLD.boat = boat;
+  const sand = std(0xD9CEBB, { roughness: 0.95 }), grassTop = std(0x91A77A, { roughness: 0.95 }), pine = new THREE.MeshStandardMaterial({ color: 0x5F7D58, roughness: 0.9, flatShading: true });
+  WORLD.blades = [];
+  const islet = (x, z, r, pines, turbines) => {
+    const g = new THREE.Group(); g.position.set(x, SEA_Y, z); scene.add(g);
+    cyl(g, r, r * 1.12, 1.4, sand, 0, 0.5, 0, 9);
+    cyl(g, r * 0.82, r * 0.82, 0.14, grassTop, 0, 1.25, 0, 9, false);
+    const RR = rng(Math.round(x * 7 + z));
+    for (let i = 0; i < pines; i++) {
+      const a = RR() * Math.PI * 2, d = RR() * r * 0.65, h = 2.6 + RR() * 2.2;
+      addMesh(g, cachedGeo('pine', () => new THREE.ConeGeometry(1, 1, 7)), pine, Math.cos(a) * d, 1.3 + h / 2, Math.sin(a) * d).scale.set(h * 0.32, h, h * 0.32);
+    }
+    for (let i = 0; i < turbines; i++) {
+      const tx = (i - (turbines - 1) / 2) * r * 0.55;
+      cyl(g, 0.18, 0.28, 13, M.white, tx, 7.8, 0, 10);
+      const hub = new THREE.Group(); hub.position.set(tx, 14.3, 0.4); g.add(hub);
+      for (let k = 0; k < 3; k++) { const bl = box(hub, 0.5, 6.2, 0.12, M.white, 0, 3.1, 0, false); const piv = new THREE.Group(); piv.rotation.z = k * Math.PI * 2 / 3; hub.add(piv); piv.add(bl); }
+      WORLD.blades.push(hub);
+    }
+  };
+  islet(-95, -58, 14, 9, 0); islet(112, -62, 10, 4, 2); islet(102, 78, 12, 7, 0); islet(-88, 82, 9, 3, 2); islet(26, -125, 20, 14, 3);
+  // 北方遠山（被霧淡化，增加縱深）
+  const hill = std(0x8FA676, { roughness: 1 });
+  for (const [x, z, r] of [[-150, -280, 90], [-20, -310, 110], [130, -290, 95], [260, -240, 80]]) addMesh(scene, sphereGeo(1), hill, x, SEA_Y - 4, z, false).scale.set(r, r * 0.32, r * 0.6);
+}
 
 /* =====================================================================
  * 11. 輸送帶（用 InstancedMesh 一次畫上千根滾輪，效能比較好）
@@ -1384,8 +1571,8 @@ function enclosure(st, Gp, { w = 2.4, d = 1.5, h = 2.15, glass = true } = {}) {
   box(Gp, w, 0.8, d, M.body, 0, 0.4, 0);
   box(Gp, w + 0.012, 0.05, d + 0.012, zm, 0, 0.74, 0, false);
   for (const sx of [-1, 1]) for (const sz of [-1, 1]) box(Gp, 0.06, h - 0.8, 0.06, M.frame, sx * (w / 2 - 0.03), 0.8 + (h - 0.8) / 2, sz * (d / 2 - 0.03));
-  box(Gp, w, 0.42, d, M.body, 0, h - 0.21, 0);
-  box(Gp, w + 0.012, 0.05, d + 0.012, zm, 0, h - 0.4, 0, false);
+  box(Gp, w, 0.42, d, ROOF[st.zone], 0, h - 0.21, 0);
+  box(Gp, w + 0.012, 0.05, d + 0.012, M.body, 0, h - 0.4, 0, false);
   if (glass) {
     const gh = h - 0.42 - 0.8;
     for (const sz of [-1, 1]) plane(Gp, w - 0.08, gh, M.glass, 0, 0.8 + gh / 2, sz * d / 2);
@@ -1636,7 +1823,7 @@ for (const st of STATIONS) {
       box(Gp, w + 0.012, 0.05, d + 0.012, ZMAT.smt, 0, 0.74, 0, false);
       // 爐體：後牆、頂蓋、兩端（下方留輸送帶開口）；正面整片是橘色觀察窗，才看得到裡面的板子
       box(Gp, w, 0.95, 0.08, M.bodyDark, 0, 1.275, b * (d / 2 - 0.04));
-      box(Gp, w, 0.12, d, M.bodyDark, 0, 1.81, 0);
+      box(Gp, w, 0.12, d, ROOF.smt, 0, 1.81, 0);
       for (const sx of [-1, 1]) box(Gp, 0.08, 0.5, d, M.bodyDark, sx * (w / 2 - 0.04), 1.5, 0);
       for (const sx of [-1, 1]) box(Gp, 0.08, 0.95, 0.08, M.bodyDark, sx * (w / 2 - 0.04), 1.275, v * (d / 2 - 0.04));
       plane(Gp, w - 0.16, 0.9, M.glassOrange, 0, 1.3, v * d / 2, v);
@@ -1789,7 +1976,7 @@ for (const st of STATIONS) {
       box(Gp, 0.08, 2.4, 0.08, ZMAT.tst, -0.9, 1.2, v * 0.6); box(Gp, 0.08, 2.4, 0.08, ZMAT.tst, 0.9, 1.2, v * 0.6);
       box(Gp, 0.08, 2.4, 0.08, ZMAT.tst, -0.9, 1.2, b * 0.6); box(Gp, 0.08, 2.4, 0.08, ZMAT.tst, 0.9, 1.2, b * 0.6);
       for (const sz of [-1, 1]) box(Gp, 1.88, 0.1, 0.08, ZMAT.tst, 0, 2.4, sz * 0.6);
-      const sg = banner('Run-in 燒機測試區', 'Burn-in Test Area', '#ef4444', 1.8, 0.35); sg.position.set(0, 2.62, v * 0.6); if (v < 0) sg.rotation.y = Math.PI; Gp.add(sg);
+      const sg = banner('Run-in 燒機測試區', 'Burn-in Test Area', ZONE_BY_ID.tst.color, 1.8, 0.35); sg.position.set(0, 2.62, v * 0.6); if (v < 0) sg.rotation.y = Math.PI; Gp.add(sg);
       const rack = new THREE.Group(); rack.position.set(0, 0, b * 1.45); Gp.add(rack);
       for (const sx of [-1, 1]) for (const sz of [-1, 1]) box(rack, 0.05, 2.1, 0.05, M.frame, sx * 1.5, 1.05, sz * 0.3);
       for (let t = 0; t < 3; t++) box(rack, 3.05, 0.03, 0.62, M.bench, 0, 0.45 + t * 0.6, 0, false);
@@ -1891,7 +2078,7 @@ for (const st of STATIONS) {
       box(fk, 0.8, 1.9, 0.06, M.steelDark, 0, 1.05, -0.75);
       for (const sx of [-0.25, 0.25]) box(fk, 0.12, 0.05, 1.0, M.steelDark, sx, 0.1, -1.25, false);
       for (const sx of [-0.47, 0.47]) for (const sz of [-0.45, 0.45]) { const wh = cyl(fk, 0.22, 0.22, 0.16, M.rubber, sx, 0.22, sz, 16); wh.rotation.z = Math.PI / 2; }
-      const s = textSprite('出貨區', 'Finished Goods', '#14b8a6'); s.position.set(6.9, 1.6, 0); Gp.add(s);
+      const s = textSprite('出貨區', 'Finished Goods', ZONE_BY_ID.pkg.color); s.position.set(6.9, 1.6, 0); Gp.add(s);
       const t = new THREE.Vector3(), pk = new THREE.Vector3(), restP = new THREE.Vector3(1.0, 1.65, b * 0.4);
       st.statics = statics;
       anim = (q, active, n) => {
@@ -1907,7 +2094,7 @@ for (const st of STATIONS) {
     }
   }
   st.anim = anim;
-  const lab = textSprite(`${String(st.k + 1).padStart(2, '0')}  ${st.name}`, st.en, st.zoneObj.color, 0.9);
+  const lab = textSprite(st.name, st.en, st.zoneObj.color, 0.9, { num: String(st.k + 1).padStart(2, '0') });
   lab.position.set(0, 2.85, b * 0.45);
   if (st.type === 'pallet') lab.position.set(1.6, 2.85, b * 0.4);
   Gp.add(lab);
@@ -1927,22 +2114,22 @@ const PORTRAITS = (() => { try { return JSON.parse(document.getElementById('port
 
 // ---- 角色：5 個核心角色＋交接班用的夜班線長 ----
 const ROLES = {
-  leader: { title: '線長', en: 'Line Leader', color: '#dc2626', smock: '#1e3a8a', cap: '#dc2626', pants: '#1f2937', band: '#facc15',
+  leader: { title: '線長', en: 'Line Leader', color: '#C2452D', smock: '#1e3a8a', cap: '#dc2626', pants: '#1f2937', band: '#facc15',
     duty: '帶領整條產線的作業員，對每天的產量、品質和人力安排負責。早會時說明今天的目標；生產中盯著產線看板，確認每小時產量有沒有達標；機台出狀況時第一個到場，判斷要不要停線；下班前把狀況交接給夜班。',
     tip: '線長多半是從資深作業員升上來的，最熟悉每一站的作業，人手不夠時也會親自下去補位。' },
-  operator: { title: '組裝作業員', en: 'Assembly Operator', color: '#2563eb', smock: '#60a5fa', cap: '#f8fafc', pants: '#1f2937',
+  operator: { title: '組裝作業員', en: 'Assembly Operator', color: '#3F73AE', smock: '#60a5fa', cap: '#f8fafc', pants: '#1f2937',
     duty: '在固定的工站，依照「作業指導書（SOP）」把零件組裝到筆電上。上班先換靜電衣、通過靜電測試；開線前檢查工具與物料；生產中每隔幾十秒就要完成一台的動作；下班前做 5S 整理。',
     tip: '筆電的晶片很怕靜電。人走動時身上可能累積上千伏特的靜電，所以作業員一定要穿靜電衣、戴靜電手環。' },
-  ipqc: { title: 'IPQC 品檢員', en: 'In-Process Quality Control', color: '#db2777', smock: '#f472b6', cap: '#f9a8d4', pants: '#1f2937',
+  ipqc: { title: 'IPQC 品檢員', en: 'In-Process Quality Control', color: '#C2558A', smock: '#f472b6', cap: '#f9a8d4', pants: '#1f2937',
     duty: 'IPQC 是「製程中品質檢驗」。開線時要做「首件檢查」，確認第一台產品完全正確才能量產；之後定時巡線抽檢，看作業員有沒有照 SOP 作業、產品有沒有瑕疵，發現問題立刻通知線長改善。',
     tip: '品管分好幾關：IQC 檢查進料、IPQC 檢查生產過程、FQC／OQC 檢查成品與出貨，層層把關。' },
-  tech: { title: '設備技術員', en: 'Equipment Technician', color: '#475569', smock: '#4b5563', cap: '#1e3a8a', pants: '#111827',
+  tech: { title: '設備技術員', en: 'Equipment Technician', color: '#56636B', smock: '#4b5563', cap: '#1e3a8a', pants: '#111827',
     duty: '負責產線上所有機台的保養與維修。開線前先巡檢機台；生產中只要機台亮紅燈，就要帶著工具箱趕到現場排除故障，例如貼片機吸嘴堵塞造成拋料。修好後請品檢確認，才能恢復生產。',
     tip: '工廠非常在意「停線時間」，整條線一停，每分鐘都是損失，所以技術員的反應速度和平時的預防保養都很重要。' },
-  material: { title: '物料員', en: 'Material Handler', color: '#ea580c', smock: '#60a5fa', cap: '#f8fafc', pants: '#1f2937', vest: '#f97316',
+  material: { title: '物料員', en: 'Material Handler', color: '#D9773A', smock: '#60a5fa', cap: '#f8fafc', pants: '#1f2937', vest: '#f97316',
     duty: '從物料超市把零件、外殼、包材推到產線旁的料架補料，讓作業員不用離開工站找料。要依照生產排程，在零件用完之前就送到，同時把空的料盒收回。',
     tip: '這種「在用完之前剛好送到」的做法，來自豐田生產方式的「看板管理」與「準時化生產（JIT）」。' },
-  night: { title: '夜班線長', en: 'Night-shift Leader', color: '#7c3aed', smock: '#4c1d95', cap: '#dc2626', pants: '#1f2937', band: '#facc15',
+  night: { title: '夜班線長', en: 'Night-shift Leader', color: '#6E5FA0', smock: '#4c1d95', cap: '#dc2626', pants: '#1f2937', band: '#facc15',
     duty: '兩班制的工廠 24 小時運轉，夜班從 20:00 開始。交接班時要聽日班線長說明今天的產量、異常和注意事項，接手後帶領夜班繼續生產。',
     tip: '交接班常搭配「交接單」，口頭說明加上書面紀錄，避免資訊在換班時遺漏。' },
 };
@@ -1996,7 +2183,7 @@ const DAY_SCENES = [
   { from: '20:00', to: '20:05', dur: 16, kind: 'off', name: '日班下班',
     desc: '日班人員打卡下班，由夜班接手繼續生產，工廠 24 小時不停。' },
 ];
-const KIND_COLOR = { prep: '#64748b', meeting: '#8b5cf6', startup: '#84cc16', run: '#22c55e', break: '#38bdf8', alarm: '#ef4444', handover: '#f59e0b', off: '#475569' };
+const KIND_COLOR = { prep: '#9A9088', meeting: '#8074A7', startup: '#9DB57F', run: '#6F9B78', break: '#7DB6BD', alarm: '#C8463A', handover: '#D19A35', off: '#6B6560' };
 const SC = DAY_SCENES;
 let DAY_TOTAL = 0;
 for (const s of SC) { s.d0 = DAY_TOTAL; DAY_TOTAL += s.dur; s.d1 = DAY_TOTAL; s.f0 = hm(s.from); s.f1 = hm(s.to); }
@@ -2435,14 +2622,12 @@ function buildBridge(br) {
       box(g, 0.04, 0.9, 0.04, M.yellow, sx * W / 2, 0.45, s * (0.6 + RUN), false);
     }
   }
-  const sp = textSprite('跨線天橋', 'Crossover Bridge', '#ca8a04', 0.7); sp.position.set(0, DECK_Y + 1.45, 0); g.add(sp);
+  const sp = textSprite('跨線天橋', 'Crossover Bridge', '#D19A35', 0.7); sp.position.set(0, DECK_Y + 1.45, 0); g.add(sp);
 }
 function buildStaffArea() {
-  // 東側牆與員工入口
-  box(scene, 0.3, 7, 38, M.wall, 31.75, 3.5, -0.6);
-  box(scene, 0.06, 2.4, 1.6, std(0x334155, { roughness: 0.4 }), 31.57, 1.2, -13.0, false);
-  for (const dz of [-0.85, 0.85]) box(scene, 0.08, 2.5, 0.1, M.yellow, 31.55, 1.25, -13.0 + dz, false);
-  box(scene, 0.08, 0.1, 1.8, M.yellow, 31.55, 2.48, -13.0, false);
+  // 員工出入口：矮牆的缺口加上大門門框
+  for (const dz of [-1.05, 1.05]) box(scene, 0.22, 2.6, 0.22, M.bodyDark, 31.75, 1.3, -13.0 + dz);
+  box(scene, 0.3, 0.28, 2.6, ZMAT.asm, 31.75, 2.7, -13.0);
   // 打卡機
   const tc = new THREE.Group(); tc.position.set(30.95, 0, -11.6); scene.add(tc);
   box(tc, 0.28, 1.05, 0.28, M.bodyDark, 0, 0.525, 0);
@@ -2508,10 +2693,10 @@ function buildStaffArea() {
   monitor(qd, 0, 1.05, -0.15, 1, basic({ map: screenTex('IPQC 巡檢紀錄', ['首件檢查 ✔', '巡線抽檢 10:30 ✔', '巡線抽檢 16:00']) }), 0.5, 0.31, false);
   for (const br of BRIDGES) buildBridge(br);
   const signs = [
-    ['員工出入口', 'Staff Entrance', '#475569', 30.6, -13.0], ['置物櫃・打卡', 'Lockers & Time Clock', '#475569', 30.5, -8.0],
-    ['靜電測試站', 'ESD Check', '#16a34a', 28.2, -4.4], ['早會區', 'Morning Meeting', '#8b5cf6', 28.5, 1.2],
-    ['休息區・餐廳', 'Break Room', '#0ea5e9', 28.0, 9.6], ['物料超市', 'Material Supermarket', '#ea580c', 17.0, -3.35],
-    ['設備維修台', 'Maintenance Bench', '#475569', 17.5, 3.3], ['品保 IPQC 桌', 'QC Desk', '#db2777', -5.4, -3.0],
+    ['員工出入口', 'Staff Entrance', '#6B6560', 30.6, -13.0], ['置物櫃・打卡', 'Lockers & Time Clock', '#6B6560', 30.5, -8.0],
+    ['靜電測試站', 'ESD Check', '#6F9B78', 28.2, -4.4], ['早會區', 'Morning Meeting', '#8074A7', 28.5, 1.2],
+    ['休息區・餐廳', 'Break Room', '#4D9C97', 28.0, 9.6], ['物料超市', 'Material Supermarket', '#D96B45', 17.0, -3.35],
+    ['設備維修台', 'Maintenance Bench', '#6B6560', 17.5, 3.3], ['品保 IPQC 桌', 'QC Desk', '#C2558A', -5.4, -3.0],
   ];
   for (const [t, s, c, x, z] of signs) { const sp = textSprite(t, s, c, 0.85); sp.position.set(x, 2.55, z); scene.add(sp); }
 }
@@ -2524,7 +2709,7 @@ const BOARD = (() => {
   box(g, 2.5, 1.45, 0.08, M.black, 0, 0, 0, false);
   plane(g, 2.4, 1.35, basic({ map: tex }), 0, 0, 0.045, 1);
   plane(g, 2.4, 1.35, basic({ map: tex }), 0, 0, -0.045, -1);
-  for (const dx of [-1, 1]) cyl(g, 0.015, 0.015, 2.6, M.frame, dx * 1.0, 2.0, 0, 6, false);
+  for (const dx of [-1, 1]) { cyl(g, 0.045, 0.045, 2.5, M.bodyDark, dx * 1.0, -1.975, 0, 10); box(g, 0.4, 0.06, 0.5, M.bodyDark, dx * 1.0, -3.2 + 0.03, 0); }
   return { ctx: c.getContext('2d'), tex };
 })();
 function drawBoard() {
@@ -2549,7 +2734,7 @@ function drawBoard() {
 const CART = buildCart();
 const CART_HOME = { x: POI.market.x, z: POI.market.z - 0.8, yaw: F.N };
 // 機台異常時的警示牌
-const alarmSign = textSprite('⚠ 貼片機拋料警報', 'Machine Alarm', '#ef4444', 1.1);
+const alarmSign = textSprite('⚠ 貼片機拋料警報', 'Machine Alarm', '#C8463A', 1.1, { solid: true });
 { const st = STATIONS[8]; alarmSign.position.set(st.x, 3.1, st.z); scene.add(alarmSign); alarmSign.visible = false; }
 
 // ---- 建立人物、排好一天的行程 ----
@@ -2697,12 +2882,12 @@ function heroTau() { return state.T - state.heroN * SPAWN; }
 /* =====================================================================
  * 16. 鏡頭：導覽跟隨、人物跟隨、飛行移動
  * =================================================================== */
-const TOUR_OFFSET = new THREE.Vector3(1.15, 1.05, 1.95);
+const TOUR_OFFSET = new THREE.Vector3(1.55, 1.42, 2.63);
 // 跟拍人物時，鏡頭在人物「背後」的高處往下看：人面向南方（例如在機台背側工作）就從北側拍，否則從南側拍，
 // 這樣機台不會擋在鏡頭和人物中間；位置偏西，員工區靠東牆時鏡頭也不會跑到牆外
-const DAY_OFF_S = new THREE.Vector3(-1.8, 4.0, 3.2), DAY_OFF_N = new THREE.Vector3(-1.8, 4.0, -3.2);
+const DAY_OFF_S = new THREE.Vector3(-2.4, 5.4, 4.3), DAY_OFF_N = new THREE.Vector3(-2.4, 5.4, -4.3);
 let dayOff = DAY_OFF_S, followKey = '';
-const OVERVIEW = { pos: new THREE.Vector3(18.5, 46, 52), tgt: new THREE.Vector3(8.5, 0, -1) };
+const OVERVIEW = { pos: new THREE.Vector3(23.7, 64, 72.6), tgt: new THREE.Vector3(5, -1, 0) };
 const fly = { active: false, follow: false, t: 0, dur: 1.4, p0: new THREE.Vector3(), p1: new THREE.Vector3(), t0: new THREE.Vector3(), t1: new THREE.Vector3() };
 function flyTo(pos, tgt, dur = 1.4, follow = false) {   // follow = 飛行途中持續追著移動中的目標
   fly.p0.copy(camera.position); fly.t0.copy(controls.target);
@@ -2720,7 +2905,7 @@ function stationView(st) {
   const c = Math.cos(st.yaw), s = Math.sin(st.yaw);
   const toWorld = (lx, y, lz) => new THREE.Vector3(st.x + lx * c + lz * s, y, st.z - lx * s + lz * c);
   const cx = st.type === 'pallet' ? 1.8 : 0;
-  return { pos: toWorld(cx + 1.9, 2.5, st.view * 3.4), tgt: toWorld(cx, 0.95, 0) };
+  return { pos: toWorld(cx + 2.55, 3.1, st.view * 4.6), tgt: toWorld(cx, 0.95, 0) };
 }
 function updateCamera(rdt) {
   const has = getFollowPos(heroPos);
@@ -2760,7 +2945,7 @@ function buildStationList() {
   ZONES.forEach((z, zi) => {
     html += `<div class="zone-head"><span class="dot" style="background:${z.color}"></span>${zi + 1}. ${z.name}</div>`;
     STATIONS.forEach((st, k) => {
-      if (st.zone === z.id) html += `<button class="st-item" data-k="${k}"><span class="num" style="--c:${z.color}">${k + 1}</span><span class="nm">${st.name}</span><span class="ck">✓</span></button>`;
+      if (st.zone === z.id) html += `<button class="st-item" data-k="${k}"><span class="num" style="--c:${z.color}">${String(k + 1).padStart(2, '0')}</span><span class="nm">${st.name}</span><span class="ck">✓</span></button>`;
     });
   });
   $('stationList').innerHTML = html;
@@ -2791,9 +2976,9 @@ function buildPeopleList() {
   listMode = 'people'; $('panelTitle').textContent = '👷 人員名單';
   const item = p => `<button class="pp-item" data-id="${p.id}">${avatarHTML(p, 'av')}<span class="pp-txt"><b>${displayName(p)}</b><small id="pa-${p.id}">${ROLES[p.role].title}</small></span></button>`;
   $('stationList').innerHTML =
-    `<div class="zone-head"><span class="dot" style="background:#f59e0b"></span>主要人物（點一下看他的一天）</div>`
+    `<div class="zone-head"><span class="dot" style="background:#D96B45"></span>主要人物（點一下看他的一天）</div>`
     + MAIN_ORDER.map(id => item(PEOPLE_BY_ID[id])).join('')
-    + `<div class="zone-head"><span class="dot" style="background:#94a3b8"></span>其他人員</div>`
+    + `<div class="zone-head"><span class="dot" style="background:#A39E94"></span>其他人員</div>`
     + PEOPLE.filter(p => p.generic).map(item).join('');
   $('stationList').querySelectorAll('.pp-item').forEach(b => b.addEventListener('click', () => selectPerson(b.dataset.id)));
 }
@@ -2886,7 +3071,7 @@ function setInfo(key, html) { if (key !== infoKey) { infoKey = key; $('infoBody'
 function stationHTML(k) {
   const st = STATIONS[k], z = st.zoneObj;
   return `<span class="zone-tag" style="--c:${z.color}">${z.name} · ${z.en}</span>
-    <h2 style="--c:${z.color}"><span class="num">${k + 1}</span>${st.name}</h2>
+    <h2 style="--c:${z.color}"><span class="num">${String(k + 1).padStart(2, '0')}</span>${st.name}</h2>
     <div class="en">${st.en}</div>
     <div class="status" id="infoStatus"></div>
     <h3>🔧 這一站在做什麼？</h3><p>${st.what}</p>
@@ -3094,7 +3279,7 @@ window.addEventListener('resize', () => {
  * =================================================================== */
 buildStationList();
 buildTimeline();
-window.__sim = { state, STATIONS, SCHED, SC, PEOPLE_BY_ID, renderer, seekHeroToStation, setMode, setPaused, selectPerson, dAtClock, hm };   // 方便除錯用
+window.__sim = { state, STATIONS, SCHED, SC, PEOPLE_BY_ID, renderer, camera, controls, fly, seekHeroToStation, setMode, setPaused, selectPerson, dAtClock, hm };   // 方便除錯用
 if (window.innerWidth < 820) { $('stationPanel').classList.add('collapsed'); $('btnPanel').textContent = '☰'; }
 camera.position.copy(OVERVIEW.pos); controls.target.copy(OVERVIEW.tgt);
 
@@ -3125,7 +3310,42 @@ if (HASH.has('look') || HASH.get('view') === 'overview') {
   }
 }
 if (HASH.has('pause')) setPaused(true);
-let last = performance.now(), firstFrame = true, heroDoneAt = null;
+// ---- 日夜光線：人員一日模式時，天空、陽光、海面與路燈跟著工廠時鐘變化（其他模式固定在白天）----
+const SKY_KEYS = [
+  { t: '07:00', top: '#B9C9D3', hor: '#F2DCC4', hs: '#FFE8D0', hg: '#6F7E7B', hi: 1.0, sc: '#FFD3A4', si: 1.5, az: 20, el: 18, sea: '#F1F2EC', lamp: 0.2, exp: 1.0, env: 0.38 },
+  { t: '09:30', top: '#C9D8CF', hor: '#E8E0CB', hs: '#FFF5E4', hg: '#718D87', hi: 1.15, sc: '#FFEBD0', si: 2.0, az: 75, el: 48, sea: '#FFFFFF', lamp: 0, exp: 1.0, env: 0.45 },
+  { t: '15:00', top: '#C9D8CF', hor: '#E8E0CB', hs: '#FFF5E4', hg: '#718D87', hi: 1.15, sc: '#FFEBD0', si: 2.0, az: 125, el: 45, sea: '#FFFFFF', lamp: 0, exp: 1.0, env: 0.45 },
+  { t: '17:30', top: '#D7C9B8', hor: '#F3CFA6', hs: '#FFE6C8', hg: '#77706A', hi: 1.0, sc: '#FFBE85', si: 1.7, az: 160, el: 16, sea: '#F4E6DA', lamp: 0.25, exp: 1.0, env: 0.36 },
+  { t: '18:50', top: '#7F86B3', hor: '#E6A88C', hs: '#9AA0C8', hg: '#4C4F5E', hi: 0.8, sc: '#FF9C6E', si: 0.8, az: 176, el: 5, sea: '#B7C0CF', lamp: 0.85, exp: 1.05, env: 0.2 },
+  { t: '20:00', top: '#27314F', hor: '#4A587C', hs: '#6E7BA8', hg: '#2F3543', hi: 0.75, sc: '#B8C7F0', si: 0.55, az: 110, el: 40, sea: '#6E7F96', lamp: 1, exp: 1.05, env: 0.08 },
+].map(k => ({ ...k, t: hm(k.t), top: new THREE.Color(k.top), hor: new THREE.Color(k.hor), hs: new THREE.Color(k.hs), hg: new THREE.Color(k.hg), sc: new THREE.Color(k.sc), sea: new THREE.Color(k.sea) }));
+const BULB_DAY = new THREE.Color(0xE9E0CF), BULB_NIGHT = new THREE.Color(0xFFD27A);
+function updateEnvironment(time) {
+  const clock = state.mode === 'day' ? clockAt(state.D) : hm('11:00');
+  let i = 0;
+  while (i < SKY_KEYS.length - 2 && clock > SKY_KEYS[i + 1].t) i++;
+  const a = SKY_KEYS[i], b = SKY_KEYS[i + 1], f = clamp01((clock - a.t) / (b.t - a.t)), L = (x, y) => lerp(x, y, f);
+  const u = WORLD.sky.material.uniforms;
+  u.top.value.lerpColors(a.top, b.top, f); u.hor.value.lerpColors(a.hor, b.hor, f);
+  scene.fog.color.copy(u.hor.value);
+  hemi.color.lerpColors(a.hs, b.hs, f); hemi.groundColor.lerpColors(a.hg, b.hg, f); hemi.intensity = L(a.hi, b.hi);
+  sun.color.lerpColors(a.sc, b.sc, f); sun.intensity = L(a.si, b.si);
+  const az = THREE.MathUtils.degToRad(L(a.az, b.az)), el = THREE.MathUtils.degToRad(L(a.el, b.el));
+  sun.position.set(Math.cos(az) * Math.cos(el), Math.sin(el), Math.sin(az) * Math.cos(el)).multiplyScalar(100).add(sun.target.position);
+  WORLD.seaMat.color.lerpColors(a.sea, b.sea, f);
+  const lamp = L(a.lamp, b.lamp);
+  WORLD.bulb.color.lerpColors(BULB_DAY, BULB_NIGHT, lamp);
+  WORLD.ripple.material.opacity = 0.32 * (1 - 0.6 * lamp);
+  renderer.toneMappingExposure = L(a.exp, b.exp);
+  scene.environmentIntensity = L(a.env, b.env);
+  // 背景小動畫：波紋飄移、風機轉動、小船繞島、浮標搖晃
+  WORLD.ripple.material.map.offset.set(time * 0.004, time * 0.0025);
+  for (const h of WORLD.blades) h.rotation.z = time * 1.2;
+  const ang = time * 0.035;
+  WORLD.boat.position.set(4 + Math.cos(ang) * 78, SEA_Y + 0.2, Math.sin(ang) * 62); WORLD.boat.rotation.y = -ang;
+  WORLD.buoys.forEach((bu, k) => { bu.rotation.z = 0.08 * Math.sin(time * 1.3 + k); bu.position.y = SEA_Y + 0.08 * Math.sin(time * 1.1 + k * 2); });
+}
+let last = performance.now(), firstFrame = true;
 renderer.setAnimationLoop(now => {
   const rdt = Math.min(0.1, (now - last) / 1000); last = now;
   if (!state.paused) {
@@ -3154,6 +3374,7 @@ renderer.setAnimationLoop(now => {
   updateUnits();
   updateStations();
   updatePeople();
+  updateEnvironment(now / 1000);
   if (getHeroPos(heroPos)) { marker.visible = true; marker.position.copy(heroPos).add(tmpV.set(0, 0.6 + 0.04 * Math.sin(now / 250), 0)); marker.rotation.y = now / 600; }
   else marker.visible = false;
   updateCamera(rdt);
