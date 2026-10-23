@@ -1,0 +1,24 @@
+# 敏感設定（API 金鑰、帳號密碼等）一律不進版本庫
+.env
+.env.*
+
+# 系統與編輯器自動產生的檔案
+Thumbs.db
+desktop.ini
+.DS_Store
+~$*
+*.tmp
+.vscode/
+.idea/
+
+# Python（之後如果加入 Python 工具腳本）
+__pycache__/
+*.pyc
+.venv/
+
+# 前端（之後如果改用建置工具）
+node_modules/
+dist/
+
+# Claude Code 的本機設定
+.claude/
