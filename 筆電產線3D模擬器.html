@@ -157,6 +157,41 @@
   .btn.follow.on{background:var(--ink);color:#FFFDFA;border-color:var(--ink)}
   #infoCard ul.who{font-size:13.5px}
   #infoCard .hint{margin-top:12px;font-size:13px;color:var(--muted)}
+  .pp-item .met{margin-left:auto;flex:none;color:var(--sage);font-weight:900;font-size:15px}
+  .quest{margin:8px 6px 4px;padding:9px 11px;border-radius:12px;background:var(--coral-soft);font-size:13px;font-weight:700;color:var(--coral-dark)}
+  .quest b{font-size:15px;color:var(--ink)}
+  .quest .qbar{height:6px;border-radius:99px;background:#F3D2C3;margin-top:6px;overflow:hidden}
+  .quest .qbar i{display:block;height:100%;background:var(--coral)}
+
+  /* ---------- 下場走走：開關、對話框、聊天提示 ---------- */
+  .day-play{border:0;background:var(--coral);color:#FFFDFA;border-radius:11px;padding:7px 13px;font-weight:800;font-size:13.5px;white-space:nowrap}
+  .day-play:hover{background:var(--coral-dark)}
+  .day-play.on{background:var(--ink)}
+  /* 時間列置中在左邊名單（寬 248）與右邊說明卡（寬 392）之間，太窄時自動換行 */
+  #dayBar{left:calc(50% - 72px);max-width:calc(100% - 660px);flex-wrap:wrap;justify-content:center;row-gap:4px}
+  /* 對話框放在左邊名單與右邊說明卡之間（left/right 都設定，再用 margin:auto 置中） */
+  #dialog{position:fixed;left:260px;right:392px;margin:0 auto;max-width:620px;bottom:142px;display:flex;gap:14px;align-items:flex-start;padding:14px 16px 12px;z-index:9;border:2px solid var(--ink);box-shadow:0 14px 36px rgba(40,35,34,.28)}
+  #dialog[hidden]{display:none}
+  .dlg-av{width:84px;height:84px;border-radius:16px;object-fit:cover;display:block;flex:none;box-shadow:0 4px 12px rgba(67,49,39,.25)}
+  .dlg-av.ph{display:grid;place-items:center;font-size:40px;background:color-mix(in srgb,var(--c) 18%,#FFFDFA)}
+  .dlg-body{flex:1;min-width:0}
+  .dlg-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding-right:30px}
+  .dlg-head b{font-size:17px;font-weight:900}
+  .dlg-role{font-size:12px;font-weight:800;padding:3px 10px;border-radius:999px;background:color-mix(in srgb,var(--c) 15%,#FFFDFA);color:color-mix(in srgb,var(--c) 70%,#282322)}
+  #dlgText{margin:8px 0 0;font-size:15.5px;line-height:1.75;min-height:3.5em;color:var(--text);cursor:pointer}
+  .dlg-foot{display:flex;align-items:center;justify-content:flex-end;gap:10px;margin-top:4px}
+  #dlgPage{font-size:12px;color:var(--muted);font-weight:700;margin-right:auto}
+  #dlgClose{position:absolute;right:10px;top:10px}
+  .caret{display:inline-block;margin-left:6px;color:var(--coral);font-size:12px;animation:blink 1s steps(2) infinite}
+  @keyframes blink{50%{opacity:0}}
+  #talkHint{position:fixed;left:50%;bottom:146px;transform:translateX(-50%);background:rgba(40,35,34,.88);color:#FFFDFA;padding:9px 18px;border-radius:999px;font-size:14px;font-weight:700;z-index:8;display:none;cursor:pointer;white-space:nowrap;border:0}
+  #toast{position:fixed;left:50%;top:150px;transform:translateX(-50%);background:var(--ink);color:#FFFDFA;padding:11px 20px;border-radius:14px;font-size:15px;font-weight:800;z-index:12;opacity:0;pointer-events:none;transition:opacity .4s;max-width:calc(100% - 24px);text-align:center}
+  #toast.show{opacity:1}
+  @media (max-width:1180px){
+    #dialog{left:234px;right:344px}
+    #dayBar .tl-note{display:none}
+    #dayBar{max-width:calc(100% - 586px);left:calc(50% - 61px)}
+  }
 
   /* ---------- 響應式：中小螢幕 ---------- */
   @media (max-width:1180px){
@@ -192,6 +227,17 @@
     #dayBar .clock{font-size:19px}
     #dayBar .tl-note{display:none}
     .portrait{width:76px;height:76px}
+    #dayBar{max-width:none}
+    #dialog{left:8px;right:8px;max-width:none;bottom:162px;padding:10px 12px;gap:10px}
+    .dlg-av{width:56px;height:56px;border-radius:12px}
+    .dlg-av.ph{font-size:28px}
+    .dlg-head b{font-size:15px}
+    #dlgText{font-size:14px;min-height:3.3em;line-height:1.65}
+    body.talking #infoCard,body.talking #dayBar{display:none}
+    .playing #infoCard{display:none}
+    .playing #dayBar{bottom:162px}
+    #talkHint{bottom:236px;font-size:13px}
+    #toast{top:128px;font-size:13.5px}
   }
 </style>
 </head>
@@ -230,8 +276,21 @@
   <span class="pill stop" id="dayLine">🟡 停線中</span>
   <span class="out" id="dayOut">今日產量 0 台</span>
   <span class="tl-note">縮時播放</span>
+  <button class="day-play" id="btnPlayMode" title="扮演參觀者走進工廠，和大家聊天">🎮 下場走走</button>
 </div>
 <div id="pauseBadge">⏸ 已暫停，按 ▶ 或空白鍵繼續</div>
+<!-- NPC 對話框（遊戲式）：點人物，或「下場走走」時靠近人按 E -->
+<div id="dialog" class="card" role="dialog" aria-label="和人物對話" hidden>
+  <div id="dlgAv"></div>
+  <div class="dlg-body">
+    <div class="dlg-head"><b id="dlgName"></b><span class="dlg-role" id="dlgRole"></span></div>
+    <p id="dlgText"></p>
+    <div class="dlg-foot"><span id="dlgPage"></span><button class="btn primary" id="dlgNext">下一句 ▶</button></div>
+  </div>
+  <button class="mini" id="dlgClose" title="結束對話（Esc）">✕</button>
+</div>
+<button id="talkHint"></button>
+<div id="toast"></div>
 
 <footer id="controls" class="card">
   <div class="ctl-row">
@@ -264,7 +323,8 @@
     <ul>
       <li><b>🎬 導覽模式</b>：鏡頭自動跟著「示範機」（頭上有黃色箭頭）走完全程，右邊的卡片會解說每一站。</li>
       <li><b>🧭 自由參觀</b>：滑鼠<b>左鍵拖曳</b>旋轉、<b>右鍵拖曳</b>平移、<b>滾輪</b>縮放；<b>點任一台機器</b>就會飛過去並顯示說明。</li>
-      <li><b>👷 人員一日</b>：用縮時方式看工廠人員的一天（兩班制日班 08:00–20:00）：打卡、換靜電衣、早會、生產、休息用餐、處理機台異常，一直到交接班下班。點左邊名單或畫面中的人物，可以看他的肖像和行程，鏡頭也會跟著他走。</li>
+      <li><b>👷 人員一日</b>：用縮時方式看工廠人員的一天（兩班制日班 08:00–20:00）：打卡、換靜電衣、早會、生產、休息用餐、處理機台異常，一直到交接班下班。點左邊名單或畫面中的人物，會跳出<b>對話框</b>聽他說現在在做什麼，右邊也會顯示他的肖像和行程。頭上有「<b>！</b>」的人正在做重要的事。</li>
+      <li><b>🎮 下場走走</b>（在人員一日的時間列上）：扮演一位參觀者走進工廠。<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> 或方向鍵走路，按住 <kbd>Shift</kbd> 跑步；靠近人按 <kbd>E</kbd> 聊天。滑鼠或手機：<b>點地板</b>自動走過去，<b>點人物</b>就走過去和他聊天。左邊的「聊天任務」會記錄你聊過誰。</li>
       <li><b>🗺️ 全景</b>：從高處俯瞰整座工廠。</li>
       <li><b>下方進度條</b>可以點擊或拖曳，直接跳到任何階段。</li>
       <li>勾選<b>「每站自動暫停」</b>，示範機每到一站就會停下來，適合簡報時一站一站講解。</li>
@@ -1225,6 +1285,7 @@ function slab(shape, topY, depth, topMat, sideMat, bevel = 0) {
   });
   trunks.castShadow = crowns.castShadow = true; crowns.receiveShadow = true;
   scene.add(trunks, crowns);
+  WORLD.trees = trees;                         // 下場走走時，玩家不能穿過樹幹
   // 南側步道的路燈（晚上會亮）
   WORLD.bulb = basic({ color: 0xE9E0CF });
   for (let i = 0; i < 9; i++) {
@@ -2112,26 +2173,54 @@ const fmt = min => `${String(Math.floor(min / 60)).padStart(2, '0')}:${String(Ma
 // Codex 繪製的寫實肖像（嵌在檔案最後面的 JSON 區塊，沒有的話就用文字頭像代替）
 const PORTRAITS = (() => { try { return JSON.parse(document.getElementById('portraitData').textContent); } catch { return {}; } })();
 
-// ---- 角色：5 個核心角色＋交接班用的夜班線長 ----
+// ---- 角色：5 個核心角色＋交接班用的夜班線長＋園區路人＋玩家（參觀者）----
+//   hat：帽子（esd 靜電帽、cap 鴨舌帽、helmet 安全帽、none 不戴）；emoji：沒有肖像時的頭像；intro：第一次聊天時的自我介紹
 const ROLES = {
   leader: { title: '線長', en: 'Line Leader', color: '#C2452D', smock: '#1e3a8a', cap: '#dc2626', pants: '#1f2937', band: '#facc15',
+    hat: 'esd', emoji: '📋', intro: '我帶領整條產線，對每天的產量、品質和人力安排負責。',
     duty: '帶領整條產線的作業員，對每天的產量、品質和人力安排負責。早會時說明今天的目標；生產中盯著產線看板，確認每小時產量有沒有達標；機台出狀況時第一個到場，判斷要不要停線；下班前把狀況交接給夜班。',
     tip: '線長多半是從資深作業員升上來的，最熟悉每一站的作業，人手不夠時也會親自下去補位。' },
   operator: { title: '組裝作業員', en: 'Assembly Operator', color: '#3F73AE', smock: '#60a5fa', cap: '#f8fafc', pants: '#1f2937',
+    hat: 'esd', emoji: '👷', intro: '我在組裝線上，照「作業指導書（SOP）」把零件裝到筆電上。',
     duty: '在固定的工站，依照「作業指導書（SOP）」把零件組裝到筆電上。上班先換靜電衣、通過靜電測試；開線前檢查工具與物料；生產中每隔幾十秒就要完成一台的動作；下班前做 5S 整理。',
     tip: '筆電的晶片很怕靜電。人走動時身上可能累積上千伏特的靜電，所以作業員一定要穿靜電衣、戴靜電手環。' },
   ipqc: { title: 'IPQC 品檢員', en: 'In-Process Quality Control', color: '#C2558A', smock: '#f472b6', cap: '#f9a8d4', pants: '#1f2937',
+    hat: 'esd', emoji: '🔍', intro: '我負責「製程中品質檢驗」，在生產過程中替品質把關。',
     duty: 'IPQC 是「製程中品質檢驗」。開線時要做「首件檢查」，確認第一台產品完全正確才能量產；之後定時巡線抽檢，看作業員有沒有照 SOP 作業、產品有沒有瑕疵，發現問題立刻通知線長改善。',
     tip: '品管分好幾關：IQC 檢查進料、IPQC 檢查生產過程、FQC／OQC 檢查成品與出貨，層層把關。' },
   tech: { title: '設備技術員', en: 'Equipment Technician', color: '#56636B', smock: '#4b5563', cap: '#1e3a8a', pants: '#111827',
+    hat: 'cap', emoji: '🛠️', intro: '產線上所有機台的保養和維修，都歸我管。',
     duty: '負責產線上所有機台的保養與維修。開線前先巡檢機台；生產中只要機台亮紅燈，就要帶著工具箱趕到現場排除故障，例如貼片機吸嘴堵塞造成拋料。修好後請品檢確認，才能恢復生產。',
     tip: '工廠非常在意「停線時間」，整條線一停，每分鐘都是損失，所以技術員的反應速度和平時的預防保養都很重要。' },
   material: { title: '物料員', en: 'Material Handler', color: '#D9773A', smock: '#60a5fa', cap: '#f8fafc', pants: '#1f2937', vest: '#f97316',
+    hat: 'esd', emoji: '📦', intro: '我負責把零件送到產線旁，讓作業員不用離開崗位找料。',
     duty: '從物料超市把零件、外殼、包材推到產線旁的料架補料，讓作業員不用離開工站找料。要依照生產排程，在零件用完之前就送到，同時把空的料盒收回。',
     tip: '這種「在用完之前剛好送到」的做法，來自豐田生產方式的「看板管理」與「準時化生產（JIT）」。' },
   night: { title: '夜班線長', en: 'Night-shift Leader', color: '#6E5FA0', smock: '#4c1d95', cap: '#dc2626', pants: '#1f2937', band: '#facc15',
+    hat: 'esd', emoji: '🌙', intro: '晚上 8 點起由我帶領夜班，工廠 24 小時不停。',
     duty: '兩班制的工廠 24 小時運轉，夜班從 20:00 開始。交接班時要聽日班線長說明今天的產量、異常和注意事項，接手後帶領夜班繼續生產。',
     tip: '交接班常搭配「交接單」，口頭說明加上書面紀錄，避免資訊在換班時遺漏。' },
+  // 園區路人（不在產線班表裡）
+  guard: { title: '警衛', en: 'Security Guard', color: '#3B4A6B', smock: '#334155', cap: '#1e293b', pants: '#1f2937', shoes: '#1f2937', hat: 'cap', emoji: '👮',
+    duty: '在員工出入口管制人員進出，並定時在園區巡邏。員工要刷卡進廠，訪客要先換證，而且要由員工陪同。',
+    tip: '電子工廠很重視資訊安全：參觀時通常不能隨意拍照，避免客戶還沒發表的產品外流。' },
+  cleaner: { title: '清潔員', en: 'Cleaner', color: '#4D9C97', smock: '#5fb3a9', cap: '#e6f4f1', pants: '#334155', hat: 'esd', emoji: '🧹',
+    duty: '負責園區步道與公共區域的清潔。灰塵如果被鞋子帶進廠內，可能落在電路板上造成不良。',
+    tip: '更講究的產線（例如晶片、面板）甚至要在「無塵室」裡生產，空氣中的灰塵數量都有嚴格的標準。' },
+  dock: { title: '碼頭工人', en: 'Dock Worker', color: '#C77B2E', smock: '#64748b', vest: '#f97316', cap: '#facc15', pants: '#334155', shoes: '#3f3f46', hat: 'helmet', emoji: '🚢',
+    duty: '把出貨區包好的成品搬到碼頭、裝進貨櫃，再由貨船運到世界各地。',
+    tip: '裝櫃前要核對箱數和出貨單，數量對了才能封櫃出貨。' },
+  visitor: { title: '訪客（客戶）', en: 'Visitor', color: '#6F9B78', smock: '#d9c7a7', pants: '#3f3f46', shoes: '#5b4636', hat: 'none', emoji: '🧳',
+    duty: '來工廠參觀的客戶。下訂單之前，客戶常會親自來看產線、品管流程和工廠的管理。',
+    tip: '客戶來工廠「稽核」時會檢查很多項目：作業有沒有照 SOP、品質紀錄是否完整、環境與工安是否合格。' },
+  sales: { title: '訪客（業務）', en: 'Sales Representative', color: '#5B8DB8', smock: '#334e68', pants: '#1f2937', shoes: '#1f2937', hat: 'none', emoji: '💼',
+    duty: '陪客戶參觀的業務，負責介紹工廠、回答客戶的問題，並把客戶的需求帶回公司。',
+    tip: '很多筆電品牌會把生產交給代工廠：品牌專心在規劃和行銷，代工廠負責把產品又快又好地做出來。' },
+  office: { title: '休息中的員工', en: 'Employee on Break', color: '#8074A7', smock: '#a5b4fc', pants: '#334155', hat: 'none', emoji: '📱',
+    duty: '辦公室的生管（生產管理）人員，負責排生產計畫：哪天做哪些機種、做多少台、物料什麼時候要到。',
+    tip: '生管排程要同時考慮訂單交期、產線產能和物料到貨時間，就像在拼一幅大拼圖。' },
+  // 玩家：下場走走時扮演的參觀者
+  player: { title: '參觀者', en: 'You', color: '#DB6A41', smock: '#6F9B78', cap: '#DB6A41', pants: '#3f3f46', hat: 'esd', emoji: '🙂', duty: '', tip: '' },
 };
 
 // ---- 人物（姓名皆為虛構）；idx 決定報到順序、置物櫃與餐廳座位 ----
@@ -2342,204 +2431,228 @@ function planner(p) {
   };
   return P;
 }
+// 對話台詞：say = 和他聊天時說的話（一句一頁）；key = 正在做重要的事（頭上會冒「！」）
 function arrive(P, idx, mtg) {               // 07:40 報到：打卡 → 換靜電衣 → 靜電測試 → 早會區
   const t0 = 0.4 + idx * 1.5;
-  P.go('door', 'stand', t0, '從員工入口進廠');
-  P.go('clock', 'clock', t0, '打卡上班', { hold: 0.9 });
-  P.go('lock' + idx, 'change', P.free, '到置物櫃換靜電衣、戴靜電帽', { hold: 1.7 });
-  P.go('esd', 'esd', P.free, '通過靜電測試站', { hold: 0.8 });
-  P.go(mtg, mtg === 'mtgLead' ? 'stand' : 'listen', P.free, '到早會區集合');
+  P.go('door', 'stand', t0, '從員工入口進廠', { say: ['早安！上班要先打卡、換上靜電衣，通過靜電測試才能進產線。'] });
+  P.go('clock', 'clock', t0, '打卡上班', { hold: 0.9, say: ['嗶！打卡完成。打卡紀錄會連到出勤和薪資系統。'] });
+  P.go('lock' + idx, 'change', P.free, '到置物櫃換靜電衣、戴靜電帽', { hold: 1.7, say: ['我在換靜電衣、戴靜電帽。', '人走動時身上的靜電可能有上千伏特，碰到晶片就可能把它打壞！'] });
+  P.go('esd', 'esd', P.free, '通過靜電測試站', { hold: 0.8, say: ['每天都要做靜電測試：手按上測試器，亮綠燈才可以進產線。'] });
+  P.go(mtg, mtg === 'mtgLead' ? 'stand' : 'listen', P.free, '到早會區集合', { say: ['要開早會了！線長會說明今天的目標和注意事項。'] });
 }
 function takeBreak(P, s, seat, back, backAct) {
-  P.go(seat, s.meal ? 'eat' : 'rest', s.d0 + 0.2, s.name);
-  P.by(back, backAct, s.d1 - 0.3, '回到工作崗位');
+  P.go(seat, s.meal ? 'eat' : 'rest', s.d0 + 0.2, s.name, { say: [s.meal ? '吃飯時間！一班要工作 12 小時，吃飽才有體力。' : '休息一下！喝口水、動一動，回去比較不容易出錯。'] });
+  P.by(back, backAct, s.d1 - 0.3, '回到工作崗位', { back: true, say: ['休息結束，回崗位繼續工作！'] });
 }
 function leave(P, idx) {
-  P.go('clock', 'clock', SC[15].d0 + 0.2 + idx * 0.3, '打卡下班', { hold: 0.7 });
+  P.go('clock', 'clock', SC[15].d0 + 0.2 + idx * 0.3, '打卡下班', { hold: 0.7, say: ['辛苦了！打卡下班，接下來交給夜班。'] });
   P.go('door', 'gone', P.free, '離開工廠');
 }
 function planLeader(p) {
   const P = planner(p);
+  const track = [`產線看板會即時顯示產量。我們每小時要做 ${UPH} 台，落後了就要馬上找原因。`];
+  p.workSay = track;                          // 休息回來、回到固定位置時說的話
   arrive(P, 0, 'mtgLead');
-  P.go('mtgLead', 'talk', SC[1].d0, '主持早會：報告產量、目標與工安宣導');
-  P.go('board', 'stand', SC[2].d0 + 0.5, '到產線看板前，確認開線狀況');
-  P.go('qc13', 'talk', SC[3].d0 + 8, '巡線，關心作業員的狀況', { hold: 3 });
-  P.go('board', 'stand', P.free, '在看板前追蹤每小時產量');
+  P.go('mtgLead', 'talk', SC[1].d0, '主持早會：報告產量、目標與工安宣導', { key: true, say: ['大家早！昨天產量 812 台，良率 99.3%。', `今天的目標是 ${DAY_TARGET} 台，品質重點是螺絲扭力。走路請走天橋，不要跨過輸送帶！`] });
+  P.go('board', 'stand', SC[2].d0 + 0.5, '到產線看板前，確認開線狀況', { say: ['開線前，我會在看板前確認每一站都準備好了。'] });
+  P.go('qc13', 'talk', SC[3].d0 + 8, '巡線，關心作業員的狀況', { hold: 3, say: ['我在巡線：看大家作業順不順、有沒有缺料，或是身體不舒服。'] });
+  P.go('board', 'stand', P.free, '在看板前追蹤每小時產量', { say: track });
   takeBreak(P, SC[4], 'seat0', 'board', 'stand');
   takeBreak(P, SC[6], 'seat0', 'board', 'stand');
-  P.go('lead8', 'talk', SC[8].d0 + 1.2, '貼片機停線！趕到現場了解狀況', { hold: 13 });
-  P.go('board', 'stand', P.free, '回看板評估停線影響，安排加班追產量');
+  P.go('lead8', 'talk', SC[8].d0 + 1.2, '貼片機停線！趕到現場了解狀況', { hold: 13, key: true, say: ['貼片機停線了！我要先問清楚：哪裡故障、大概要修多久。', '停線每一分鐘都是損失，等一下還要安排加班，把產量追回來。'] });
+  P.go('board', 'stand', P.free, '回看板評估停線影響，安排加班追產量', { say: [`剛剛停線 30 分鐘，大約少做了 ${UPH / 2} 台。我在調整加班的人力，把產量追回來。`] });
   takeBreak(P, SC[10], 'seat0', 'board', 'stand');
-  P.go('qc18', 'talk', SC[11].d0 + 8, '到品檢站了解今天的良率', { hold: 3 });
-  P.go('board', 'stand', P.free, '在看板前追蹤產量');
+  P.go('qc18', 'talk', SC[11].d0 + 8, '到品檢站了解今天的良率', { hold: 3, say: ['我來品檢站看今天的良率。同一種不良一直出現，就要回頭找是哪一站出了問題。'] });
+  P.go('board', 'stand', P.free, '在看板前追蹤產量', { say: ['下午也要盯緊產量，今天的目標一定要達成。'] });
   takeBreak(P, SC[12], 'seat0', 'board', 'stand');
-  P.go('boardTalk', 'talk', SC[14].d0 + 11, '交接班：向夜班線長說明今天的狀況');
+  P.go('boardTalk', 'talk', SC[14].d0 + 11, '交接班：向夜班線長說明今天的狀況', { key: true, say: ['我在跟夜班線長交接：今天的產量、14:00 的機台異常，還有要注意的地方。', '除了口頭說明，也要寫在交接單上，資訊才不會漏掉。'] });
   leave(P, 0);
 }
 function planOperator(p) {
-  const P = planner(p), op = 'op' + p.station, seat = 'seat' + p.idx;
+  const P = planner(p), op = 'op' + p.station, seat = 'seat' + p.idx, st = STATIONS[p.station];
+  const job = [`我負責第 ${p.station + 1} 站「${st.name}」。`, st.what];   // 介紹自己這一站在做什麼
+  p.workSay = job;
   arrive(P, p.idx, 'mtg' + (p.idx - 1));
-  P.go('mtg' + (p.idx - 1), 'listen', SC[1].d0, '參加早會');
-  P.go(op, 'work', SC[2].d0 + 0.2 + (p.idx % 3) * 0.2, '回到工站，點檢工具與物料');
-  P.go(op, 'work', SC[3].d0, '依作業指導書（SOP）組裝');
+  P.go('mtg' + (p.idx - 1), 'listen', SC[1].d0, '參加早會', { say: ['我在聽早會：昨天的產量、今天的目標，還有工安提醒。'] });
+  P.go(op, 'work', SC[2].d0 + 0.2 + (p.idx % 3) * 0.2, '回到工站，點檢工具與物料', { say: ['開線前要點檢：電動起子的扭力、治具，還有料盒裡的零件夠不夠。'] });
+  P.go(op, 'work', SC[3].d0, '依作業指導書（SOP）組裝', { say: job });
   takeBreak(P, SC[4], seat, op, 'work');
   takeBreak(P, SC[6], seat, op, 'work');
-  P.go(op, 'wait', SC[8].d0, '貼片機異常停線，原地待命');
-  P.go(op, 'work', SC[9].d0, '恢復生產');
+  P.go(op, 'wait', SC[8].d0, '貼片機異常停線，原地待命', { say: ['前面的貼片機故障停線了，沒有東西流過來，我先原地待命。'] });
+  P.go(op, 'work', SC[9].d0, '恢復生產', { say: ['修好了，恢復生產！', ...job] });
   takeBreak(P, SC[10], seat, op, 'work');
   takeBreak(P, SC[12], seat, op, 'work');
-  P.go(op, 'work', SC[13].d0, '加班生產');
-  P.go(op, 'clean', SC[14].d0, '5S：清潔工作台、工具歸位');
+  P.go(op, 'work', SC[13].d0, '加班生產', { say: ['現在是加班時段，要把下午停線少做的產量補回來。', ...job] });
+  P.go(op, 'clean', SC[14].d0, '5S：清潔工作台、工具歸位', { say: ['下班前要做 5S：整理、整頓、清掃、清潔、素養，讓夜班一來就能開工。'] });
   leave(P, p.idx);
 }
 function planIPQC(p) {
   const P = planner(p);
+  p.workSay = ['我在品保桌整理巡檢紀錄，等一下還要再去巡線抽檢。'];
+  const patrol = ['我在巡線抽檢：看作業員有沒有照 SOP 作業、產品有沒有瑕疵。', '發現問題要馬上通知線長。越早發現，要重做的產品就越少。'];
   arrive(P, 3, 'mtg2');
-  P.go('mtg2', 'listen', SC[1].d0, '參加早會');
-  P.go('qc12', 'inspect', SC[2].d0 + 0.4, '首件檢查：確認第一台產品完全正確');
-  P.go('qcDesk', 'desk', SC[3].d0 + 1, '回品保桌，記錄首件檢查結果');
+  P.go('mtg2', 'listen', SC[1].d0, '參加早會', { say: ['早會時，品保要提醒大家今天的品質重點。'] });
+  P.go('qc12', 'inspect', SC[2].d0 + 0.4, '首件檢查：確認第一台產品完全正確', { key: true, say: ['首件檢查！開線後的第一台產品，我要逐項對照規格確認。', '第一台沒問題才能放行量產；如果第一台就做錯，後面整批都會錯。'] });
+  P.go('qcDesk', 'desk', SC[3].d0 + 1, '回品保桌，記錄首件檢查結果', { say: ['我在記錄首件檢查的結果。以後出問題時，這些紀錄可以幫忙追查原因。'] });
   takeBreak(P, SC[4], 'seat3', 'qcDesk', 'desk');
-  P.go('qc12', 'inspect', SC[5].d0 + 0.5, '巡線抽檢：第 13 站', { hold: 2.2 });
-  P.go('qc14', 'inspect', P.free, '巡線抽檢：第 15 站', { hold: 2.2 });
-  P.go('qc16', 'inspect', P.free, '巡線抽檢：第 17 站', { hold: 2.2 });
-  P.go('qc18', 'inspect', P.free, '巡線抽檢：第 19 站', { hold: 2.2 });
-  P.go('qcDesk', 'desk', P.free, '回品保桌整理巡檢紀錄');
+  P.go('qc12', 'inspect', SC[5].d0 + 0.5, '巡線抽檢：第 13 站', { hold: 2.2, say: patrol });
+  P.go('qc14', 'inspect', P.free, '巡線抽檢：第 15 站', { hold: 2.2, say: patrol });
+  P.go('qc16', 'inspect', P.free, '巡線抽檢：第 17 站', { hold: 2.2, say: patrol });
+  P.go('qc18', 'inspect', P.free, '巡線抽檢：第 19 站', { hold: 2.2, say: patrol });
+  P.go('qcDesk', 'desk', P.free, '回品保桌整理巡檢紀錄', { say: ['回來整理巡檢紀錄：哪一站、幾點、檢查了什麼，都要寫清楚。'] });
   takeBreak(P, SC[6], 'seat3', 'qcDesk', 'desk');
-  P.go('qc8', 'inspect', SC[8].d0 + 16.5, '機台修好後，確認貼片品質');
-  P.go('qcDesk', 'desk', SC[9].d0 + 0.5, '確認可以恢復生產，回品保桌');
+  P.go('qc8', 'inspect', SC[8].d0 + 16.5, '機台修好後，確認貼片品質', { key: true, say: ['技術員修好貼片機了。我要確認修好後貼出來的板子品質正常，才能恢復生產。'] });
+  P.go('qcDesk', 'desk', SC[9].d0 + 0.5, '確認可以恢復生產，回品保桌', { say: ['確認沒問題，產線恢復！我回去記錄這次異常的處理經過。'] });
   takeBreak(P, SC[10], 'seat3', 'qcDesk', 'desk');
-  P.go('qc13', 'inspect', SC[11].d0 + 0.5, '第二次巡線：第 14 站', { hold: 2.2 });
-  P.go('qc19', 'inspect', P.free, '走天橋到包裝區，抽檢第 20 站', { hold: 2.2 });
-  P.go('qcDesk', 'desk', P.free, '回品保桌');
+  P.go('qc13', 'inspect', SC[11].d0 + 0.5, '第二次巡線：第 14 站', { hold: 2.2, say: patrol });
+  P.go('qc19', 'inspect', P.free, '走天橋到包裝區，抽檢第 20 站', { hold: 2.2, say: ['我走天橋到包裝區抽檢。要過輸送帶一定得走天橋，這是工安規定。'] });
+  P.go('qcDesk', 'desk', P.free, '回品保桌', { say: p.workSay });
   takeBreak(P, SC[12], 'seat3', 'qcDesk', 'desk');
-  P.go('qcDesk', 'desk', SC[14].d0, '整理今天的品質報表');
+  P.go('qcDesk', 'desk', SC[14].d0, '整理今天的品質報表', { say: ['我在整理今天的品質報表：良率和不良原因，明天早會要報告。'] });
   leave(P, 3);
 }
 function planTech(p) {
   const P = planner(p);
+  p.workSay = ['我在維修台保養備用的零件，機台一有狀況就馬上出發。'];
   arrive(P, 1, 'mtg0');
-  P.go('mtg0', 'listen', SC[1].d0, '參加早會');
-  P.go('chk6', 'inspect', SC[2].d0 + 0.3, '開線前巡檢：錫膏印刷機', { hold: 2.5 });
-  P.go('chk9', 'inspect', P.free, '開線前巡檢：回焊爐溫度', { hold: 2.5 });
-  P.go('bench', 'bench', P.free, '回維修台，保養備用的料架（Feeder）');
+  P.go('mtg0', 'listen', SC[1].d0, '參加早會', { say: ['早會時我會報告機台的狀況，例如今天哪台機器要保養。'] });
+  P.go('chk6', 'inspect', SC[2].d0 + 0.3, '開線前巡檢：錫膏印刷機', { hold: 2.5, say: ['開線前要巡檢機台：錫膏印刷機的刮刀和鋼板乾不乾淨，會直接影響印刷品質。'] });
+  P.go('chk9', 'inspect', P.free, '開線前巡檢：回焊爐溫度', { hold: 2.5, say: ['回焊爐的「溫度曲線」很重要，每個溫區的溫度都要確認正確。'] });
+  P.go('bench', 'bench', P.free, '回維修台，保養備用的料架（Feeder）', { say: ['我在保養備用的 Feeder（供料器），它負責把捲盤上的零件一顆一顆送到貼片機的吸嘴下面。'] });
   takeBreak(P, SC[4], 'seat1', 'bench', 'bench');
   takeBreak(P, SC[6], 'seat1', 'bench', 'bench');
-  P.go('fix8', 'repair', SC[8].d0 + 0.3, '貼片機亮紅燈！帶著工具箱趕去維修');
-  P.go('fix8', 'stand', SC[8].d0 + ALARM_FIX, '修好了，等品檢確認');
-  P.go('bench', 'bench', SC[9].d0 + 0.5, '回維修台，記錄故障原因');
+  P.go('fix8', 'repair', SC[8].d0 + 0.3, '貼片機亮紅燈！帶著工具箱趕去維修', { key: true, say: ['貼片機一直「拋料」：吸嘴吸不起零件，零件掉了一地！', '通常是吸嘴堵塞或磨損。我要清潔、更換吸嘴，再重新校正位置。'] });
+  P.go('fix8', 'stand', SC[8].d0 + ALARM_FIX, '修好了，等品檢確認', { key: true, say: ['修好了！不過要等 IPQC 確認貼片品質正常，才能恢復生產。'] });
+  P.go('bench', 'bench', SC[9].d0 + 0.5, '回維修台，記錄故障原因', { say: ['我在記錄故障原因和處理方法。下次再發生同樣的問題，就能更快排除。'] });
   takeBreak(P, SC[10], 'seat1', 'bench', 'bench');
-  P.go('chk9', 'inspect', SC[11].d0 + 3, '預防保養：檢查回焊爐', { hold: 3 });
-  P.go('bench', 'bench', P.free, '回維修台');
+  P.go('chk9', 'inspect', SC[11].d0 + 3, '預防保養：檢查回焊爐', { hold: 3, say: ['這是「預防保養」：還沒壞就先保養，可以減少突然停線。'] });
+  P.go('bench', 'bench', P.free, '回維修台', { say: p.workSay });
   takeBreak(P, SC[12], 'seat1', 'bench', 'bench');
-  P.go('bench', 'clean', SC[14].d0 + 0.3, '5S：整理工具與維修台');
+  P.go('bench', 'clean', SC[14].d0 + 0.3, '5S：整理工具與維修台', { say: ['下班前要把工具歸位。工具放在固定的位置，緊急維修時才不用找。'] });
   leave(P, 1);
 }
 function planMaterial(p) {
   const P = planner(p);
+  p.workSay = ['我在物料超市整理料盒，準備下一輪補料。'];
+  const refill = ['我在幫各站補料，讓作業員不用離開崗位找料。', '在零件用完之前剛好送到，這叫「準時化生產（JIT）」。'];
+  const back = ['送到了，回去推料車。'];
   arrive(P, 2, 'mtg1');
-  P.go('mtg1', 'listen', SC[1].d0, '參加早會');
-  P.go('market', 'unload', SC[2].d0 + 0.3, '到物料超市備料，把料裝上推車');
+  P.go('mtg1', 'listen', SC[1].d0, '參加早會', { say: ['早會時我會確認今天要做的機種，看看物料夠不夠。'] });
+  P.go('market', 'unload', SC[2].d0 + 0.3, '到物料超市備料，把料裝上推車', { say: ['我在物料超市備料：依照生產排程，把各站要用的零件裝上推車。'] });
   const round = (ks, t, label) => {          // 推車沿 B 走道停靠，人捧著料走進料架
     ks.forEach((k, i) => {
       P.go('aisle' + k, 'stand', i === 0 ? t : P.free, '', { cart: true });
-      P.go('rack' + k, 'unload', P.free, `${label}：第 ${k + 1} 站`, { carry: true, hold: 1.0 });
+      P.go('rack' + k, 'unload', P.free, `${label}：第 ${k + 1} 站`, { carry: true, hold: 1.0, say: refill });
       P.go('aisle' + k, 'stand', P.free, '');
     });
-    P.go('market', 'unload', P.free, '推料車回物料超市，收回空料盒', { cart: true });
+    P.go('market', 'unload', P.free, '推料車回物料超市，收回空料盒', { cart: true, say: ['空料盒要收回來，下一輪再裝滿送出去。'] });
   };
   round([15, 14, 13, 12], SC[3].d0 + 0.3, '推料車補料');
   takeBreak(P, SC[4], 'seat2', 'market', 'unload');
   takeBreak(P, SC[6], 'seat2', 'market', 'unload');
-  P.go('cartBr1', 'stand', SC[7].d0 + 0.3, '推料車到 1 號天橋旁', { cart: true });
-  P.go('feed8', 'unload', P.free, '捧著零件捲盤走天橋，送到貼片機', { carry: true, hold: 1.5 });
-  P.go('cartBr1', 'stand', P.free, '走回天橋旁的料車');
-  P.go('market', 'unload', P.free, '推料車回物料超市', { cart: true });
+  P.go('cartBr1', 'stand', SC[7].d0 + 0.3, '推料車到 1 號天橋旁', { cart: true, say: ['要送零件捲盤到 SMT 線。推車過不了輸送帶，等一下我得走天橋。'] });
+  P.go('feed8', 'unload', P.free, '捧著零件捲盤走天橋，送到貼片機', { carry: true, hold: 1.5, key: true, say: ['我捧著零件捲盤走天橋，送到貼片機！一個捲盤上有幾千到上萬顆小零件。'] });
+  P.go('cartBr1', 'stand', P.free, '走回天橋旁的料車', { say: back });
+  P.go('market', 'unload', P.free, '推料車回物料超市', { cart: true, say: p.workSay });
   takeBreak(P, SC[10], 'seat2', 'market', 'unload');
   round([14, 13], SC[11].d0 + 0.3, '第二輪補料');
   takeBreak(P, SC[12], 'seat2', 'market', 'unload');
-  P.go('cartBr2', 'stand', SC[13].d0 + 0.3, '推料車到 2 號天橋旁', { cart: true });
-  P.go('rack20', 'unload', P.free, '扛著紙箱走天橋，送到包裝區第 21 站', { carry: true, hold: 1.5 });
-  P.go('cartBr2', 'stand', P.free, '走回天橋旁的料車');
-  P.go('market', 'unload', P.free, '推料車回物料超市', { cart: true });
-  P.go('market', 'unload', SC[14].d0 + 0.3, '5S：整理物料超市，補齊夜班要用的料');
+  P.go('cartBr2', 'stand', SC[13].d0 + 0.3, '推料車到 2 號天橋旁', { cart: true, say: ['包裝區的紙箱快用完了，我要扛過天橋送過去。'] });
+  P.go('rack20', 'unload', P.free, '扛著紙箱走天橋，送到包裝區第 21 站', { carry: true, hold: 1.5, key: true, say: ['紙箱送到包裝區！包材也是物料，少了它產品就出不了貨。'] });
+  P.go('cartBr2', 'stand', P.free, '走回天橋旁的料車', { say: back });
+  P.go('market', 'unload', P.free, '推料車回物料超市', { cart: true, say: p.workSay });
+  P.go('market', 'unload', SC[14].d0 + 0.3, '5S：整理物料超市，補齊夜班要用的料', { say: ['我在整理物料超市，先把夜班要用的料備好，交接才順利。'] });
   leave(P, 2);
 }
 function planNight(p) {
   const P = planner(p);
-  P.go('door', 'stand', SC[14].d0 + 0.5, '夜班線長提早到廠');
-  P.go('clock', 'clock', P.free, '打卡上班', { hold: 0.8 });
-  P.go('board2', 'talk', P.free, '交接班：聽日班線長說明今天的狀況');
-  P.go('board2', 'stand', SC[15].d0 + 1, '接手產線，準備夜班生產');
+  P.go('door', 'stand', SC[14].d0 + 0.5, '夜班線長提早到廠', { say: ['我提早 20 分鐘到廠，先來聽交接。'] });
+  P.go('clock', 'clock', P.free, '打卡上班', { hold: 0.8, say: ['打卡上班！夜班從晚上 8 點做到隔天早上 8 點。'] });
+  P.go('board2', 'talk', P.free, '交接班：聽日班線長說明今天的狀況', { key: true, say: ['我在聽日班線長交接：今天的產量、異常，還有要注意的地方。'] });
+  P.go('board2', 'stand', SC[15].d0 + 1, '接手產線，準備夜班生產', { say: ['交接完成，夜班接手！工廠 24 小時不停。'] });
 }
 
-// ---- 像素風（方塊人）造型：用 8×8 之類的小圖放大，保留一格一格的像素感 ----
-function pixTex(w, h, draw) {
-  const t = makeTex(w, h, draw);
-  t.magFilter = THREE.NearestFilter; t.minFilter = THREE.NearestFilter; t.generateMipmaps = false; t.anisotropy = 1;
-  return t;
-}
-const pmat = (w, h, draw) => new THREE.MeshStandardMaterial({ map: pixTex(w, h, draw), roughness: 0.9 });
-const solid = c => new THREE.MeshStandardMaterial({ color: c, roughness: 0.9 });
+// ---- Q 版造型：大頭、圓身體；臉畫在頭（球體）的貼圖上，衣服沿用各角色的制服顏色 ----
+const solid = c => new THREE.MeshStandardMaterial({ color: c, roughness: 0.85 });
 function shade(hex, k) { const c = new THREE.Color(hex); c.multiplyScalar(k); return '#' + c.getHexString(); }
-function headMats(def) {
-  const side = hairBack => pmat(8, 8, g => {
-    g.fillStyle = def.skin; g.fillRect(0, 0, 8, 8);
-    g.fillStyle = def.hairC; g.fillRect(0, 0, 8, 2);
-    if (def.hair !== 'short') g.fillRect(hairBack ? 5 : 0, 0, 3, 6); else g.fillRect(hairBack ? 6 : 0, 0, 2, 4);
-    g.fillStyle = shade(def.skin, 0.86); g.fillRect(hairBack ? 3 : 4, 4, 1, 2);   // 耳朵
-  });
-  const face = pmat(8, 8, g => {
-    const px = (x, y, c, w = 1, h = 1) => { g.fillStyle = c; g.fillRect(x, y, w, h); };
-    px(0, 0, def.skin, 8, 8);
-    px(0, 0, def.hairC, 8, 2);                                   // 瀏海
-    if (def.hair !== 'short') { px(0, 2, def.hairC, 1, 3); px(7, 2, def.hairC, 1, 3); }
-    const brow = shade(def.hairC, 1.3);
-    px(1, 3, brow, 2); px(5, 3, brow, 2);                        // 眉毛
-    px(1, 4, '#ffffff'); px(2, 4, '#2b1d16'); px(5, 4, '#2b1d16'); px(6, 4, '#ffffff');   // 眼睛
-    px(3, 5, shade(def.skin, 0.84), 2);                          // 鼻子
-    if (def.beard) px(1, 6, shade(def.skin, 0.62), 6, 2);       // 鬍渣
-    px(3, 6, '#b5564b', 2);                                      // 嘴巴
-    if (def.glasses) { for (const x of [0, 3, 4, 7]) px(x, 4, '#374151'); px(1, 3, '#374151', 2); px(5, 3, '#374151', 2); }
-  });
-  const back = pmat(8, 8, g => {
-    g.fillStyle = def.hairC; g.fillRect(0, 0, 8, 8);
-    if (def.hair === 'short') { g.fillStyle = def.skin; g.fillRect(0, 6, 8, 2); }
-  });
-  return [side(true), side(false), solid(def.hairC), solid(def.skin), face, back];   // +x、-x、上、下、正面、背面
-}
-function torsoMats(def, R) {
-  const sm = R.smock, dark = shade(sm, 0.8);
-  const front = pmat(8, 12, g => {
-    g.fillStyle = sm; g.fillRect(0, 0, 8, 12);
-    g.fillStyle = '#f1f5f9'; g.fillRect(3, 0, 2, 2);                     // 領口內的白襯衫
-    g.fillStyle = dark; g.fillRect(2, 0, 1, 2); g.fillRect(5, 0, 1, 2); g.fillRect(4, 2, 1, 9);   // 衣領與拉鍊
-    g.fillRect(1, 7, 2, 2); g.fillRect(5, 7, 2, 2);                       // 口袋
-    g.fillStyle = '#ffffff'; g.fillRect(5, 3, 2, 1);                      // 識別證
-    if (R.vest) {                                                         // 橘色反光背心
-      g.fillStyle = R.vest; g.fillRect(0, 2, 3, 10); g.fillRect(5, 2, 3, 10);
-      g.fillStyle = '#e5e7eb'; for (const y of [7, 10]) { g.fillRect(0, y, 3, 1); g.fillRect(5, y, 3, 1); }
+const CH = { hip: 0.4, shoulder: 0.78, neck: 0.84, head: 0.25, sitY: 0.12 };   // 臀部、肩膀、脖子的高度；頭中心在脖子上方多高；坐凳子時身體要抬高多少（公尺）
+const CHG = {                                   // 所有人共用的幾何體，節省記憶體
+  leg: new THREE.CapsuleGeometry(0.07, 0.18, 4, 10),
+  shoe: new THREE.SphereGeometry(1, 12, 8),
+  coat: new THREE.CylinderGeometry(0.15, 0.205, 0.42, 24, 1, false, Math.PI),   // 從背後開始繞一圈：貼圖的正中央剛好是正面
+  shoulder: new THREE.SphereGeometry(0.15, 20, 8, 0, Math.PI * 2, 0, Math.PI / 2),
+  collar: new THREE.CylinderGeometry(0.085, 0.1, 0.07, 16),
+  arm: new THREE.CapsuleGeometry(0.05, 0.16, 4, 8),
+  hand: new THREE.SphereGeometry(0.055, 12, 8),
+  band: new THREE.CylinderGeometry(0.057, 0.057, 0.05, 14),
+  head: new THREE.SphereGeometry(0.27, 32, 22),
+  ear: new THREE.SphereGeometry(0.05, 10, 8),
+  dome: new THREE.SphereGeometry(0.29, 28, 10, 0, Math.PI * 2, 0, Math.PI / 2),  // 帽子或頭髮用的半球
+  rim: new THREE.TorusGeometry(0.283, 0.02, 8, 36),
+  brim: new THREE.CylinderGeometry(0.36, 0.36, 0.022, 28),
+  visor: new THREE.CylinderGeometry(0.21, 0.21, 0.022, 20, 1, false, -Math.PI / 2, Math.PI),   // 朝前的半圓形帽簷
+  bun: new THREE.SphereGeometry(0.1, 14, 10),
+};
+// 臉：球面貼圖的橫向 u = 0.25 是臉的正中央、u = 0.75 是後腦勺；縱向 y = 128 是頭的「赤道」
+function chibiFace(def) {
+  return makeTex(512, 256, (g, W) => {
+    const cx = W * 0.25, hair = def.hairC, longH = def.hair !== 'short';
+    g.fillStyle = def.skin; g.fillRect(0, 0, W, 256);
+    g.fillStyle = hair;
+    g.fillRect(0, 0, W, 94);                                            // 頭頂
+    g.fillRect(W * 0.46, 0, W * 0.54, longH ? 206 : 176);               // 後腦勺
+    g.fillRect(0, 0, W * 0.07, longH ? 196 : 150);                      // 右邊鬢角（貼圖接縫處）
+    g.fillRect(W * 0.43, 0, W * 0.05, longH ? 196 : 150);               // 左邊鬢角
+    for (let i = -3; i <= 3; i++) { g.beginPath(); g.ellipse(cx + i * 22, 92, 15, 16 - Math.abs(i), 0, 0, Math.PI * 2); g.fill(); }   // 瀏海
+    if (def.beard) { g.fillStyle = 'rgba(70,50,40,.28)'; g.beginPath(); g.ellipse(cx, 192, 64, 30, 0, 0, Math.PI * 2); g.fill(); }   // 鬍渣
+    g.strokeStyle = shade(hair, 1.25); g.lineWidth = 5; g.lineCap = 'round';   // 眉毛
+    for (const s of [-1, 1]) { g.beginPath(); g.moveTo(cx + s * 18, 123); g.quadraticCurveTo(cx + s * 31, 116, cx + s * 44, 122); g.stroke(); }
+    for (const s of [-1, 1]) {                                          // 大眼睛＋兩個反光點
+      g.fillStyle = '#2b1d16'; g.beginPath(); g.ellipse(cx + s * 31, 148, 10, 15, 0, 0, Math.PI * 2); g.fill();
+      g.fillStyle = '#ffffff'; g.beginPath(); g.arc(cx + s * 31 + 3, 142, 4.5, 0, Math.PI * 2); g.fill();
+      g.beginPath(); g.arc(cx + s * 31 - 3, 154, 2, 0, Math.PI * 2); g.fill();
     }
-    if (def.role === 'tech') { g.fillStyle = '#ef4444'; g.fillRect(1, 3, 1, 2); g.fillStyle = '#facc15'; g.fillRect(2, 3, 1, 2); }   // 胸前口袋的起子
+    if (def.glasses) {                                                  // 眼鏡
+      g.strokeStyle = '#3f3f52'; g.lineWidth = 4;
+      for (const s of [-1, 1]) { g.beginPath(); g.arc(cx + s * 31, 148, 21, 0, Math.PI * 2); g.stroke(); }
+      g.beginPath(); g.moveTo(cx - 10, 146); g.lineTo(cx + 10, 146); g.stroke();
+    }
+    g.fillStyle = 'rgba(240,110,120,.32)';                              // 腮紅
+    for (const s of [-1, 1]) { g.beginPath(); g.ellipse(cx + s * 52, 172, 14, 8, 0, 0, Math.PI * 2); g.fill(); }
+    g.strokeStyle = '#9c4a3c'; g.lineWidth = 4;                         // 微笑
+    g.beginPath(); g.arc(cx, 168, 10, 0.18 * Math.PI, 0.82 * Math.PI); g.stroke();
   });
-  const back = pmat(8, 12, g => {
-    g.fillStyle = sm; g.fillRect(0, 0, 8, 12);
-    g.fillStyle = dark; g.fillRect(0, 10, 8, 2);
-    if (R.vest) { g.fillStyle = R.vest; g.fillRect(0, 1, 8, 11); g.fillStyle = '#e5e7eb'; g.fillRect(0, 6, 8, 1); g.fillRect(0, 9, 8, 1); }
-  });
-  const side = solid(R.vest || sm);
-  return [side, side, solid(dark), solid(dark), front, back];
 }
-const armMat = (def, R, band) => pmat(4, 12, g => {
-  g.fillStyle = R.smock; g.fillRect(0, 0, 4, 12);
-  g.fillStyle = shade(R.smock, 0.8); g.fillRect(0, 9, 4, 1);
-  g.fillStyle = def.skin; g.fillRect(0, 10, 4, 2);                        // 手
-  if (band) { g.fillStyle = band; g.fillRect(0, 2, 4, 2); }               // 線長臂章
-});
-const legMat = R => pmat(4, 12, g => {
-  g.fillStyle = R.pants; g.fillRect(0, 0, 4, 12);
-  g.fillStyle = '#e5e7eb'; g.fillRect(0, 10, 4, 2);                       // 白色靜電鞋
-  g.fillStyle = '#64748b'; g.fillRect(0, 11, 4, 1);
-});
+// 工作服：圓柱貼圖的正中央是正面（拉鍊、口袋、識別證）；物料員和碼頭工人另外加上反光背心
+function coatTex(def, R) {
+  return makeTex(256, 128, (g, W, H) => {
+    const sm = R.smock, cx = W / 2;
+    g.fillStyle = sm; g.fillRect(0, 0, W, H);
+    g.fillStyle = shade(sm, 0.8); g.fillRect(cx - 2, 0, 4, H); g.fillRect(0, H - 9, W, 9);   // 拉鍊、下擺
+    g.fillStyle = shade(sm, 0.88); g.fillRect(cx - 42, 74, 24, 22); g.fillRect(cx + 18, 74, 24, 22);   // 口袋
+    if (R.vest) {
+      g.fillStyle = R.vest; g.fillRect(cx - 54, 6, 44, H); g.fillRect(cx + 10, 6, 44, H); g.fillRect(0, 6, 52, H); g.fillRect(W - 52, 6, 52, H);
+      g.fillStyle = '#eef2f5'; for (const y of [66, 96]) g.fillRect(0, y, W, 7);   // 反光條
+    }
+    g.fillStyle = '#ffffff'; g.fillRect(cx + 14, 20, 24, 15);           // 識別證
+    g.fillStyle = R.color; g.fillRect(cx + 14, 20, 24, 5);
+    if (def.role === 'tech') { g.fillStyle = '#ef4444'; g.fillRect(cx - 36, 64, 4, 14); g.fillStyle = '#facc15'; g.fillRect(cx - 30, 64, 4, 14); }   // 口袋裡的起子
+  });
+}
+// 頭上的提示：「！」= 正在做重要的事；「💬」= 下場走走時，靠近就可以聊天的人
+const MARK_MAT = {
+  alert: new THREE.SpriteMaterial({ map: makeTex(128, 128, g => {
+    g.fillStyle = '#DB6A41'; g.beginPath(); g.arc(64, 64, 54, 0, Math.PI * 2); g.fill();
+    g.lineWidth = 8; g.strokeStyle = '#FFFDFA'; g.stroke();
+    g.fillStyle = '#FFFDFA'; g.font = `900 80px ${FONT}`; g.textAlign = 'center'; g.fillText('!', 64, 92);
+  }), toneMapped: false, depthTest: false, sizeAttenuation: false }),
+  chat: new THREE.SpriteMaterial({ map: makeTex(128, 128, g => {
+    g.fillStyle = '#FFFDFA'; g.strokeStyle = '#282322'; g.lineWidth = 6;
+    g.beginPath(); g.moveTo(38, 80); g.lineTo(30, 118); g.lineTo(66, 84); g.closePath(); g.fill(); g.stroke();
+    g.beginPath(); g.roundRect(8, 12, 112, 80, 28); g.fill(); g.stroke();
+    g.fillStyle = '#282322'; for (const x of [40, 64, 88]) { g.beginPath(); g.arc(x, 52, 8, 0, Math.PI * 2); g.fill(); }
+  }), toneMapped: false, depthTest: false, sizeAttenuation: false }),
+};
 function nameTag(def, R) {
   const label = def.role === 'night' ? R.title : `${def.name}・${R.title}`;
   const tex = makeTex(384, 88, (g, W, H) => {
@@ -2550,43 +2663,71 @@ function nameTag(def, R) {
   });
   // sizeAttenuation: false → 名牌在畫面上維持固定大小，不會因為離鏡頭近就變得很大
   const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, toneMapped: false, depthWrite: false, sizeAttenuation: false }));
-  sp.scale.set(0.105, 0.024, 1); sp.position.y = 2.0; sp.renderOrder = 5;
+  sp.scale.set(0.105, 0.024, 1); sp.position.y = 1.72; sp.renderOrder = 5;
   return sp;
 }
 function buildFigure(def) {
   const R = ROLES[def.role];
   const root = new THREE.Group(); root.userData.person = def.id; scene.add(root);
   const body = new THREE.Group(); root.add(body);
-  const part = (parent, geo, mat, x, y, z, shadow = true) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.castShadow = shadow; parent.add(m); return m; };
+  const part = (parent, geo, mat, x, y, z, shadow = false) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.castShadow = shadow; parent.add(m); return m; };
   const pivot = (parent, x, y, z) => { const g = new THREE.Group(); g.position.set(x, y, z); parent.add(g); return g; };
-  const lm = legMat(R), am = armMat(def, R), bandM = R.band ? armMat(def, R, R.band) : am;
-  const legL = pivot(body, 0.09, 0.86, 0), legR = pivot(body, -0.09, 0.86, 0);
-  part(legL, boxGeo(0.15, 0.86, 0.17), lm, 0, -0.43, 0); part(legR, boxGeo(0.15, 0.86, 0.17), lm, 0, -0.43, 0);
-  part(body, boxGeo(0.36, 0.52, 0.2), torsoMats(def, R), 0, 1.12, 0);
-  const armL = pivot(body, 0.245, 1.36, 0), armR = pivot(body, -0.245, 1.36, 0);
-  part(armL, boxGeo(0.13, 0.5, 0.15), bandM, 0, -0.23, 0); part(armR, boxGeo(0.13, 0.5, 0.15), am, 0, -0.23, 0);
-  const head = pivot(body, 0, 1.38, 0);
-  part(head, boxGeo(0.3, 0.3, 0.3), headMats(def), 0, 0.15, 0);
-  if (def.role === 'tech') { part(head, boxGeo(0.32, 0.08, 0.32), solid(R.cap), 0, 0.31, 0); part(head, boxGeo(0.3, 0.025, 0.13), solid(R.cap), 0, 0.28, 0.2); }
-  else part(head, boxGeo(0.34, 0.11, 0.34), solid(R.cap), 0, 0.3, -0.005);   // 靜電帽
-  if (def.hair === 'bun') part(head, boxGeo(0.12, 0.12, 0.1), solid(def.hairC), 0, 0.2, -0.19);
-  if (def.hair === 'long') part(head, boxGeo(0.28, 0.3, 0.06), solid(def.hairC), 0, 0.02, -0.17);
-  const fig = { root, body, legL, legR, armL, armR, head, carryBox: null, toolHand: null, toolFloor: null };
-  if (def.role === 'ipqc') {                                              // 平板（螢幕朝向自己）
-    part(armR, boxGeo(0.16, 0.22, 0.02), M.black, 0, -0.47, 0.09, false);
-    const scr = part(armR, planeGeo(0.13, 0.18), basic({ color: 0x7dd3fc }), 0, -0.47, 0.078, false); scr.rotation.y = Math.PI;
+  const skin = solid(def.skin), sleeve = solid(R.smock), hairM = solid(def.hairC), pants = solid(R.pants), shoe = solid(R.shoes || '#eef2f5');
+  // 腿與鞋子（腿的轉軸在臀部）
+  const legL = pivot(body, 0.085, CH.hip, 0), legR = pivot(body, -0.085, CH.hip, 0);
+  for (const leg of [legL, legR]) {
+    part(leg, CHG.leg, pants, 0, -0.2, 0, true);
+    part(leg, CHG.shoe, shoe, 0, -0.375, 0.03).scale.set(0.08, 0.05, 0.115);
   }
-  if (def.role === 'leader') {                                            // 夾板
-    part(armL, boxGeo(0.17, 0.23, 0.015), std(0x92400e), 0, -0.47, 0.08, false);
-    const paper = part(armL, planeGeo(0.14, 0.19), M.white, 0, -0.47, 0.071, false); paper.rotation.y = Math.PI;
+  // 身體：上窄下寬的工作服、圓圓的肩膀、白色衣領
+  part(body, CHG.coat, new THREE.MeshStandardMaterial({ map: coatTex(def, R), roughness: 0.85 }), 0, 0.58, 0, true);
+  part(body, CHG.shoulder, sleeve, 0, 0.79, 0).scale.set(1, 0.55, 0.92);
+  part(body, CHG.collar, M.white, 0, 0.835, 0);
+  // 手臂（轉軸在肩膀）；線長的左手臂有黃色臂章
+  const armL = pivot(body, 0.195, CH.shoulder, 0), armR = pivot(body, -0.195, CH.shoulder, 0);
+  for (const arm of [armL, armR]) { part(arm, CHG.arm, sleeve, 0, -0.13, 0, true); part(arm, CHG.hand, skin, 0, -0.27, 0); }
+  if (R.band) part(armL, CHG.band, solid(R.band), 0, -0.06, 0);
+  // 頭（轉軸在脖子）：臉、耳朵、頭髮、帽子
+  const head = pivot(body, 0, CH.neck, 0), hc = pivot(head, 0, CH.head, 0);
+  part(hc, CHG.head, new THREE.MeshStandardMaterial({ map: chibiFace(def), roughness: 0.7 }), 0, 0, 0, true).scale.set(1, 0.95, 0.96);
+  for (const s of [-1, 1]) part(hc, CHG.ear, skin, s * 0.262, -0.02, 0);
+  if (def.hair === 'bun') part(hc, CHG.bun, hairM, 0, 0, -0.265);
+  if (def.hair === 'long') part(hc, CHG.head, hairM, 0, -0.12, -0.13).scale.set(0.8, 0.75, 0.45);
+  if (R.hat === 'esd') {                       // 蓬蓬的靜電帽
+    part(hc, CHG.dome, solid(R.cap), 0, 0.085, -0.01, true).scale.set(1, 0.82, 1);
+    part(hc, CHG.rim, solid(shade(R.cap, 0.88)), 0, 0.085, -0.01).rotation.x = Math.PI / 2;
+  } else if (R.hat === 'cap') {                // 鴨舌帽
+    part(hc, CHG.dome, solid(R.cap), 0, 0.08, 0, true).scale.set(0.97, 0.7, 0.97);
+    const v = part(hc, CHG.visor, solid(R.cap), 0, 0.085, 0.12); v.rotation.x = 0.15; v.scale.x = 0.85;
+  } else if (R.hat === 'helmet') {             // 安全帽
+    part(hc, CHG.dome, solid(R.cap), 0, 0.07, 0, true).scale.set(1.05, 0.88, 1.05);
+    part(hc, CHG.brim, solid(R.cap), 0, 0.075, 0.02);
+  } else part(hc, CHG.dome, hairM, 0, 0.09, -0.01, true).scale.set(0.97, 0.82, 0.97);   // 不戴帽子：露出頭髮
+  const fig = { root, body, legL, legR, armL, armR, head, carryBox: null, toolHand: null, toolFloor: null, sitY: CH.sitY };
+  if (def.role === 'ipqc') {                   // 平板（螢幕朝向自己）
+    part(armR, boxGeo(0.12, 0.16, 0.015), M.black, 0, -0.29, 0.07);
+    const scr = part(armR, planeGeo(0.1, 0.135), basic({ color: 0x7dd3fc }), 0, -0.29, 0.0615); scr.rotation.y = Math.PI;
   }
-  if (def.role === 'tech') {                                              // 工具箱：走路時提在手上，維修時放地上
+  if (def.role === 'leader') {                 // 夾板
+    part(armL, boxGeo(0.13, 0.17, 0.012), std(0x92400e), 0, -0.29, 0.065);
+    const paper = part(armL, planeGeo(0.11, 0.145), M.white, 0, -0.29, 0.0585); paper.rotation.y = Math.PI;
+  }
+  if (def.role === 'tech') {                   // 工具箱：走路時提在手上，維修時放在地上
     const red = std(0xdc2626, { roughness: 0.5 });
-    fig.toolHand = part(armR, boxGeo(0.28, 0.13, 0.12), red, 0, -0.56, 0, false);
-    fig.toolFloor = part(root, boxGeo(0.28, 0.13, 0.12), red, 0.42, 0.065, 0.3, false);
+    fig.toolHand = part(armR, boxGeo(0.2, 0.1, 0.09), red, 0, -0.35, 0);
+    fig.toolFloor = part(root, boxGeo(0.2, 0.1, 0.09), red, 0.32, 0.05, 0.25);
   }
-  if (def.role === 'material') { fig.carryBox = part(body, boxGeo(0.36, 0.26, 0.3), M.kraftPlain, 0, 1.02, 0.3, false); fig.carryBox.visible = false; }
+  if (def.role === 'material' || def.role === 'dock') { fig.carryBox = part(body, boxGeo(0.3, 0.2, 0.26), M.kraftPlain, 0, 0.6, 0.26); fig.carryBox.visible = false; }
+  if (def.role === 'cleaner') {                // 掃把
+    const br = pivot(armR, 0, -0.27, 0.02); br.rotation.x = -0.55;
+    part(br, cylGeo(0.014, 0.014, 0.95, 8), std(0xb8925f), 0, -0.3, 0);
+    part(br, boxGeo(0.24, 0.07, 0.08), std(0x4b5563), 0, -0.78, 0);
+  }
+  if (def.role === 'office') part(armR, boxGeo(0.06, 0.11, 0.012), M.black, 0, -0.29, 0.06);   // 手機
   if (def.name) root.add(nameTag(def, R));
+  fig.markY = def.name ? 2.0 : 1.74;           // 頭上提示的高度（有名牌的人放在名牌上面）
+  fig.mark = new THREE.Sprite(MARK_MAT.alert); fig.chat = new THREE.Sprite(MARK_MAT.chat);
+  for (const s of [fig.mark, fig.chat]) { s.scale.set(0.036, 0.036, 1); s.position.y = fig.markY; s.renderOrder = 7; s.visible = false; root.add(s); }
   return fig;
 }
 function buildCart() {                       // 物料推車（前進方向為 +z，把手在後方）
@@ -2597,8 +2738,8 @@ function buildCart() {                       // 物料推車（前進方向為 +
     box(g, 0.03, 0.62, 0.03, M.steel, sx * 0.26, 0.55, sz * 0.43, false);
     const w = cyl(g, 0.07, 0.07, 0.05, M.rubber, sx * 0.22, 0.07, sz * 0.34, 12, false); w.rotation.z = Math.PI / 2;
   }
-  for (const sx of [-1, 1]) box(g, 0.03, 0.8, 0.03, M.steel, sx * 0.26, 0.65, -0.45, false);
-  box(g, 0.58, 0.035, 0.035, M.yellow, 0, 1.05, -0.45, false);
+  for (const sx of [-1, 1]) box(g, 0.03, 0.55, 0.03, M.steel, sx * 0.26, 0.525, -0.45, false);   // 把手高度配合 Q 版人物
+  box(g, 0.58, 0.035, 0.035, M.yellow, 0, 0.8, -0.45, false);
   box(g, 0.22, 0.16, 0.36, M.bin, -0.13, 0.34, 0.15, false); box(g, 0.22, 0.16, 0.36, M.binRed, 0.13, 0.34, 0.15, false);
   box(g, 0.4, 0.2, 0.3, M.kraftPlain, 0, 0.36, -0.25, false);
   for (let i = 0; i < 3; i++) cyl(g, 0.12, 0.12, 0.025, M.white, 0, 0.69 + i * 0.03, 0.1, 20, false);
@@ -2606,6 +2747,7 @@ function buildCart() {                       // 物料推車（前進方向為 +
 }
 
 // ---- 員工區設施、跨線天橋、產線看板 ----
+const BRIDGE_GROUPS = [];                      // 天橋另外處理「可以走上去」，不算障礙物
 function buildBridge(br) {
   const g = new THREE.Group(); g.position.set(br.x, 0, br.r); scene.add(g);
   const W = 0.8, RUN = 1.3, N = 8, ang = Math.atan2(DECK_Y, RUN), L = Math.hypot(DECK_Y, RUN);
@@ -2623,6 +2765,7 @@ function buildBridge(br) {
     }
   }
   const sp = textSprite('跨線天橋', 'Crossover Bridge', '#D19A35', 0.7); sp.position.set(0, DECK_Y + 1.45, 0); g.add(sp);
+  BRIDGE_GROUPS.push(g);
 }
 function buildStaffArea() {
   // 員工出入口：矮牆的缺口加上大門門框
@@ -2778,37 +2921,48 @@ function evalPerson(p, D, o) {               // 算出某人在第 D 秒的位�
   }
   return o;
 }
+const SIT_ACTS = new Set(['eat', 'rest', 'phone']);   // 坐著的動作
 function poseFigure(f, o, time, armsWork, ph) {
-  let legL = 0, legR = 0, armL = 0, armR = 0, armLz = 0, armRz = 0, bodyY = 0, headX = 0;
+  let legL = 0, legR = 0, armL = 0, armR = 0, armLz = 0, armRz = 0, bodyY = 0, headX = 0, headY = 0;
   switch (o.act) {
-    case 'walk': case 'push': case 'carry': {
+    case 'walk': case 'push': case 'carry': case 'sweep': {
       const s = Math.sin(o.phase);
-      legL = 0.55 * s; legR = -0.55 * s; bodyY = Math.abs(Math.cos(o.phase)) * 0.035;
-      if (o.act === 'walk') { armL = -0.45 * s; armR = 0.45 * s; } else armL = armR = o.act === 'push' ? -1.25 : -1.0;
+      legL = 0.6 * s; legR = -0.6 * s; bodyY = Math.abs(Math.cos(o.phase)) * 0.03;
+      if (o.act === 'walk') { armL = -0.5 * s; armR = 0.5 * s; }
+      else if (o.act === 'sweep') { armL = -0.85; armLz = 0.25; armR = -0.55 + 0.3 * Math.sin(time * 4); }   // 邊走邊掃地
+      else armL = armR = o.act === 'push' ? -1.45 : -1.25;
       break;
     }
     case 'work':
-      if (armsWork) { armL = -0.75 - 0.35 * Math.sin(time * 4 + ph); armR = -0.75 - 0.35 * Math.sin(time * 4 + ph + 1.8); }
-      else armL = armR = -0.35;
-      headX = 0.25; break;
-    case 'bench': armL = -0.8 - 0.3 * Math.sin(time * 3.2); armR = -0.8 - 0.3 * Math.sin(time * 3.2 + 2); headX = 0.3; break;
-    case 'repair': armL = -1.15 - 0.4 * Math.sin(time * 7); armR = -1.0 - 0.4 * Math.sin(time * 7 + 1.4); headX = 0.35; bodyY = -0.1; break;
-    case 'talk': armR = -0.55 - 0.3 * Math.sin(time * 2.6); armRz = 0.15 * Math.sin(time * 1.7); armL = -0.15; break;
-    case 'wait': armL = armR = -1.15; armLz = -0.5; armRz = 0.5; break;            // 雙手抱胸等待
-    case 'inspect': armL = -0.95; armR = -1.05 + 0.08 * Math.sin(time * 2); headX = 0.35; break;
-    case 'desk': armL = -0.85 - 0.12 * Math.sin(time * 9); armR = -0.85 - 0.12 * Math.sin(time * 9 + 1.6); headX = 0.25; break;
-    case 'eat': armL = -0.9; armR = -1.55 - 0.45 * (0.5 + 0.5 * Math.sin(time * 2.2)); headX = 0.1; break;
-    case 'rest': armL = armR = -0.9; break;
-    case 'clock': armR = -1.45; armL = -0.1; break;
-    case 'change': armL = armR = -2.7 + 0.35 * Math.sin(time * 5); break;
-    case 'esd': armR = -1.25; headX = 0.2; break;
-    case 'unload': armL = armR = -1.5 - 0.45 * Math.sin(time * 3.5); break;
-    case 'clean': armL = armR = -1.1; armLz = armRz = 0.45 * Math.sin(time * 4); headX = 0.3; break;
+      if (armsWork) { armL = -1.15 - 0.35 * Math.sin(time * 4 + ph); armR = -1.15 - 0.35 * Math.sin(time * 4 + ph + 1.8); }
+      else armL = armR = -0.45;
+      headX = 0.22; break;
+    case 'bench': armL = -1.1 - 0.3 * Math.sin(time * 3.2); armR = -1.1 - 0.3 * Math.sin(time * 3.2 + 2); headX = 0.28; break;
+    case 'repair': armL = -1.35 - 0.4 * Math.sin(time * 7); armR = -1.2 - 0.4 * Math.sin(time * 7 + 1.4); headX = 0.32; bodyY = -0.06; break;
+    case 'talk': armR = -0.75 - 0.35 * Math.sin(time * 2.6); armRz = 0.2 * Math.sin(time * 1.7); armL = -0.2; headY = 0.12 * Math.sin(time * 1.3); break;
+    case 'wait': armL = armR = -1.3; armLz = -0.65; armRz = 0.65; break;              // 雙手抱胸等待
+    case 'inspect': armL = -1.2; armR = -1.35 + 0.08 * Math.sin(time * 2); headX = 0.32; break;
+    case 'desk': armL = -1.1 - 0.12 * Math.sin(time * 9); armR = -1.1 - 0.12 * Math.sin(time * 9 + 1.6); headX = 0.22; break;
+    case 'eat': armL = -1.1; armR = -1.6 - 0.45 * (0.5 + 0.5 * Math.sin(time * 2.2)); headX = 0.1; break;
+    case 'rest': armL = armR = -1.0; break;
+    case 'phone': armL = armR = -1.25; armLz = -0.25; armRz = 0.25; headX = 0.32; break;   // 低頭滑手機
+    case 'clock': armR = -1.55; armL = -0.1; break;
+    case 'change': armL = armR = -2.8 + 0.35 * Math.sin(time * 5); break;
+    case 'esd': armR = -1.45; headX = 0.2; break;
+    case 'unload': armL = armR = -1.6 - 0.45 * Math.sin(time * 3.5); break;
+    case 'clean': armL = -0.9; armLz = 0.25; armR = -0.6 + 0.35 * Math.sin(time * 4); headX = 0.3; break;
+    case 'guard': armL = armR = 0.25; armLz = -0.12; armRz = 0.12; break;            // 雙手放背後站崗
+    case 'look': headX = -0.12; headY = 0.25 * Math.sin(time * 0.6); armR = -0.3; break;   // 東張西望
   }
-  if (o.act === 'eat' || o.act === 'rest') { legL = legR = -Math.PI / 2; bodyY = -0.39; }   // 坐下：雙腿往前伸
+  if (SIT_ACTS.has(o.act)) { legL = legR = -Math.PI / 2; bodyY = o.sitY ?? f.sitY; }   // 坐下：雙腿往前伸
   f.legL.rotation.x = legL; f.legR.rotation.x = legR;
   f.armL.rotation.set(armL, 0, armLz); f.armR.rotation.set(armR, 0, armRz);
-  f.head.rotation.x = headX; f.body.position.y = bodyY;
+  f.head.rotation.set(headX, headY, 0); f.body.position.y = bodyY;
+}
+function faceTalker(o) {                       // 下場走走和玩家聊天時：停下來、轉身面向玩家
+  o.yaw = Math.atan2(PLAYER.pos.x - o.pos.x, PLAYER.pos.z - o.pos.z);
+  o.walking = false;
+  if (!SIT_ACTS.has(o.act)) o.act = 'talk';
 }
 function updatePeople() {
   const day = state.mode === 'day', D = state.D, run = !day || lineRunningAt(D), time = performance.now() / 1000;
@@ -2817,6 +2971,8 @@ function updatePeople() {
     if (day) evalPerson(p, D, o);
     else if (p.home) { const h = POI[p.home[0]]; o.visible = true; o.walking = false; o.task = null; o.pos.set(h.x, 0, h.z); o.yaw = h.face; o.act = p.home[1]; }
     else o.visible = false;
+    o.baseYaw = o.yaw;                         // 推車要用原本的方向，不受「轉身聊天」影響
+    if (day && o.visible && state.play && DLG.open && DLG.who === p.id) faceTalker(o);
     f.root.visible = o.visible;
     if (!o.visible) continue;
     f.root.position.copy(o.pos); f.root.rotation.y = o.yaw;
@@ -2827,10 +2983,332 @@ function updatePeople() {
     if (f.toolHand) { const floor = o.act === 'repair' || o.act === 'bench'; f.toolHand.visible = !floor; f.toolFloor.visible = floor; }
   }
   const m = PEOPLE_BY_ID.material.o;
-  if (day && m.visible && m.task && m.task.cart) { CART.position.set(m.pos.x + Math.sin(m.yaw) * 0.8, m.pos.y, m.pos.z + Math.cos(m.yaw) * 0.8); CART.rotation.y = m.yaw; }
+  if (day && m.visible && m.task && m.task.cart) { CART.position.set(m.pos.x + Math.sin(m.baseYaw) * 0.8, m.pos.y, m.pos.z + Math.cos(m.baseYaw) * 0.8); CART.rotation.y = m.baseYaw; }
   else { const pk = (day && m.task && m.task.cartPark) || CART_HOME; CART.position.set(pk.x, 0, pk.z); CART.rotation.y = pk.yaw; }
   alarmSign.visible = day && alarmAt(D);
   if (alarmSign.visible) alarmSign.position.y = 3.1 + 0.08 * Math.sin(time * 5);
+}
+
+// ---- 園區路人：不在產線班表裡，沿著固定路線一直走（暫停或聊天時也會停下來）----
+//   wp(x, z, 選項)：act 停下來時的動作、wait 停幾秒、face 面向、label 停下來時在做什麼、go 走向下一點時的動作、goLabel 走路時在做什麼
+const wp = (x, z, o = {}) => ({ x, z, ...o });
+const VISIT_LOOP = [wp(-4, 20.75), wp(-25.9, 20.75), wp(-25.9, -20.95), wp(-6, -20.95, { act: 'look', wait: 6, face: F.N, label: '在工廠招牌前拍照留念' }),
+  wp(32.75, -20.95), wp(32.75, 20.75), wp(0.3, 20.75, { act: 'look', wait: 5, face: F.S, label: '在步道上看海' })];
+const AMBIENT_DEF = [
+  { id: 'guard', label: '警衛', role: 'guard', hair: 'short', skin: '#d9a47e', hairC: '#1a1a1a', speed: 0.9, walkLabel: '在園區巡邏',
+    route: [wp(34.0, -15.4, { act: 'guard', wait: 14, face: F.W, label: '在員工出入口站崗' }), wp(39.2, -14.0), wp(39.2, 10.6, { act: 'look', wait: 4, face: F.E, label: '巡邏到園區東側' }), wp(34.6, 11.6), wp(34.0, -10.6)],
+    talk: ['我是園區的警衛，負責管制人員進出。', '員工要刷卡才能進廠；訪客要先換證，而且要由員工陪同。', '工廠裡不能隨便拍照喔，這是在保護客戶產品的機密。'] },
+  { id: 'cleaner', label: '清潔員', role: 'cleaner', hair: 'bun', skin: '#e8b994', hairC: '#3a2a1e', speed: 0.45, walk: 'sweep', walkLabel: '打掃南側步道', from: '07:40', to: '18:00',
+    route: [wp(-23, 19.9, { act: 'clean', wait: 4, face: F.E, label: '打掃南側步道' }), wp(30, 19.9, { act: 'clean', wait: 4, face: F.W, label: '打掃南側步道' })],
+    talk: ['我負責園區步道和公共區域的清潔。', '電子工廠很怕灰塵，連廠外的步道都要保持乾淨，才不會被鞋子帶進廠裡。'] },
+  { id: 'dock1', label: '碼頭工人 A', role: 'dock', hair: 'short', skin: '#c98e65', hairC: '#151515', speed: 1.15, walkLabel: '走回出貨區',
+    route: [wp(-10.6, 13.5, { act: 'unload', wait: 3, face: F.E, label: '在出貨區搬成品', go: 'carry', goLabel: '把成品搬到碼頭' }), wp(-24.0, 13.5, { go: 'carry', goLabel: '把成品搬到碼頭' }),
+      wp(-44.6, 12.0, { act: 'unload', wait: 3, face: F.W, label: '把貨裝進貨櫃' }), wp(-24.0, 12.9)],
+    talk: ['我是碼頭工人，負責把出貨區包好的成品搬到碼頭。', '貨櫃裝滿之後，就由貨船運到世界各地的倉庫。'] },
+  { id: 'dock2', label: '碼頭工人 B', role: 'dock', hair: 'short', skin: '#e0b089', hairC: '#2a2018', speed: 1.1, phase: 0.5, walkLabel: '走回出貨區',
+    route: [wp(-10.6, 14.4, { act: 'unload', wait: 3, face: F.E, label: '在出貨區搬成品', go: 'carry', goLabel: '把成品搬到碼頭' }), wp(-24.0, 14.4, { go: 'carry', goLabel: '把成品搬到碼頭' }),
+      wp(-44.6, 14.0, { act: 'unload', wait: 3, face: F.W, label: '把貨裝進貨櫃' }), wp(-24.0, 15.0)],
+    talk: ['今天的貨很多，貨櫃要裝滿，貨船才能開。', '搬重物要用腿出力、背打直，才不會受傷。'] },
+  { id: 'visitor', label: '訪客（客戶）', role: 'visitor', hair: 'long', skin: '#f3cfb0', hairC: '#4a3426', speed: 1.0, side: 0.36, walkLabel: '在園區參觀', from: '09:00', to: '17:00', route: VISIT_LOOP,
+    talk: ['我是來參觀的客戶，想看看筆電是怎麼做出來的！', '剛剛看到貼片機，一秒鐘就能貼好幾十顆零件，真厲害！'] },
+  { id: 'sales', label: '訪客（業務）', role: 'sales', hair: 'short', skin: '#e4b58f', hairC: '#1c1c1c', speed: 1.0, side: -0.36, walkLabel: '陪客戶參觀', from: '09:00', to: '17:00', route: VISIT_LOOP,
+    talk: ['我是陪客戶參觀的業務。', '客戶最在意品質和交期，所以下訂單前，一定會親自來看產線和品管流程。'] },
+  { id: 'office', label: '休息中的員工', role: 'office', hair: 'short', skin: '#f1c7a3', hairC: '#2b211b', speed: 1, sitY: 0.16,
+    route: [wp(2.5, 21.5, { act: 'phone', wait: 1e6, face: F.S, label: '坐在長椅上休息' })],
+    talk: ['我是辦公室的生管人員，出來吹吹海風。', '生管要排生產計畫：哪天做哪些機種、做多少台、物料什麼時候要到。'] },
+];
+function buildRoute(def) {                     // 把路線換算成「每一段從第幾秒到第幾秒」
+  const pts = def.route, legs = []; let t = 0;
+  pts.forEach((p, i) => {
+    if (p.wait) { legs.push({ wait: true, t0: t, t1: t + p.wait, p }); t += p.wait; }
+    const q = pts[(i + 1) % pts.length], len = Math.hypot(q.x - p.x, q.z - p.z);
+    if (len > 0.01) { legs.push({ wait: false, t0: t, t1: t + len / def.speed, a: p, b: q, len, act: p.go || def.walk || 'walk', label: p.goLabel || def.walkLabel }); t += len / def.speed; }
+  });
+  return { legs, total: Math.max(t, 0.001) };
+}
+const AMBIENT = AMBIENT_DEF.map(def => ({ ...def, name: '', ambient: true, generic: true, o: { pos: new THREE.Vector3(), visible: true, yaw: 0 },
+  fig: buildFigure({ ...def, name: '' }), plan: buildRoute(def), m0: def.from ? hm(def.from) : 0, m1: def.to ? hm(def.to) : 24 * 60 }));
+Object.assign(PEOPLE_BY_ID, Object.fromEntries(AMBIENT.map(p => [p.id, p])));
+const ALL_NPC = [...PEOPLE, ...AMBIENT];
+const AMB = { t: 0 };                          // 園區時鐘（秒）：沒有暫停時才會走
+function evalAmbient(p, A, o) {
+  const R = p.plan, t = mod(A + (p.phase || 0) * R.total, R.total);
+  let leg = R.legs[R.legs.length - 1];
+  for (const l of R.legs) if (t < l.t1) { leg = l; break; }
+  if (leg.wait) {
+    o.pos.set(leg.p.x, 0, leg.p.z); o.yaw = leg.p.face ?? o.yaw; o.walking = false; o.act = leg.p.act || 'stand'; o.label = leg.p.label || p.walkLabel;
+  } else {
+    const f = clamp01((t - leg.t0) / (leg.t1 - leg.t0));
+    o.pos.set(lerp(leg.a.x, leg.b.x, f), 0, lerp(leg.a.z, leg.b.z, f));
+    o.yaw = Math.atan2(leg.b.x - leg.a.x, leg.b.z - leg.a.z); o.walking = true; o.phase = f * leg.len * 4.2; o.act = leg.act; o.label = leg.label;
+  }
+  if (p.side) { o.pos.x -= Math.cos(o.yaw) * p.side; o.pos.z += Math.sin(o.yaw) * p.side; }   // 兩人並肩走：往右（或左）偏一點
+  o.pos.y = groundY(o.pos.x, o.pos.z); o.sitY = p.sitY;
+  return o;
+}
+function updateAmbient(time) {
+  const clock = state.mode === 'day' ? clockAt(state.D) : hm('11:00');
+  for (const p of AMBIENT) {
+    const o = p.o, f = p.fig;
+    o.visible = clock >= p.m0 && clock < p.m1;   // 訪客、清潔員只在白天出現
+    f.root.visible = o.visible;
+    if (!o.visible) continue;
+    evalAmbient(p, AMB.t, o);
+    if (state.play && DLG.open && DLG.who === p.id) faceTalker(o);
+    f.root.position.copy(o.pos); f.root.rotation.y = o.yaw;
+    poseFigure(f, o, time, false, 0);
+    if (f.carryBox) f.carryBox.visible = o.act === 'carry';
+  }
+}
+
+// ---- 下場走走：玩家扮演的參觀者，從員工出入口外面出發 ----
+const PLAYER_SPAWN = { x: 34.8, z: -12.6, yaw: -Math.PI / 2 };
+const PLAYER = { fig: buildFigure({ id: 'player', name: '你', role: 'player', hair: 'short', skin: '#f1c7a3', hairC: '#3a2a1e' }),
+  pos: new THREE.Vector3(PLAYER_SPAWN.x, -0.35, PLAYER_SPAWN.z), yaw: PLAYER_SPAWN.yaw, phase: 0, moving: false, o: { act: 'stand', phase: 0 },
+  path: null, chase: null, chaseT: 0, keys: new Set(), near: null };
+PLAYER.fig.root.visible = false;
+{ // 腳下的橘色光圈，一眼就找得到自己
+  const ring = new THREE.Mesh(new THREE.RingGeometry(0.3, 0.42, 32), new THREE.MeshBasicMaterial({ color: 0xDB6A41, transparent: true, opacity: 0.75, depthWrite: false, toneMapped: false }));
+  ring.rotation.x = -Math.PI / 2; ring.position.y = 0.025; ring.renderOrder = 2; PLAYER.fig.root.add(ring);
+}
+// 點地板時，目的地的標記
+const GOAL = new THREE.Mesh(new THREE.RingGeometry(0.16, 0.26, 28), new THREE.MeshBasicMaterial({ color: 0xDB6A41, transparent: true, opacity: 0.9, depthWrite: false, toneMapped: false }));
+GOAL.rotation.x = -Math.PI / 2; GOAL.visible = false; scene.add(GOAL);
+
+// 地面高度：工廠地坪 0、人工島 -0.35、碼頭 -0.4；天橋依樓梯與平台算高度；地坪邊緣用 0.5 公尺的斜坡接起來
+function groundY(x, z) {
+  for (const br of BRIDGES) {
+    const dz = Math.abs(z - br.r);
+    if (Math.abs(x - br.x) <= 0.45 && dz <= 1.9) return dz <= 0.6 ? DECK_Y : DECK_Y * (1 - (dz - 0.6) / 1.3);
+  }
+  const d = Math.hypot(Math.max(FLOOR.x0 - x, 0, x - FLOOR.x1), Math.max(FLOOR.z0 - z, 0, z - FLOOR.z1));
+  if (d === 0) return 0;
+  if (x < -34 && z > 10 && z < 17) return -0.4;
+  return d < 0.5 ? lerp(0, -0.35, d / 0.5) : -0.35;
+}
+
+// ---- 可行走地圖（給玩家用）：把整座島切成 0.25 公尺的小格子 ----
+//   0 = 不能走（海、牆、機台、輸送帶、樹……）、1 = 可以走、2 = 天橋（高度另外算）
+const NAVG = (() => {
+  const C = 0.25, X0 = -54, Z0 = -31, NX = Math.round((52 - X0) / C), NZ = Math.round((30 - Z0) / C), RAD = 0.25;   // RAD：人的半徑
+  const grid = new Uint8Array(NX * NZ);
+  const ci = x => Math.floor((x - X0) / C), cj = z => Math.floor((z - Z0) / C);
+  const inRR = (x, z, x0, z0, x1, z1, r) => {   // 點在不在圓角矩形裡
+    if (x < x0 || x > x1 || z < z0 || z > z1) return false;
+    const qx = Math.max(x0 + r - x, 0, x - (x1 - r)), qz = Math.max(z0 + r - z, 0, z - (z1 - r));
+    return qx * qx + qz * qz <= r * r;
+  };
+  const E = 0.6;                                // 1) 島和碼頭可以走（離岸邊留一點距離）
+  for (let j = 0; j < NZ; j++) for (let i = 0; i < NX; i++) {
+    const x = X0 + (i + 0.5) * C, z = Z0 + (j + 0.5) * C;
+    if (inRR(x, z, -34 + E, -29 + E, 41 - E, 28 - E, 8 - E) || inRR(x, z, 37 + E, -9 + E, 50 - E, 9 - E, 5 - E) || (x > -52.6 && x < -33 && z > 10.9 && z < 16.1)) grid[j * NX + i] = 1;
+  }
+  const block = (x0, z0, x1, z1) => {
+    const i0 = Math.max(0, ci(x0)), i1 = Math.min(NX - 1, ci(x1)), j0 = Math.max(0, cj(z0)), j1 = Math.min(NZ - 1, cj(z1));
+    if (i1 >= i0) for (let j = j0; j <= j1; j++) grid.fill(0, j * NX + i0, j * NX + i1 + 1);
+  };
+  const disc = (x, z, r) => {
+    for (let j = Math.max(0, cj(z - r)); j <= Math.min(NZ - 1, cj(z + r)); j++) for (let i = Math.max(0, ci(x - r)); i <= Math.min(NX - 1, ci(x + r)); i++) {
+      const dx = X0 + (i + 0.5) * C - x, dz = Z0 + (j + 0.5) * C - z;
+      if (dx * dx + dz * dz <= r * r) grid[j * NX + i] = 0;
+    }
+  };
+  // 2) 場景裡固定不動的東西都算障礙：用它的外框（AABB）再往外擴一個人的半徑
+  scene.updateMatrixWorld(true);
+  const skip = new Set([WORLD.sky, WORLD.ripple, WORLD.boat, WORLD.ship, marker, alarmSign, CART, GOAL, ...units.map(u => u.g), ...BRIDGE_GROUPS, ...ALL_NPC.map(p => p.fig.root), PLAYER.fig.root]);
+  const bb = new THREE.Box3();
+  const visit = o => {
+    if (skip.has(o)) return;
+    if (o.isMesh && !o.isInstancedMesh) {
+      bb.setFromObject(o);
+      const sx = bb.max.x - bb.min.x, sz = bb.max.z - bb.min.z;
+      if (Number.isFinite(sx) && !(sx > 20 && sz > 20)) {           // 太大的是地坪、島、海、天空，不算
+        const cx = (bb.min.x + bb.max.x) / 2, cz = (bb.min.z + bb.max.z) / 2;
+        const g = cx > FLOOR.x0 && cx < FLOOR.x1 && cz > FLOOR.z0 && cz < FLOOR.z1 ? 0 : -0.35;
+        if (bb.max.y > g + 0.18 && bb.min.y < g + 1.75) block(bb.min.x - RAD, bb.min.z - RAD, bb.max.x + RAD, bb.max.z + RAD);   // 腳邊到頭頂之間有東西才擋路
+      }
+    }
+    for (const c of o.children) visit(c);
+  };
+  visit(scene);
+  const pp = {};                                // 3) 輸送帶（滾輪是一次畫完的，要另外算）、樹幹
+  for (let s = 0; s <= PATH_LEN; s += 0.1) { pathAt(s, pp); disc(pp.x, pp.z, 0.42 + RAD); }
+  for (const t of WORLD.trees) disc(t.x, t.z, 0.2 * t.s + RAD);
+  for (const br of BRIDGES) {                   // 4) 天橋：中間這一條可以走；樓梯口的扶手柱不能穿過
+    for (const sx of [-1, 1]) for (const sz of [-1, 1]) disc(br.x + sx * 0.4, br.r + sz * 1.9, 0.05 + RAD);
+    for (let z = br.r - 2.15; z <= br.r + 2.15; z += C / 2) for (const dx of [-0.125, 0.125]) grid[cj(z) * NX + ci(br.x + dx)] = 2;
+    for (let j = cj(br.r - 1.6); j <= cj(br.r + 1.6); j++) for (let i = ci(br.x - 0.9); i <= ci(br.x + 0.9); i++) {   // 樓梯兩側（扶手外）不能走，只能從樓梯口上下
+      const off = Math.abs(X0 + (i + 0.5) * C - br.x);
+      if (off > 0.3 && off < 0.8) grid[j * NX + i] = 0;
+    }
+  }
+  return { grid, C, X0, Z0, NX, NZ, ci, cj };
+})();
+function cellAt(x, z) { const i = NAVG.ci(x), j = NAVG.cj(z); return i < 0 || j < 0 || i >= NAVG.NX || j >= NAVG.NZ ? 0 : NAVG.grid[j * NAVG.NX + i]; }
+const walkable = (x, z) => cellAt(x, z) > 0;
+function nearestOpen(x, z, maxR) {             // 離 (x, z) 最近、可以走的格子
+  const { grid, NX, NZ, C, ci, cj } = NAVG, i0 = ci(x), j0 = cj(z);
+  const ok = (i, j) => i >= 0 && j >= 0 && i < NX && j < NZ && grid[j * NX + i] > 0;
+  if (ok(i0, j0)) return j0 * NX + i0;
+  for (let r = 1; r <= maxR / C; r++) {
+    let best = -1, bd = Infinity;
+    for (let dj = -r; dj <= r; dj++) for (let di = -r; di <= r; di++) {
+      if (Math.max(Math.abs(di), Math.abs(dj)) !== r || !ok(i0 + di, j0 + dj)) continue;
+      const d = di * di + dj * dj; if (d < bd) { bd = d; best = (j0 + dj) * NX + i0 + di; }
+    }
+    if (best >= 0) return best;
+  }
+  return -1;
+}
+function lineOK(ax, az, bx, bz) {              // 兩點之間能不能直線走過去
+  const n = Math.ceil(Math.hypot(bx - ax, bz - az) / 0.1);
+  for (let k = 1; k <= n; k++) if (!walkable(lerp(ax, bx, k / n), lerp(az, bz, k / n))) return false;
+  return true;
+}
+function heapPush(h, k, f) {                   // 最小堆積：A* 每次都先處理「預估總距離」最短的格子
+  const K = h.k, V = h.f; let i = K.length; K.push(k); V.push(f);
+  while (i > 0) { const p = (i - 1) >> 1; if (V[p] <= f) break; K[i] = K[p]; V[i] = V[p]; i = p; }
+  K[i] = k; V[i] = f;
+}
+function heapPop(h) {
+  const K = h.k, V = h.f, top = K[0], lk = K.pop(), lf = V.pop(), n = K.length;
+  if (n) {
+    let i = 0;
+    for (;;) { let c = 2 * i + 1; if (c >= n) break; if (c + 1 < n && V[c + 1] < V[c]) c++; if (V[c] >= lf) break; K[i] = K[c]; V[i] = V[c]; i = c; }
+    K[i] = lk; V[i] = lf;
+  }
+  return top;
+}
+const NB8 = [[1, 0, 1], [-1, 0, 1], [0, 1, 1], [0, -1, 1], [1, 1, Math.SQRT2], [1, -1, Math.SQRT2], [-1, 1, Math.SQRT2], [-1, -1, Math.SQRT2]];
+function findPath(sx, sz, tx, tz) {            // A* 找最短路線，再把路線拉直（少轉彎）
+  const { grid, NX, NZ, C, X0, Z0 } = NAVG;
+  const s = nearestOpen(sx, sz, 1.5), goal = nearestOpen(tx, tz, 4);
+  if (s < 0 || goal < 0) return null;
+  if (!NAVG.g) { NAVG.g = new Float32Array(NX * NZ); NAVG.from = new Int32Array(NX * NZ); NAVG.closed = new Uint8Array(NX * NZ); }
+  const G = NAVG.g, from = NAVG.from, closed = NAVG.closed;
+  G.fill(Infinity); closed.fill(0);
+  const gi = goal % NX, gj = (goal / NX) | 0;
+  const h = k => { const dx = Math.abs(k % NX - gi), dz = Math.abs(((k / NX) | 0) - gj); return Math.max(dx, dz) + (Math.SQRT2 - 1) * Math.min(dx, dz); };
+  const heap = { k: [], f: [] };
+  G[s] = 0; from[s] = -1; heapPush(heap, s, h(s));
+  let found = false;
+  while (heap.k.length) {
+    const k = heapPop(heap);
+    if (closed[k]) continue;
+    if (k === goal) { found = true; break; }
+    closed[k] = 1;
+    const i = k % NX, j = (k / NX) | 0;
+    for (const [di, dj, w] of NB8) {
+      const ni = i + di, nj = j + dj;
+      if (ni < 0 || nj < 0 || ni >= NX || nj >= NZ) continue;
+      const nk = nj * NX + ni;
+      if (!grid[nk] || closed[nk]) continue;
+      if (di && dj && (!grid[j * NX + ni] || !grid[nj * NX + i])) continue;   // 不能斜切穿過牆角
+      const ng = G[k] + w;
+      if (ng < G[nk]) { G[nk] = ng; from[nk] = k; heapPush(heap, nk, ng + h(nk)); }
+    }
+  }
+  if (!found) return null;
+  const pts = [];
+  for (let k = goal; k !== -1; k = from[k]) pts.push({ x: X0 + (k % NX + 0.5) * C, z: Z0 + (((k / NX) | 0) + 0.5) * C });
+  pts.reverse(); pts[0] = { x: sx, z: sz };
+  const out = []; let a = 0;
+  while (a < pts.length - 1) {                 // 拉直：從目前的點往前，找能直線走到的最遠點
+    let b = a + 1;
+    while (b + 1 < pts.length && lineOK(pts[a].x, pts[a].z, pts[b + 1].x, pts[b + 1].z)) b++;
+    out.push(pts[b]); a = b;
+  }
+  return out;
+}
+function walkTo(x, z, quiet = false) {         // 點地板：規劃路線走過去
+  const path = findPath(PLAYER.pos.x, PLAYER.pos.z, x, z);
+  state.camFree = false;
+  if (!path) { PLAYER.path = null; GOAL.visible = false; if (!quiet) toast('那裡走不過去喔'); return false; }
+  PLAYER.path = path.length ? path : null;
+  if (!quiet && PLAYER.path) { const e = path[path.length - 1]; GOAL.position.set(e.x, groundY(e.x, e.z) + 0.03, e.z); GOAL.visible = true; }
+  return true;
+}
+function walkToPerson(id) {                    // 點人物或名單：走過去找他，到了就聊天
+  const p = PEOPLE_BY_ID[id];
+  if (!p || !p.fig.root.visible) { toast(`現在找不到${p ? displayName(p) : '這個人'}（可能還沒上班，或已經下班了）`); return; }
+  if (Math.hypot(p.o.pos.x - PLAYER.pos.x, p.o.pos.z - PLAYER.pos.z) < 1.7) { openTalk(id); return; }
+  PLAYER.chase = id; PLAYER.chaseT = 0; GOAL.visible = false; state.camFree = false;
+}
+function nearestTalkable(r) {                  // 玩家附近、可以聊天的人
+  let best = null, bd = r;
+  for (const p of ALL_NPC) {
+    if (!p.fig.root.visible) continue;
+    const d = Math.hypot(p.o.pos.x - PLAYER.pos.x, p.o.pos.z - PLAYER.pos.z);
+    if (d < bd && Math.abs(p.o.pos.y - PLAYER.pos.y) < 1.2) { bd = d; best = p; }
+  }
+  return best;
+}
+const TOUCH = window.matchMedia('(pointer: coarse)').matches;   // 手機、平板（用手指點）
+const _fw = new THREE.Vector3();
+const turnTo = (a, b, k) => a + (mod(b - a + Math.PI, Math.PI * 2) - Math.PI) * Math.min(1, k);
+function updatePlayer(rdt, time) {
+  const f = PLAYER.fig, on = state.mode === 'day' && state.play;
+  f.root.visible = on;
+  if (!on) { GOAL.visible = false; return; }
+  const K = PLAYER.keys; let mx = 0, mz = 0, dx = 0, dz = 0;
+  if (!DLG.open) {
+    if (K.has('KeyW') || K.has('ArrowUp')) mz += 1;
+    if (K.has('KeyS') || K.has('ArrowDown')) mz -= 1;
+    if (K.has('KeyA') || K.has('ArrowLeft')) mx -= 1;
+    if (K.has('KeyD') || K.has('ArrowRight')) mx += 1;
+  }
+  if (mx || mz) {                              // 鍵盤：依照鏡頭的方向走（W 永遠是「往畫面裡面走」）
+    PLAYER.path = null; PLAYER.chase = null; GOAL.visible = false; state.camFree = false;
+    camera.getWorldDirection(_fw); _fw.y = 0;
+    if (_fw.lengthSq() < 1e-6) _fw.set(0, 0, -1);
+    _fw.normalize();
+    const L = Math.hypot(mx, mz);
+    dx = (_fw.x * mz - _fw.z * mx) / L; dz = (_fw.z * mz + _fw.x * mx) / L;
+  } else if (PLAYER.path && !DLG.open) {       // 點地板：沿著規劃好的路線走
+    const t = PLAYER.path[0], vx = t.x - PLAYER.pos.x, vz = t.z - PLAYER.pos.z, d = Math.hypot(vx, vz);
+    if (d < 0.06) { PLAYER.path.shift(); if (!PLAYER.path.length) { PLAYER.path = null; GOAL.visible = false; } }
+    else { dx = vx / d; dz = vz / d; }
+  }
+  const run = K.has('ShiftLeft') || K.has('ShiftRight');
+  PLAYER.moving = false;
+  if (dx || dz) {
+    let step = (run ? 5.6 : 3.3) * rdt;
+    if (PLAYER.path) step = Math.min(step, Math.hypot(PLAYER.path[0].x - PLAYER.pos.x, PLAYER.path[0].z - PLAYER.pos.z));
+    const ox = PLAYER.pos.x, oz = PLAYER.pos.z;
+    let nx = ox + dx * step, nz = oz + dz * step;
+    if (!walkable(nx, nz)) { if (walkable(nx, oz)) nz = oz; else if (walkable(ox, nz)) nx = ox; else { nx = ox; nz = oz; } }   // 撞到東西就沿著邊滑過去
+    const moved = Math.hypot(nx - ox, nz - oz);
+    if (moved > 1e-5) { PLAYER.pos.x = nx; PLAYER.pos.z = nz; PLAYER.phase += moved * 4.2; PLAYER.moving = true; PLAYER.yaw = turnTo(PLAYER.yaw, Math.atan2(dx, dz), rdt * 12); }
+    else if (PLAYER.path) { PLAYER.path = null; GOAL.visible = false; }
+  }
+  PLAYER.pos.y += (groundY(PLAYER.pos.x, PLAYER.pos.z) - PLAYER.pos.y) * (1 - Math.exp(-rdt * 12));
+  f.root.position.copy(PLAYER.pos); f.root.rotation.y = PLAYER.yaw;
+  PLAYER.o.act = PLAYER.moving ? 'walk' : DLG.open ? 'talk' : 'stand'; PLAYER.o.phase = PLAYER.phase;
+  poseFigure(f, PLAYER.o, time, false, 0);
+  if (GOAL.visible) GOAL.scale.setScalar(1 + 0.12 * Math.sin(time * 6));
+  if (PLAYER.chase && !DLG.open) {             // 點了某個人：一路追過去，走到旁邊就開始聊天
+    const p = PEOPLE_BY_ID[PLAYER.chase], d = Math.hypot(p.o.pos.x - PLAYER.pos.x, p.o.pos.z - PLAYER.pos.z);
+    if (!p.fig.root.visible) { PLAYER.chase = null; PLAYER.path = null; }
+    else if (d < 1.7 || (!PLAYER.path && d < 3.2)) { const id = PLAYER.chase; PLAYER.chase = null; PLAYER.path = null; openTalk(id); }
+    else if ((PLAYER.chaseT -= rdt) <= 0) { PLAYER.chaseT = 0.8; if (!walkTo(p.o.pos.x, p.o.pos.z, true)) { PLAYER.chase = null; toast(`走不到${displayName(p)}那裡`); } }
+  }
+  const near = DLG.open ? null : nearestTalkable(2.3);   // 附近可以聊天的人：顯示提示
+  if (near !== PLAYER.near) {
+    PLAYER.near = near;
+    const hint = $('talkHint');
+    hint.style.display = near ? 'block' : 'none';
+    if (near) hint.textContent = `💬 ${TOUCH ? '點這裡' : '按 E '}和${displayName(near)}聊天`;
+  }
+}
+function updateMarkers(time) {                 // 頭上的「！」與「💬」
+  const day = state.mode === 'day', bob = 0.03 * Math.sin(time * 4);
+  for (const p of ALL_NPC) {
+    const f = p.fig, vis = f.root.visible, talking = DLG.open && DLG.who === p.id;
+    f.mark.visible = vis && day && !talking && !!(p.o.task && p.o.task.key);
+    f.chat.visible = vis && !talking && state.play && PLAYER.near === p;
+    if (f.mark.visible) f.mark.position.y = f.markY + bob;
+    if (f.chat.visible) f.chat.position.y = f.markY + (f.mark.visible ? 0.32 : 0) + bob;
+  }
 }
 
 /* =====================================================================
@@ -2841,6 +3319,7 @@ const state = {
   heroN: 100, T: 100 * SPAWN - 0.5,
   selected: -1, lastHeroK: -1,
   D: 0, follow: null, selPerson: null, lastScene: -1,   // 人員一日：時間軸位置（秒）、鏡頭跟隨誰、選了誰、上一個場景
+  play: false, talkHold: false, camFree: false,         // 下場走走：是否在玩、聊天時暫停時間、按了全景（鏡頭暫時不跟玩家）
 };
 const info = {}, pose = {};
 
@@ -2887,6 +3366,7 @@ const TOUR_OFFSET = new THREE.Vector3(1.55, 1.42, 2.63);
 // 這樣機台不會擋在鏡頭和人物中間；位置偏西，員工區靠東牆時鏡頭也不會跑到牆外
 const DAY_OFF_S = new THREE.Vector3(-2.4, 5.4, 4.3), DAY_OFF_N = new THREE.Vector3(-2.4, 5.4, -4.3);
 let dayOff = DAY_OFF_S, followKey = '';
+const PLAY_OFF = new THREE.Vector3(0, 7.8, 9.2);   // 下場走走：鏡頭在玩家後上方（可以拖曳轉動）
 const OVERVIEW = { pos: new THREE.Vector3(23.7, 64, 72.6), tgt: new THREE.Vector3(5, -1, 0) };
 const fly = { active: false, follow: false, t: 0, dur: 1.4, p0: new THREE.Vector3(), p1: new THREE.Vector3(), t0: new THREE.Vector3(), t1: new THREE.Vector3() };
 function flyTo(pos, tgt, dur = 1.4, follow = false) {   // follow = 飛行途中持續追著移動中的目標
@@ -2895,8 +3375,9 @@ function flyTo(pos, tgt, dur = 1.4, follow = false) {   // follow = 飛行途中
 }
 const heroPos = new THREE.Vector3();
 function getHeroPos(out) { const u = heroUnit(); if (!u) return false; u.pkg.getWorldPosition(out); out.y += 0.06; return true; }
-function getFollowPos(out) {                 // 導覽模式跟著示範機；人員一日跟著選定的人
+function getFollowPos(out) {                 // 導覽模式跟著示範機；人員一日跟著選定的人；下場走走跟著玩家
   if (state.mode === 'tour') return getHeroPos(out);
+  if (state.mode === 'day' && state.play) { if (state.camFree) return false; out.copy(PLAYER.pos); out.y += 0.9; return true; }
   if (state.mode === 'day' && state.follow) { const o = PEOPLE_BY_ID[state.follow].o; if (o.visible) { out.copy(o.pos); out.y += 1.0; return true; } }
   return false;
 }
@@ -2909,7 +3390,7 @@ function stationView(st) {
 }
 function updateCamera(rdt) {
   const has = getFollowPos(heroPos);
-  if (has && state.mode === 'day') {          // 跟拍的人走到新地點停下來時，視需要換到另一側拍攝
+  if (has && state.mode === 'day' && !state.play) {   // 跟拍的人走到新地點停下來時，視需要換到另一側拍攝
     const o = PEOPLE_BY_ID[state.follow].o, key = state.follow + ':' + (o.walking ? 'walk' : o.i);
     if (!o.walking && key !== followKey) {
       const want = Math.cos(o.yaw) > 0.3 ? DAY_OFF_N : DAY_OFF_S;
@@ -2917,7 +3398,7 @@ function updateCamera(rdt) {
     }
     followKey = key;
   }
-  const off = state.mode === 'tour' ? TOUR_OFFSET : dayOff;
+  const off = state.mode === 'tour' ? TOUR_OFFSET : state.play ? PLAY_OFF : dayOff;
   if (fly.active) {
     fly.t += rdt / fly.dur; const e = ease(fly.t);
     if (fly.follow && has) { fly.t1.copy(heroPos); fly.p1.copy(heroPos).add(off); }
@@ -2966,21 +3447,23 @@ function buildTimeline() {
 }
 
 // ---- 人員一日的介面 ----
-const displayName = p => p.role === 'operator' && p.generic ? `作業員（第 ${p.station + 1} 站）` : p.name;
+const displayName = p => p.ambient ? p.label : p.role === 'operator' && p.generic ? `作業員（第 ${p.station + 1} 站）` : p.name;
 function avatarHTML(p, cls) {
   const R = ROLES[p.role], src = p.portrait && PORTRAITS[p.portrait];
-  return src ? `<img class="${cls}" src="${src}" alt="${p.name}的肖像">`
-    : `<span class="${cls} ph" style="--c:${R.color}">${p.generic ? '👷' : p.name[0]}</span>`;
+  return src ? `<img class="${cls}" src="${src}" alt="${displayName(p)}的肖像">`
+    : `<span class="${cls} ph" style="--c:${R.color}">${p.ambient ? R.emoji : p.generic ? '👷' : p.name[0]}</span>`;
 }
 function buildPeopleList() {
-  listMode = 'people'; $('panelTitle').textContent = '👷 人員名單';
-  const item = p => `<button class="pp-item" data-id="${p.id}">${avatarHTML(p, 'av')}<span class="pp-txt"><b>${displayName(p)}</b><small id="pa-${p.id}">${ROLES[p.role].title}</small></span></button>`;
-  $('stationList').innerHTML =
-    `<div class="zone-head"><span class="dot" style="background:#D96B45"></span>主要人物（點一下看他的一天）</div>`
+  listMode = 'people'; $('panelTitle').textContent = state.play ? '🎯 聊天任務' : '👷 人員名單';
+  const item = p => `<button class="pp-item" data-id="${p.id}">${avatarHTML(p, 'av')}<span class="pp-txt"><b>${displayName(p)}</b><small id="pa-${p.id}">${ROLES[p.role].title}</small></span><span class="met" id="pm-${p.id}">${DLG.met.has(p.id) ? '✓' : ''}</span></button>`;
+  const head = (c, t) => `<div class="zone-head"><span class="dot" style="background:${c}"></span>${t}</div>`;
+  $('stationList').innerHTML = (state.play ? '<div class="quest" id="questBar"></div>' : '')
+    + head('#D96B45', state.play ? '主要人物（點名字就會走過去找他）' : '主要人物（點一下聽他說話）')
     + MAIN_ORDER.map(id => item(PEOPLE_BY_ID[id])).join('')
-    + `<div class="zone-head"><span class="dot" style="background:#A39E94"></span>其他人員</div>`
-    + PEOPLE.filter(p => p.generic).map(item).join('');
-  $('stationList').querySelectorAll('.pp-item').forEach(b => b.addEventListener('click', () => selectPerson(b.dataset.id)));
+    + head('#A39E94', '其他人員') + PEOPLE.filter(p => p.generic).map(item).join('')
+    + head('#6F9B78', '園區路人') + AMBIENT.map(item).join('');
+  $('stationList').querySelectorAll('.pp-item').forEach(b => b.addEventListener('click', () => state.play ? walkToPerson(b.dataset.id) : selectPerson(b.dataset.id)));
+  updateQuest();
 }
 function buildDayTimeline() {
   $('tlZones').innerHTML = SC.map(s => `<div style="width:${s.dur / DAY_TOTAL * 100}%;background:${KIND_COLOR[s.kind]}"></div>`).join('');
@@ -2992,6 +3475,7 @@ const ACT_TEXT = { work: '在工站依 SOP 作業', desk: '在品保桌整理紀
 function lastLabel(p, i) { for (let k = i; k >= 0; k--) if (p.tasks[k].label) return p.tasks[k].label; return ''; }
 function activityText(p) {
   const o = p.o;
+  if (p.ambient) return o.visible ? o.label : '現在不在園區';
   if (!o.visible) return state.D < p.tasks[0].d0 ? '尚未到班' : '已下班';
   const t = o.task, label = lastLabel(p, o.i);
   if (o.walking) return `🚶 ${t.label ? '前往：' + t.label : WALK_TEXT[o.act]}`;
@@ -3000,15 +3484,16 @@ function activityText(p) {
 }
 function personHTML(p) {
   const R = ROLES[p.role];
-  const items = p.tasks.map((t, i) => t.label ? `<li data-i="${i}"><b>${fmt(clockAt(t.d0))}</b><span>${t.label}</span></li>` : '').join('');
-  return `<button class="mini close-x" id="btnUnsel" title="回到整體狀況">✕</button>
+  const top = `<button class="mini close-x" id="btnUnsel" title="回到整體狀況">✕</button>
     <div class="person-head">${avatarHTML(p, 'portrait')}
       <div><span class="zone-tag" style="--c:${R.color}">${R.title}・${R.en}</span>
-      <h2>${displayName(p)}</h2>${p.portrait ? '<div class="en">虛構人物・肖像由 Codex 繪製</div>' : ''}</div></div>
+      <h2>${displayName(p)}</h2>${p.portrait ? '<div class="en">虛構人物・肖像由 Codex 繪製</div>' : p.ambient ? '<div class="en">園區路人</div>' : ''}</div></div>
     <div class="status" id="infoStatus"></div>
-    <button class="btn follow" id="btnFollow">🎥 鏡頭跟隨</button>
-    <h3>🧑‍🏭 工作內容</h3><p>${R.duty}</p>
-    <h3>🗓️ 今天的行程</h3><ol class="sched" id="schedList">${items}</ol>
+    ${state.play ? '' : '<button class="btn follow" id="btnFollow">🎥 鏡頭跟隨</button>'}
+    <h3>🧑‍🏭 工作內容</h3><p>${R.duty}</p>`;
+  if (p.ambient) return top + `<div class="tip"><b>💡 小知識</b><p>${R.tip}</p></div>`;
+  const items = p.tasks.map((t, i) => t.label ? `<li data-i="${i}"><b>${fmt(clockAt(t.d0))}</b><span>${t.label}</span></li>` : '').join('');
+  return top + `<h3>🗓️ 今天的行程</h3><ol class="sched" id="schedList">${items}</ol>
     <div class="tip"><b>💡 小知識</b><p>${R.tip}</p></div>`;
 }
 function sceneHTML(s) {
@@ -3017,7 +3502,122 @@ function sceneHTML(s) {
     <div class="status" id="infoStatus"></div>
     <p style="margin-top:10px">${s.desc}</p>
     <h3>👀 現在大家在做什麼？</h3><ul class="who" id="whoList"></ul>
-    <p class="hint">點左邊名單或畫面中的人物，可以看他的完整行程，鏡頭也會跟著他走。</p>`;
+    <p class="hint">點左邊名單或畫面中的人物，可以聽他說現在在做什麼，鏡頭也會跟著他走。想親自走進工廠，按上方的「🎮 下場走走」。</p>`;
+}
+function playHTML() {                          // 下場走走：還沒選人時，右邊顯示玩法說明
+  const how = TOUCH
+    ? '<li><b>點地板</b>：走過去</li><li><b>點人物</b>：走過去和他聊天</li><li><b>單指拖曳</b>：轉動視角</li>'
+    : '<li><b>W A S D</b> 或方向鍵：走路（按住 Shift 跑步）</li><li><b>點地板</b>：自動走過去</li><li><b>E</b> 或點人物：聊天</li><li><b>拖曳畫面</b>：轉動視角</li>';
+  return `<span class="zone-tag" style="--c:#DB6A41">🎮 下場走走</span>
+    <h2>你是今天的參觀者</h2>
+    <div class="status" id="infoStatus"></div>
+    <h3>🕹️ 怎麼玩</h3><ul>${how}</ul>
+    <h3>🎯 聊天任務</h3><p>和左邊名單裡的人都聊聊看。頭上有「<b>！</b>」的人正在做重要的事，先去找他！</p>
+    <p class="hint">時間會照常流動。想看 14:00 的機台異常，可以按下方的 ⏭ 跳到下一段。</p>`;
+}
+
+// ---- NPC 對話框：說的話依照他「現在正在做的事」而定 ----
+const DLG = { open: false, who: null, pages: [], i: 0, shown: 0, met: new Set() };
+const TALK_TOTAL = MAIN_ORDER.length + PEOPLE.filter(p => p.generic).length + AMBIENT.length;
+function sayOf(p) {
+  const o = p.o;
+  for (let k = o.i ?? -1; k >= 0; k--) {
+    const t = p.tasks[k];
+    if (k === o.i && t.back && !o.walking && p.workSay) return p.workSay;   // 休息完，已經回到崗位
+    if (t.say) return t.say;
+    if (t.label) return [`我正在${t.label}。`];
+  }
+  return ['我正在忙，等一下再聊喔！'];
+}
+function talkLines(p) {
+  const R = ROLES[p.role], first = !DLG.met.has(p.id), hi = ['你好！', '嗨！', '哈囉！'][Math.floor(Math.random() * 3)];
+  if (p.ambient) return first ? [hi + p.talk[0], ...p.talk.slice(1), '💡 ' + R.tip] : [`${hi}我現在${p.o.label}。`, p.talk[1 + Math.floor(Math.random() * (p.talk.length - 1))] || p.talk[0]];
+  const op = p.role === 'operator' && p.generic;
+  const sp = /^[A-Za-z]/.test(R.title) ? ' ' : '';   // 中文後面接英文字母時，中間空一格（例如「我是 IPQC 品檢員」）
+  const who = op ? `我是第 ${p.station + 1} 站的作業員。` : p.generic ? `我是${R.title}。` : `我是${sp}${R.title}${p.name}。`;
+  const now = sayOf(p);
+  const pages = first ? [hi + who + (op ? '' : R.intro), ...now] : [hi + now[0], ...now.slice(1)];
+  if (first && !p.generic) pages.push('💡 ' + R.tip);
+  return pages;
+}
+function openTalk(id) {
+  const p = PEOPLE_BY_ID[id];
+  if (!p) return;
+  if (!p.ambient && state.mode === 'day') evalPerson(p, state.D, p.o);   // 先算出他「現在」在做什麼
+  if (!p.o.visible) { toast(`${displayName(p)}現在不在（可能還沒上班，或已經下班了）`); return; }
+  const R = ROLES[p.role], firstMeet = !DLG.met.has(id);
+  Object.assign(DLG, { open: true, who: id, pages: talkLines(p), i: 0, shown: 0 });
+  DLG.met.add(id);
+  $('dlgAv').innerHTML = avatarHTML(p, 'dlg-av');
+  $('dlgName').textContent = displayName(p);
+  $('dlgRole').textContent = R.title === displayName(p) ? '園區路人' : R.title; $('dlgRole').style.setProperty('--c', R.color);
+  $('dialog').hidden = false; document.body.classList.add('talking');
+  if (state.play) {                            // 下場走走：時間先停下來，兩個人面對面
+    state.talkHold = true; state.selPerson = id; infoKey = '';
+    PLAYER.path = null; PLAYER.chase = null; GOAL.visible = false;
+    PLAYER.yaw = Math.atan2(p.o.pos.x - PLAYER.pos.x, p.o.pos.z - PLAYER.pos.z);
+  }
+  updateQuest(firstMeet ? id : null);
+  renderTalk();
+}
+function closeTalk() {
+  if (!DLG.open) return;
+  DLG.open = false; DLG.who = null; state.talkHold = false;
+  $('dialog').hidden = true; document.body.classList.remove('talking');
+}
+function advanceTalk() {                       // 文字還在跑就直接顯示整句；顯示完了就換下一句，最後一句就結束
+  if (!DLG.open) return;
+  const len = [...DLG.pages[DLG.i]].length;
+  if (DLG.shown < len) DLG.shown = len;
+  else if (DLG.i < DLG.pages.length - 1) { DLG.i++; DLG.shown = 0; }
+  else { closeTalk(); return; }
+  renderTalk();
+}
+function renderTalk() {
+  const chars = [...(DLG.pages[DLG.i] || '')], n = Math.min(chars.length, Math.floor(DLG.shown));
+  const done = n >= chars.length, last = DLG.i === DLG.pages.length - 1, el = $('dlgText');
+  el.textContent = chars.slice(0, n).join('');
+  if (done && !last) { const c = document.createElement('span'); c.className = 'caret'; c.textContent = '▼'; el.appendChild(c); }
+  $('dlgNext').textContent = !done ? '略過 ⏩' : last ? '結束 ✓' : '下一句 ▶';
+  $('dlgPage').textContent = `${DLG.i + 1} / ${DLG.pages.length}`;
+}
+function updateDialog(rdt) {                   // 打字機效果：每秒大約跑出 36 個字
+  if (!DLG.open) return;
+  const len = [...DLG.pages[DLG.i]].length;
+  if (DLG.shown >= len) return;
+  const before = Math.floor(DLG.shown);
+  DLG.shown = Math.min(len, DLG.shown + rdt * 36);
+  if (Math.floor(DLG.shown) !== before) renderTalk();
+}
+function updateQuest(newId) {                  // 聊天任務的進度與打勾
+  if (newId) { const el = $('pm-' + newId); if (el) el.textContent = '✓'; }
+  const q = $('questBar'), n = DLG.met.size;
+  if (q) q.innerHTML = `🎯 已經聊過 <b>${n}</b> / ${TALK_TOTAL} 人<div class="qbar"><i style="width:${n / TALK_TOTAL * 100}%"></i></div>`;
+  if (!newId) return;
+  if (n >= TALK_TOTAL) toast('🏆 所有人都聊過了！你已經是半個工廠通了！');
+  else if (MAIN_ORDER.includes(newId) && MAIN_ORDER.every(id => DLG.met.has(id))) toast('🎉 任務完成：你認識了產線的 5 位核心人物！');
+}
+let toastTimer = 0;
+function toast(msg) {
+  const t = $('toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 3200);
+}
+function setPlay(on) {                         // 打開／關掉「下場走走」
+  if (on && state.mode !== 'day') setMode('day');
+  state.play = on; state.camFree = false;
+  document.body.classList.toggle('playing', on);
+  const b = $('btnPlayMode'); b.textContent = on ? '🚪 離開遊戲' : '🎮 下場走走'; b.classList.toggle('on', on);
+  closeTalk();
+  PLAYER.path = null; PLAYER.chase = null; PLAYER.keys.clear(); PLAYER.near = null; GOAL.visible = false;
+  $('talkHint').style.display = 'none';
+  if (on) {
+    state.follow = null; state.selPerson = null;
+    PLAYER.pos.y = groundY(PLAYER.pos.x, PLAYER.pos.z);
+    const c = PLAYER.pos.clone(); c.y += 0.9;
+    flyTo(c.clone().add(PLAY_OFF), c, 1.4, true);
+    if (!PLAYER.welcomed) { PLAYER.welcomed = true; toast(TOUCH ? '點地板走路、點人物聊天！先去員工出入口找警衛吧。' : 'W A S D 走路、E 聊天！先去員工出入口找警衛吧。'); }
+  }
+  infoKey = ''; buildPeopleList();
 }
 function dayEndHTML() {
   const out = outputAt(DAY_TOTAL);
@@ -3027,8 +3627,10 @@ function dayEndHTML() {
     <button class="btn primary" id="btnReplay" style="margin-top:12px">↺ 重播這一天</button></div>`;
 }
 function selectPerson(id) {
+  if (state.play) { walkToPerson(id); return; }   // 下場走走：走過去找他
   if (state.mode !== 'day') { setMode('day'); if (state.D < 0.01) state.D = SC[3].d0 + 1; }   // 從其他模式點人物：跳到上午生產時段
   state.selPerson = id; state.follow = id; infoKey = '';
+  openTalk(id);
 }
 function stepScene(dir) {
   const i = sceneIdx(state.D), into = state.D - SC[i].d0;
@@ -3047,19 +3649,24 @@ function updateDayUI() {
   $('tlFillInner').style.width = (frac > 0 ? 100 / frac : 0) + '%';
   $('tlHandle').style.left = (frac * 100) + '%';
   $('progText').innerHTML = `🕗 <b>${fmt(clockAt(D))}</b>　${s.name}（${si + 1} / ${SC.length}）`;
-  for (const p of PEOPLE) { const el = $('pa-' + p.id); if (el) el.textContent = activityText(p); }
+  for (const p of ALL_NPC) { const el = $('pa-' + p.id); if (el) el.textContent = activityText(p); }
   $('stationList').querySelectorAll('.pp-item').forEach(el => el.classList.toggle('current', el.dataset.id === state.selPerson));
   if (D >= DAY_TOTAL - 0.01) { setInfo('dayEnd', dayEndHTML()); return; }
   if (state.selPerson) {
     const p = PEOPLE_BY_ID[state.selPerson];
-    setInfo('p-' + p.id, personHTML(p));
+    setInfo('p-' + p.id + (state.play ? '-play' : ''), personHTML(p));
     $('infoStatus').innerHTML = `📍 <b>現在：</b>${activityText(p)}`;
     const fb = $('btnFollow'), on = state.follow === p.id;
-    fb.classList.toggle('on', on); fb.textContent = on ? '🎥 鏡頭跟隨中（點一下停止）' : '🎥 鏡頭跟隨';
-    // 行程表：已完成的變淡、目前這一項反白
-    let nowI = -1;
-    if (p.o.visible || D >= p.tasks[0].d0) for (let k = 0; k < p.tasks.length; k++) if (p.tasks[k].label && p.tasks[k].d0 <= D) nowI = k;
-    $('schedList').querySelectorAll('li').forEach(li => { const i = +li.dataset.i; li.className = i === nowI ? 'now' : i < nowI ? 'past' : ''; });
+    if (fb) { fb.classList.toggle('on', on); fb.textContent = on ? '🎥 鏡頭跟隨中（點一下停止）' : '🎥 鏡頭跟隨'; }
+    // 行程表：已完成的變淡、目前這一項反白（園區路人沒有行程表）
+    if (p.tasks) {
+      let nowI = -1;
+      if (p.o.visible || D >= p.tasks[0].d0) for (let k = 0; k < p.tasks.length; k++) if (p.tasks[k].label && p.tasks[k].d0 <= D) nowI = k;
+      $('schedList').querySelectorAll('li').forEach(li => { const i = +li.dataset.i; li.className = i === nowI ? 'now' : i < nowI ? 'past' : ''; });
+    }
+  } else if (state.play) {
+    setInfo('play', playHTML());
+    $('infoStatus').innerHTML = `🕗 <b>${fmt(clockAt(D))}</b>　${s.name}　${alarm ? '🔴 異常停線' : run ? '🟢 生產中' : '🟡 停線中'}`;
   } else {
     setInfo('sc-' + si, sceneHTML(s));
     $('infoStatus').innerHTML = `${alarm ? '🔴 <b>異常停線</b>' : run ? '🟢 <b>產線運轉中</b>' : '🟡 <b>產線停止</b>'}　今日產量 <b>${out}</b> 台`;
@@ -3136,6 +3743,8 @@ function setPaused(p) {
 }
 function setMode(m) {
   const prev = state.mode;
+  if (m !== 'day' && state.play) setPlay(false);   // 離開人員一日，就一起離開下場走走
+  closeTalk();
   state.mode = m; infoKey = '';
   $('btnTour').classList.toggle('active', m === 'tour');
   $('btnFree').classList.toggle('active', m === 'free');
@@ -3190,7 +3799,7 @@ $('btnFree').onclick = () => setMode('free');
 $('btnDay').onclick = () => setMode('day');
 $('btnOverview').onclick = () => {
   if (state.mode === 'tour') setMode('free');
-  if (state.mode === 'day') state.follow = null; else state.selected = -1;   // 人員一日維持在同一個模式，只是鏡頭不再跟人
+  if (state.mode === 'day') { state.follow = null; if (state.play) state.camFree = true; } else state.selected = -1;   // 人員一日維持在同一個模式，只是鏡頭不再跟人（玩家一走動就會再跟上）
   infoKey = ''; flyTo(OVERVIEW.pos, OVERVIEW.tgt, 1.8); $('btnOverview').classList.add('active');
 };
 // 說明卡裡的按鈕（內容會重畫，所以用事件委派）
@@ -3230,17 +3839,41 @@ $('speedBox').querySelectorAll('button').forEach(b => b.onclick = () => {
   tl.addEventListener('pointermove', e => { if (drag) seek(e); });
   tl.addEventListener('pointerup', () => { drag = false; });
 })();
+const MOVE_KEYS = new Set(['KeyW', 'KeyA', 'KeyS', 'KeyD', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ShiftLeft', 'ShiftRight']);
 window.addEventListener('keydown', e => {
   if (e.target.tagName === 'INPUT') return;
+  if (DLG.open && e.code === 'Escape') { closeTalk(); return; }
+  if (state.play && state.mode === 'day') {    // 下場走走：WASD／方向鍵走路，E、空白鍵、Enter 聊天
+    if (MOVE_KEYS.has(e.code)) { e.preventDefault(); PLAYER.keys.add(e.code); return; }
+    if (e.code === 'KeyE' || e.code === 'Space' || e.code === 'Enter') {
+      e.preventDefault();
+      if (!e.repeat) { if (DLG.open) advanceTalk(); else if (PLAYER.near) openTalk(PLAYER.near.id); }
+      return;
+    }
+  } else if (DLG.open && (e.code === 'Enter' || e.code === 'KeyE')) { e.preventDefault(); advanceTalk(); return; }
   if (e.code === 'Space') { e.preventDefault(); setPaused(!state.paused); }
   else if (e.code === 'ArrowRight') stepStation(1);
   else if (e.code === 'ArrowLeft') stepStation(-1);
   else if (e.code === 'Escape') $('helpModal').classList.add('hidden');
 });
+window.addEventListener('keyup', e => PLAYER.keys.delete(e.code));
+window.addEventListener('blur', () => PLAYER.keys.clear());   // 切換視窗時放開所有按鍵，避免玩家一直往前走
+$('btnPlayMode').onclick = e => { setPlay(!state.play); e.currentTarget.blur(); };
+$('dlgNext').onclick = advanceTalk;
+$('dlgText').onclick = advanceTalk;
+$('dlgClose').onclick = closeTalk;
+$('talkHint').onclick = () => { if (PLAYER.near) openTalk(PLAYER.near.id); };
 // 點人物或機台
 (() => {
   const ray = new THREE.Raycaster(), ndc = new THREE.Vector2(); let down = null;
-  const targets = [...PEOPLE.map(p => p.fig.root), ...stationGroups];
+  const targets = [...ALL_NPC.map(p => p.fig.root), ...stationGroups];
+  const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0), gp = new THREE.Vector3();
+  const groundPoint = () => {                  // 滑鼠點到的地面位置：先看工廠地坪（高度 0），沒點到就看人工島（高度 -0.35）
+    plane.constant = 0;
+    if (ray.ray.intersectPlane(plane, gp) && gp.x > FLOOR.x0 && gp.x < FLOOR.x1 && gp.z > FLOOR.z0 && gp.z < FLOOR.z1) return gp;
+    plane.constant = 0.35;
+    return ray.ray.intersectPlane(plane, gp);
+  };
   const hit = e => {
     const r = renderer.domElement.getBoundingClientRect();
     ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
@@ -3257,7 +3890,17 @@ window.addEventListener('keydown', e => {
   renderer.domElement.addEventListener('pointerdown', e => { down = [e.clientX, e.clientY]; });
   renderer.domElement.addEventListener('pointerup', e => {
     if (!down || Math.hypot(e.clientX - down[0], e.clientY - down[1]) > 6) return;
-    const h = hit(e); if (!h) return;
+    const h = hit(e);
+    if (state.play && state.mode === 'day') {  // 下場走走：點人物就走過去聊天，點地板就走過去
+      if (h && h.person) {
+        const p = PEOPLE_BY_ID[h.person];
+        if (Math.hypot(p.o.pos.x - PLAYER.pos.x, p.o.pos.z - PLAYER.pos.z) < 2.6) openTalk(p.id); else walkToPerson(p.id);
+        return;
+      }
+      const g = groundPoint(); if (g) walkTo(g.x, g.z);
+      return;
+    }
+    if (!h) return;
     if (h.person) { selectPerson(h.person); return; }
     if (state.mode === 'day') return;          // 人員一日模式只點人物，避免誤點機台跳出模式
     if (state.mode !== 'free') setMode('free');
@@ -3266,7 +3909,7 @@ window.addEventListener('keydown', e => {
   let lastMove = 0;
   renderer.domElement.addEventListener('pointermove', e => {
     const now = performance.now(); if (now - lastMove < 80 || e.buttons) return; lastMove = now;
-    renderer.domElement.style.cursor = hit(e) ? 'pointer' : 'default';
+    renderer.domElement.style.cursor = hit(e) || state.play ? 'pointer' : 'default';
   });
 })();
 window.addEventListener('resize', () => {
@@ -3279,7 +3922,8 @@ window.addEventListener('resize', () => {
  * =================================================================== */
 buildStationList();
 buildTimeline();
-window.__sim = { state, STATIONS, SCHED, SC, PEOPLE_BY_ID, renderer, camera, controls, fly, seekHeroToStation, setMode, setPaused, selectPerson, dAtClock, hm };   // 方便除錯用
+window.__sim = { state, STATIONS, SCHED, SC, PEOPLE_BY_ID, renderer, camera, controls, fly, seekHeroToStation, setMode, setPaused, selectPerson, dAtClock, hm,
+  PLAYER, NAVG, AMBIENT, DLG, setPlay, openTalk, closeTalk, advanceTalk, walkTo, walkToPerson, findPath, groundY, walkable };   // 方便除錯用
 if (window.innerWidth < 820) { $('stationPanel').classList.add('collapsed'); $('btnPanel').textContent = '☰'; }
 camera.position.copy(OVERVIEW.pos); controls.target.copy(OVERVIEW.tgt);
 
@@ -3288,6 +3932,7 @@ camera.position.copy(OVERVIEW.pos); controls.target.copy(OVERVIEW.tgt);
 //   #look=9           自由參觀模式，鏡頭直接看第 9 站
 //   #view=overview    自由參觀模式的全景視角
 //   #day=14:05        人員一日模式，直接跳到 14:05（可加 &follow=tech 指定跟隨的人）
+//   &play             直接下場走走（可加 &at=34,-12 指定玩家位置、&talk=leader 開啟時就和某人對話）
 //   &pause            開啟時先暫停
 const HASH = new URLSearchParams(location.hash.slice(1));
 if (HASH.has('day')) {
@@ -3298,6 +3943,12 @@ if (HASH.has('day')) {
   else if (who === 'none') state.follow = null;   // 不跟隨任何人（維持全景）
   state.lastScene = sceneIdx(state.D);
 }
+if (HASH.has('play')) {
+  const at = (HASH.get('at') || '').split(',').map(Number);
+  if (at.length === 2 && at.every(Number.isFinite)) PLAYER.pos.set(at[0], groundY(at[0], at[1]), at[1]);
+  setPlay(true);
+}
+const PENDING_TALK = HASH.get('talk');         // 第一幀算好每個人的位置後再開啟對話
 if (HASH.has('station')) {
   const k = clamp((+HASH.get('station') || 1) - 1, 0, STATIONS.length - 1), p = clamp01(+(HASH.get('p') || 0));
   state.T = state.heroN * SPAWN + (p > 0 ? STATIONS[k].tStart + p * STATIONS[k].dwell : Math.max(0, STATIONS[k].tStart - 0.8));
@@ -3348,12 +3999,13 @@ function updateEnvironment(time) {
 let last = performance.now(), firstFrame = true;
 renderer.setAnimationLoop(now => {
   const rdt = Math.min(0.1, (now - last) / 1000); last = now;
-  if (!state.paused) {
+  if (!state.paused && !state.talkHold) {     // 下場走走和人聊天時，時間先停下來
     if (state.mode === 'day') {
       // 人員一日：一天的時間往前走；只有生產時段，產線上的產品才會移動
       state.D = Math.min(DAY_TOTAL, state.D + rdt * state.speed);
       if (lineRunningAt(state.D)) state.T += rdt * state.speed;
     } else state.T += rdt * state.speed;
+    AMB.t += rdt;
   }
   if (state.mode === 'day') {               // 每段場景開始時可自動暫停（簡報用）
     const si = sceneIdx(state.D);
@@ -3374,10 +4026,14 @@ renderer.setAnimationLoop(now => {
   updateUnits();
   updateStations();
   updatePeople();
+  updateAmbient(now / 1000);
+  updatePlayer(rdt, now / 1000);
+  updateMarkers(now / 1000);
   updateEnvironment(now / 1000);
   if (getHeroPos(heroPos)) { marker.visible = true; marker.position.copy(heroPos).add(tmpV.set(0, 0.6 + 0.04 * Math.sin(now / 250), 0)); marker.rotation.y = now / 600; }
   else marker.visible = false;
   updateCamera(rdt);
+  updateDialog(rdt);
   updateUI(rdt);
   renderer.render(scene, camera);
 
@@ -3385,7 +4041,8 @@ renderer.setAnimationLoop(now => {
     firstFrame = false; window.__simReady = true;
     $('loading').classList.add('hidden');
     if (HASH.has('station') && getHeroPos(heroPos)) { fly.active = false; controls.target.copy(heroPos); camera.position.copy(heroPos).add(TOUR_OFFSET); }
-    else if (state.mode === 'day' && getFollowPos(heroPos)) { fly.active = false; controls.target.copy(heroPos); camera.position.copy(heroPos).add(dayOff); }
+    else if (state.mode === 'day' && getFollowPos(heroPos)) { fly.active = false; controls.target.copy(heroPos); camera.position.copy(heroPos).add(state.play ? PLAY_OFF : dayOff); }
+    if (PENDING_TALK && PEOPLE_BY_ID[PENDING_TALK]) openTalk(PENDING_TALK);
     else setTimeout(() => { if (state.mode === 'tour' && getHeroPos(heroPos)) flyTo(heroPos.clone().add(TOUR_OFFSET), heroPos.clone(), 2.6); }, 500);
   }
 });
