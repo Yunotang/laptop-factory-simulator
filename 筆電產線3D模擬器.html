@@ -198,46 +198,70 @@
     #infoCard{width:320px}
     #stationPanel{width:210px}
   }
-  @media (max-width:820px){
-    #topbar{flex-direction:column;align-items:stretch;gap:6px;top:8px;left:8px;right:8px}
-    .brand{padding:6px 10px 6px 6px;gap:8px}
-    .brand .logo{width:32px;height:32px;font-size:13px;border-radius:9px}
-    .brand h1{font-size:15px;white-space:nowrap}
-    .brand p{display:none}
-    .modes{justify-content:space-between;padding:4px}
-    .seg{padding:7px 8px;font-size:12.5px}
-    #stationPanel{top:134px;left:8px;bottom:auto;max-height:calc(100% - 134px - 200px)}
-    #stationPanel:not(.collapsed){width:200px}
-    #infoCard{left:8px;right:8px;width:auto;top:auto;bottom:146px;max-height:32vh;padding:12px 14px}
-    #infoCard h2{font-size:18px}
+  /* 手機版才用到的元件：電腦版先藏起來 */
+  #btnMenu,#btnSpeed,#sheetHandle,#drawerMask,.seg .sh{display:none}
+  .seg .ic{margin-right:4px}
+  #sheetHandle{width:100%;height:18px;border:0;background:transparent;padding:0;margin:0 0 2px;cursor:pointer}
+  #sheetHandle::before{content:'';display:block;width:40px;height:4px;border-radius:2px;background:#D9CCC1;margin:7px auto 0}
+  #drawerMask{position:fixed;inset:0;background:rgba(40,35,34,.35);z-index:15}
+
+  /* ---------- 手機版（直式寬度 ≤ 820，或橫式高度 ≤ 520）----------
+     上方一排模式按鈕、名單改成左側抽屜、說明卡平常收合在下方、控制列縮成一排，讓 3D 畫面佔大部分螢幕 */
+  @media (max-width:820px),(max-height:520px){
+    #topbar{top:8px;left:8px;right:8px}
+    .brand{display:none}
+    .modes{flex:1;flex-wrap:nowrap;justify-content:space-between;gap:2px;padding:4px}
+    .seg{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:1px;padding:5px 2px 4px;font-size:11px;line-height:1.2;border-radius:11px}
+    .seg .ic{display:block;font-size:17px;line-height:1.1;margin:0}
+    .seg .lg{display:none}
+    .seg .sh{display:block}
+    #btnMenu{display:flex}
+    /* 站點／人員名單：從左邊滑出的抽屜 */
+    #stationPanel,#stationPanel.collapsed{top:0;left:0;bottom:0;width:min(84vw,320px);max-height:none;border-radius:0 20px 20px 0;z-index:16;transition:transform .25s ease}
+    #stationPanel.collapsed{transform:translateX(-105%)}
+    #stationPanel.collapsed #stationList{display:block}
+    #stationPanel .panel-head{padding-top:16px}
+    .drawer-open #drawerMask{display:block}
+    /* 說明卡：平常收合在下方，只露出站名與進度；點一下展開 */
+    #infoCard{left:8px;right:8px;width:auto;top:auto;bottom:98px;max-height:122px;overflow:hidden;padding:2px 14px 12px;transition:max-height .25s ease}
+    #infoCard.open{max-height:58vh;overflow-y:auto}
+    #sheetHandle{display:block}
+    #infoCard:not(.open) .zone-tag,#infoCard:not(.open) .en,#infoCard:not(.open) .close-x{display:none}
+    #infoCard h2{font-size:18px;margin-top:2px}
     #infoCard p{font-size:13.5px}
-    #controls{left:8px;right:8px;bottom:8px;padding:8px 10px 8px}
-    .ctl-row{gap:6px}
-    .btn{padding:7px 10px;font-size:13px}
-    .btn.primary{min-width:0}
-    .btn .lbl{display:none}
-    .speed{margin-left:0}
-    .speed span{display:none}
-    .chk{margin-left:0;font-size:12.5px}
-    .prog-text{margin-left:0;width:100%;font-size:12.5px}
-    #timeline{margin-top:6px}
-    #pauseBadge{top:auto;bottom:calc(146px + 32vh + 10px);font-size:12.5px}
-    .day-mode #pauseBadge{display:none !important}
-    #dayBar{top:auto;bottom:calc(146px + 32vh + 8px);left:8px;right:8px;transform:none;justify-content:center;flex-wrap:wrap;gap:4px 10px;padding:6px 10px}
-    #dayBar .clock{font-size:19px}
-    #dayBar .tl-note{display:none}
-    .portrait{width:76px;height:76px}
-    #dayBar{max-width:none}
-    #dialog{left:8px;right:8px;max-width:none;bottom:162px;padding:10px 12px;gap:10px}
+    #infoCard .status{margin-top:8px;padding:7px 10px;font-size:13px}
+    .portrait{width:60px;height:60px;border-radius:14px}
+    #infoCard.open .portrait{width:76px;height:76px}
+    /* 控制列：一排（播放、上一站、下一站、從頭開始、速度）＋時間軸 */
+    #controls{left:8px;right:8px;bottom:8px;padding:7px 8px 6px}
+    .ctl-row{gap:6px;flex-wrap:nowrap}
+    #controls .btn{flex:1;padding:7px 0;font-size:15px;text-align:center}
+    #controls .btn.primary{min-width:0}
+    #controls .btn .lbl{display:none}
+    #speedBox,.chk,.prog-text{display:none}
+    #btnSpeed{display:block;font-size:13.5px}
+    #timeline{margin-top:4px;height:26px}
+    #pauseBadge{display:none !important}
+    /* 人員一日的時間列：放在上方工具列下面，一排 */
+    #dayBar{top:66px;bottom:auto;left:8px;right:8px;max-width:none;transform:none;flex-wrap:nowrap;justify-content:space-between;gap:8px;padding:5px 6px 5px 12px;white-space:nowrap}
+    #dayBar .clock{font-size:18px}
+    #dayBar .scene{font-size:13px;overflow:hidden;text-overflow:ellipsis;min-width:0}
+    #dayBar .out,#dayBar .tl-note{display:none}
+    .day-play{padding:6px 10px;font-size:12.5px}
+    /* 對話框、聊天提示、通知 */
+    #dialog{left:8px;right:8px;max-width:none;bottom:98px;padding:10px 12px;gap:10px}
     .dlg-av{width:56px;height:56px;border-radius:12px}
     .dlg-av.ph{font-size:28px}
     .dlg-head b{font-size:15px}
     #dlgText{font-size:14px;min-height:3.3em;line-height:1.65}
-    body.talking #infoCard,body.talking #dayBar{display:none}
-    .playing #infoCard{display:none}
-    .playing #dayBar{bottom:162px}
-    #talkHint{bottom:236px;font-size:13px}
-    #toast{top:128px;font-size:13.5px}
+    body.talking #infoCard,.playing #infoCard{display:none}
+    #talkHint{bottom:104px;font-size:13px}
+    #toast{top:118px;font-size:13.5px}
+  }
+  /* 橫式手機：說明卡和對話框靠右下，不擋住畫面中間 */
+  @media (max-height:520px) and (orientation:landscape){
+    #infoCard{left:auto;width:min(340px,46vw)}
+    #dialog{left:auto;width:min(520px,70vw)}
   }
 </style>
 </head>
@@ -252,12 +276,14 @@
       <p>從 PCB 打板、SMT、組裝、測試到包裝出貨的完整旅程</p>
     </div>
   </div>
+  <!-- 每個按鈕有兩種文字：.lg 電腦版的完整名稱、.sh 手機版的短名稱（圖示在上、字在下） -->
   <div class="modes card">
-    <button class="seg active" id="btnTour">🎬 導覽模式</button>
-    <button class="seg" id="btnFree">🧭 自由參觀</button>
-    <button class="seg" id="btnDay">👷 人員一日</button>
-    <button class="seg" id="btnOverview">🗺️ 全景</button>
-    <button class="seg" id="btnHelp">❓ 說明</button>
+    <button class="seg" id="btnMenu" aria-label="站點／人員名單"><span class="ic">☰</span><span class="sh">清單</span></button>
+    <button class="seg active" id="btnTour"><span class="ic">🎬</span><span class="lg">導覽模式</span><span class="sh">導覽</span></button>
+    <button class="seg" id="btnFree"><span class="ic">🧭</span><span class="lg">自由參觀</span><span class="sh">參觀</span></button>
+    <button class="seg" id="btnDay"><span class="ic">👷</span><span class="lg">人員一日</span><span class="sh">人員</span></button>
+    <button class="seg" id="btnOverview"><span class="ic">🗺️</span><span class="lg">全景</span><span class="sh">全景</span></button>
+    <button class="seg" id="btnHelp"><span class="ic">❓</span><span class="lg">說明</span><span class="sh">說明</span></button>
   </div>
 </header>
 
@@ -268,8 +294,10 @@
   </div>
   <div id="stationList"></div>
 </aside>
+<div id="drawerMask"></div>
 
-<section id="infoCard" class="card"><div id="infoBody"></div></section>
+<!-- 說明卡：手機版平常收合在下方，點拉把或卡片展開 -->
+<section id="infoCard" class="card"><button id="sheetHandle" aria-label="展開或收合說明"></button><div id="infoBody"></div></section>
 <div id="dayBar" class="card">
   <span class="clock" id="dayClock">07:40</span>
   <span class="scene" id="dayScene">上班報到</span>
@@ -294,10 +322,11 @@
 
 <footer id="controls" class="card">
   <div class="ctl-row">
-    <button id="btnPlay" class="btn primary">⏸ 暫停</button>
+    <button id="btnPlay" class="btn primary">⏸<span class="lbl"> 暫停</span></button>
     <button id="btnPrev" class="btn" title="上一站">⏮<span class="lbl"> 上一站</span></button>
     <button id="btnNext" class="btn" title="下一站"><span class="lbl">下一站 </span>⏭</button>
     <button id="btnRestart" class="btn" title="從頭開始">↺<span class="lbl"> 從頭開始</span></button>
+    <button id="btnSpeed" class="btn" title="播放速度（點一下切換）">1×</button>
     <div class="speed" id="speedBox">
       <span>速度</span>
       <button data-speed="0.5">0.5×</button>
@@ -322,7 +351,8 @@
     <p>這是一座「虛擬筆電工廠」。一片銅箔基板會依序經過 <b>6 大區、23 個站</b>，最後變成裝箱好、可以出貨的筆電。</p>
     <ul>
       <li><b>🎬 導覽模式</b>：鏡頭自動跟著「示範機」（頭上有黃色箭頭）走完全程，右邊的卡片會解說每一站。</li>
-      <li><b>🧭 自由參觀</b>：滑鼠<b>左鍵拖曳</b>旋轉、<b>右鍵拖曳</b>平移、<b>滾輪</b>縮放；<b>點任一台機器</b>就會飛過去並顯示說明。</li>
+      <li><b>🧭 自由參觀</b>：滑鼠<b>左鍵拖曳</b>旋轉、<b>右鍵拖曳</b>平移、<b>滾輪</b>縮放（手機：<b>單指拖曳</b>旋轉、<b>雙指</b>縮放與平移）；<b>點任一台機器</b>就會飛過去並顯示說明。</li>
+      <li><b>📱 手機</b>：左上角 <b>☰ 清單</b>打開站點或人員名單；下方說明卡平常收合，<b>點一下</b>展開完整說明；速度按鈕點一下就切換 0.5×～4×。</li>
       <li><b>👷 人員一日</b>：用縮時方式看工廠人員的一天（兩班制日班 08:00–20:00）：打卡、換靜電衣、早會、生產、休息用餐、處理機台異常，一直到交接班下班。點左邊名單或畫面中的人物，會跳出<b>對話框</b>聽他說現在在做什麼，右邊也會顯示他的肖像和行程。頭上有「<b>！</b>」的人正在做重要的事。</li>
       <li><b>🎮 下場走走</b>（在人員一日的時間列上）：扮演一位參觀者走進工廠。<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> 或方向鍵走路，按住 <kbd>Shift</kbd> 跑步；靠近人按 <kbd>E</kbd> 聊天。滑鼠或手機：<b>點地板</b>自動走過去，<b>點人物</b>就走過去和他聊天。左邊的「聊天任務」會記錄你聊過誰。</li>
       <li><b>🗺️ 全景</b>：從高處俯瞰整座工廠。</li>
@@ -2220,7 +2250,8 @@ const ROLES = {
     duty: '辦公室的生管（生產管理）人員，負責排生產計畫：哪天做哪些機種、做多少台、物料什麼時候要到。',
     tip: '生管排程要同時考慮訂單交期、產線產能和物料到貨時間，就像在拼一幅大拼圖。' },
   // 玩家：下場走走時扮演的參觀者
-  player: { title: '參觀者', en: 'You', color: '#DB6A41', smock: '#6F9B78', cap: '#DB6A41', pants: '#3f3f46', hat: 'esd', emoji: '🙂', duty: '', tip: '' },
+  // 玩家：黃色小熊耳帽＋珊瑚橘參觀服＋綠色小背包，工廠裡沒有其他人穿這個顏色，一眼就認得出來
+  player: { title: '參觀者', en: 'You', color: '#DB6A41', smock: '#F26B4A', cap: '#FFC93C', pants: '#3f3f46', hat: 'bear', pack: '#3BA99C', emoji: '🙂', duty: '', tip: '' },
 };
 
 // ---- 人物（姓名皆為虛構）；idx 決定報到順序、置物櫃與餐廳座位 ----
@@ -2592,6 +2623,7 @@ const CHG = {                                   // 所有人共用的幾何體�
   brim: new THREE.CylinderGeometry(0.36, 0.36, 0.022, 28),
   visor: new THREE.CylinderGeometry(0.21, 0.21, 0.022, 20, 1, false, -Math.PI / 2, Math.PI),   // 朝前的半圓形帽簷
   bun: new THREE.SphereGeometry(0.1, 14, 10),
+  pack: new THREE.CapsuleGeometry(0.11, 0.1, 4, 12),   // 小背包
 };
 // 臉：球面貼圖的橫向 u = 0.25 是臉的正中央、u = 0.75 是後腦勺；縱向 y = 128 是頭的「赤道」
 function chibiFace(def) {
@@ -2652,6 +2684,13 @@ const MARK_MAT = {
     g.beginPath(); g.roundRect(8, 12, 112, 80, 28); g.fill(); g.stroke();
     g.fillStyle = '#282322'; for (const x of [40, 64, 88]) { g.beginPath(); g.arc(x, 52, 8, 0, Math.PI * 2); g.fill(); }
   }), toneMapped: false, depthTest: false, sizeAttenuation: false }),
+  me: new THREE.SpriteMaterial({ map: makeTex(128, 128, g => {   // 玩家頭上的「▼」：隔著機台也看得到
+    g.lineJoin = 'round';
+    g.beginPath(); g.moveTo(22, 30); g.lineTo(106, 30); g.lineTo(64, 104); g.closePath();
+    g.lineWidth = 16; g.strokeStyle = '#FFFDFA'; g.stroke();
+    g.fillStyle = '#F26B4A'; g.fill();
+    g.fillStyle = 'rgba(255,255,255,.45)'; g.beginPath(); g.moveTo(36, 38); g.lineTo(64, 38); g.lineTo(50, 62); g.closePath(); g.fill();   // 反光
+  }), toneMapped: false, depthTest: false, sizeAttenuation: false }),
 };
 function nameTag(def, R) {
   const label = def.role === 'night' ? R.title : `${def.name}・${R.title}`;
@@ -2702,6 +2741,14 @@ function buildFigure(def) {
   } else if (R.hat === 'helmet') {             // 安全帽
     part(hc, CHG.dome, solid(R.cap), 0, 0.07, 0, true).scale.set(1.05, 0.88, 1.05);
     part(hc, CHG.brim, solid(R.cap), 0, 0.075, 0.02);
+  } else if (R.hat === 'bear') {               // 小熊耳帽（玩家）：蓬蓬的帽子＋兩個圓耳朵
+    const capM = solid(R.cap), innerM = solid('#E8956B');
+    part(hc, CHG.dome, capM, 0, 0.085, -0.01, true).scale.set(1, 0.84, 1);
+    part(hc, CHG.rim, solid(shade(R.cap, 0.88)), 0, 0.085, -0.01).rotation.x = Math.PI / 2;
+    for (const s of [-1, 1]) {
+      part(hc, CHG.ear, capM, s * 0.17, 0.3, -0.02, true).scale.set(1.5, 1.5, 0.9);
+      part(hc, CHG.ear, innerM, s * 0.17, 0.3, 0.025).scale.set(0.85, 0.85, 0.5);
+    }
   } else part(hc, CHG.dome, hairM, 0, 0.09, -0.01, true).scale.set(0.97, 0.82, 0.97);   // 不戴帽子：露出頭髮
   const fig = { root, body, legL, legR, armL, armR, head, carryBox: null, toolHand: null, toolFloor: null, sitY: CH.sitY };
   if (def.role === 'ipqc') {                   // 平板（螢幕朝向自己）
@@ -2724,6 +2771,10 @@ function buildFigure(def) {
     part(br, boxGeo(0.24, 0.07, 0.08), std(0x4b5563), 0, -0.78, 0);
   }
   if (def.role === 'office') part(armR, boxGeo(0.06, 0.11, 0.012), M.black, 0, -0.29, 0.06);   // 手機
+  if (R.pack) {                                // 背後的小背包（玩家）
+    part(body, CHG.pack, solid(R.pack), 0, 0.62, -0.19, true).scale.set(1, 1, 0.6);
+    part(body, boxGeo(0.13, 0.07, 0.02), solid(shade(R.pack, 0.8)), 0, 0.56, -0.255);   // 前面的小口袋
+  }
   if (def.name) root.add(nameTag(def, R));
   fig.markY = def.name ? 2.0 : 1.74;           // 頭上提示的高度（有名牌的人放在名牌上面）
   fig.mark = new THREE.Sprite(MARK_MAT.alert); fig.chat = new THREE.Sprite(MARK_MAT.chat);
@@ -3067,9 +3118,14 @@ const PLAYER = { fig: buildFigure({ id: 'player', name: '你', role: 'player', h
   pos: new THREE.Vector3(PLAYER_SPAWN.x, -0.35, PLAYER_SPAWN.z), yaw: PLAYER_SPAWN.yaw, phase: 0, moving: false, o: { act: 'stand', phase: 0 },
   path: null, chase: null, chaseT: 0, keys: new Set(), near: null };
 PLAYER.fig.root.visible = false;
-{ // 腳下的橘色光圈，一眼就找得到自己
-  const ring = new THREE.Mesh(new THREE.RingGeometry(0.3, 0.42, 32), new THREE.MeshBasicMaterial({ color: 0xDB6A41, transparent: true, opacity: 0.75, depthWrite: false, toneMapped: false }));
+{ // 一眼就找得到自己：腳下的光圈（外圈會一直往外擴散）＋頭上會跳的「▼」
+  const ringMat = o => new THREE.MeshBasicMaterial({ color: 0xF26B4A, transparent: true, opacity: o, depthWrite: false, toneMapped: false });
+  const ring = new THREE.Mesh(new THREE.RingGeometry(0.3, 0.42, 32), ringMat(0.9));
   ring.rotation.x = -Math.PI / 2; ring.position.y = 0.025; ring.renderOrder = 2; PLAYER.fig.root.add(ring);
+  PLAYER.pulse = new THREE.Mesh(new THREE.RingGeometry(0.4, 0.46, 32), ringMat(0.6));
+  PLAYER.pulse.rotation.x = -Math.PI / 2; PLAYER.pulse.position.y = 0.03; PLAYER.pulse.renderOrder = 2; PLAYER.fig.root.add(PLAYER.pulse);
+  PLAYER.arrow = new THREE.Sprite(MARK_MAT.me);
+  PLAYER.arrow.scale.set(0.04, 0.04, 1); PLAYER.arrow.position.y = 2.06; PLAYER.arrow.renderOrder = 8; PLAYER.fig.root.add(PLAYER.arrow);
 }
 // 點地板時，目的地的標記
 const GOAL = new THREE.Mesh(new THREE.RingGeometry(0.16, 0.26, 28), new THREE.MeshBasicMaterial({ color: 0xDB6A41, transparent: true, opacity: 0.9, depthWrite: false, toneMapped: false }));
@@ -3286,6 +3342,9 @@ function updatePlayer(rdt, time) {
   PLAYER.o.act = PLAYER.moving ? 'walk' : DLG.open ? 'talk' : 'stand'; PLAYER.o.phase = PLAYER.phase;
   poseFigure(f, PLAYER.o, time, false, 0);
   if (GOAL.visible) GOAL.scale.setScalar(1 + 0.12 * Math.sin(time * 6));
+  const pf = (time * 0.8) % 1;                 // 光圈往外擴散、慢慢變淡；頭上的「▼」上下跳
+  PLAYER.pulse.scale.setScalar(1 + pf * 1.2); PLAYER.pulse.material.opacity = 0.6 * (1 - pf);
+  PLAYER.arrow.position.y = 2.22 + 0.08 * Math.abs(Math.sin(time * 3.2));
   if (PLAYER.chase && !DLG.open) {             // 點了某個人：一路追過去，走到旁邊就開始聊天
     const p = PEOPLE_BY_ID[PLAYER.chase], d = Math.hypot(p.o.pos.x - PLAYER.pos.x, p.o.pos.z - PLAYER.pos.z);
     if (!p.fig.root.visible) { PLAYER.chase = null; PLAYER.path = null; }
@@ -3368,6 +3427,35 @@ const DAY_OFF_S = new THREE.Vector3(-2.4, 5.4, 4.3), DAY_OFF_N = new THREE.Vecto
 let dayOff = DAY_OFF_S, followKey = '';
 const PLAY_OFF = new THREE.Vector3(0, 7.8, 9.2);   // 下場走走：鏡頭在玩家後上方（可以拖曳轉動）
 const OVERVIEW = { pos: new THREE.Vector3(23.7, 64, 72.6), tgt: new THREE.Vector3(5, -1, 0) };
+// ---- 手機直式畫面：鏡頭自動拉遠、視角放寬，並把畫面中心移到「上方工具列」和「下方卡片、控制列」之間 ----
+const VIEW = { k: 1, oy: 0 };                  // k：鏡頭距離倍率（電腦版 = 1）；oy：畫面往上移幾個像素
+const offV = new THREE.Vector3();
+const sOff = v => v.clone().multiplyScalar(VIEW.k);
+// 導覽鏡頭：直式手機改成比較從正前方看（鏡頭拉遠後，從斜側面看容易被旁邊的天橋擋住）
+const TOUR_OFFSET_M = new THREE.Vector3(0.7, 1.55, 3.0);
+const tourOff = () => (VIEW.k > 1 ? TOUR_OFFSET_M : TOUR_OFFSET);
+const overviewPos = () => OVERVIEW.pos.clone().sub(OVERVIEW.tgt).multiplyScalar(Math.sqrt(VIEW.k)).add(OVERVIEW.tgt);
+const MOBILE_MQ = window.matchMedia('(max-width: 820px), (max-height: 520px)');   // 和 CSS 的手機版條件一樣
+const isMobile = () => MOBILE_MQ.matches;
+function fitView() {
+  const W = window.innerWidth, H = window.innerHeight, a = W / H;
+  camera.aspect = a;
+  camera.fov = a >= 1 ? 38 : Math.min(56, 38 + (1 - a) * 30);   // 直式畫面越窄，視角放得越寬
+  // 直式畫面左右看得到的範圍很窄：鏡頭拉遠到大約和電腦版看得一樣寬（0.613 ≈ 電腦版 16:9 畫面水平半視角的 tan）
+  const hw = a * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
+  VIEW.k = a >= 1 ? 1 : Math.pow(clamp(0.613 / hw, 1, 3.2), 0.95);
+  let oy = 0;
+  if (isMobile()) {
+    const shown = el => getComputedStyle(el).display !== 'none' && el.getClientRects().length > 0;
+    let top = 0, bottom = H;
+    for (const id of ['topbar', 'dayBar']) { const el = $(id); if (shown(el)) top = Math.max(top, el.getBoundingClientRect().bottom); }
+    for (const id of ['controls', 'infoCard', 'dialog']) { const el = $(id); if (shown(el)) bottom = Math.min(bottom, el.getBoundingClientRect().top); }
+    oy = Math.max(0, Math.round(((H - bottom) - top) / 2));    // 下方被擋住比較多，就把畫面往上移
+  }
+  VIEW.oy = oy;
+  if (oy) camera.setViewOffset(W, H, 0, oy, W, H); else camera.clearViewOffset();
+  camera.updateProjectionMatrix();
+}
 const fly = { active: false, follow: false, t: 0, dur: 1.4, p0: new THREE.Vector3(), p1: new THREE.Vector3(), t0: new THREE.Vector3(), t1: new THREE.Vector3() };
 function flyTo(pos, tgt, dur = 1.4, follow = false) {   // follow = 飛行途中持續追著移動中的目標
   fly.p0.copy(camera.position); fly.t0.copy(controls.target);
@@ -3386,7 +3474,8 @@ function stationView(st) {
   const c = Math.cos(st.yaw), s = Math.sin(st.yaw);
   const toWorld = (lx, y, lz) => new THREE.Vector3(st.x + lx * c + lz * s, y, st.z - lx * s + lz * c);
   const cx = st.type === 'pallet' ? 1.8 : 0;
-  return { pos: toWorld(cx + 2.55, 3.1, st.view * 4.6), tgt: toWorld(cx, 0.95, 0) };
+  const tgt = toWorld(cx, 0.95, 0);
+  return { pos: toWorld(cx + 2.55, 3.1, st.view * 4.6).sub(tgt).multiplyScalar(VIEW.k).add(tgt), tgt };
 }
 function updateCamera(rdt) {
   const has = getFollowPos(heroPos);
@@ -3398,7 +3487,8 @@ function updateCamera(rdt) {
     }
     followKey = key;
   }
-  const off = state.mode === 'tour' ? TOUR_OFFSET : state.play ? PLAY_OFF : dayOff;
+  // 只有導覽要看整台機台才拉遠；跟拍人物時，手機放寬的視角就夠了
+  const off = state.mode === 'tour' ? offV.copy(tourOff()).multiplyScalar(VIEW.k) : state.play ? PLAY_OFF : dayOff;
   if (fly.active) {
     fly.t += rdt / fly.dur; const e = ease(fly.t);
     if (fly.follow && has) { fly.t1.copy(heroPos); fly.p1.copy(heroPos).add(off); }
@@ -3430,7 +3520,7 @@ function buildStationList() {
     });
   });
   $('stationList').innerHTML = html;
-  $('stationList').querySelectorAll('.st-item').forEach(b => b.addEventListener('click', () => pickStation(+b.dataset.k)));
+  $('stationList').querySelectorAll('.st-item').forEach(b => b.addEventListener('click', () => { pickStation(+b.dataset.k); if (isMobile()) setDrawer(false); }));
 }
 const stItems = () => $('stationList').querySelectorAll('.st-item');
 function buildTimeline() {
@@ -3462,7 +3552,10 @@ function buildPeopleList() {
     + MAIN_ORDER.map(id => item(PEOPLE_BY_ID[id])).join('')
     + head('#A39E94', '其他人員') + PEOPLE.filter(p => p.generic).map(item).join('')
     + head('#6F9B78', '園區路人') + AMBIENT.map(item).join('');
-  $('stationList').querySelectorAll('.pp-item').forEach(b => b.addEventListener('click', () => state.play ? walkToPerson(b.dataset.id) : selectPerson(b.dataset.id)));
+  $('stationList').querySelectorAll('.pp-item').forEach(b => b.addEventListener('click', () => {
+    if (state.play) walkToPerson(b.dataset.id); else selectPerson(b.dataset.id);
+    if (isMobile()) setDrawer(false);           // 手機版：選好人就把抽屜關上，看得到 3D 畫面
+  }));
   updateQuest();
 }
 function buildDayTimeline() {
@@ -3689,7 +3782,7 @@ function stationHTML(k) {
 const sn = n => `NB26-${String(n).padStart(4, '0')}`;
 let uiClock = 1, boardClock = 1;   // 第一幀就立刻更新介面
 function updateUI(rdt) {
-  boardClock += rdt; if (boardClock > 0.5) { boardClock = 0; drawBoard(); }
+  boardClock += rdt; if (boardClock > 0.5) { boardClock = 0; drawBoard(); if (isMobile()) fitView(); }   // 手機版：介面高度會變（卡片內容、對話框），定期重算畫面中心
   uiClock += rdt; if (uiClock < 0.1) return; uiClock = 0;
   if (state.mode === 'day') { updateDayUI(); return; }
   const tau = heroTau(), total = SCHED.total, items = stItems();
@@ -3724,8 +3817,9 @@ function updateUI(rdt) {
     if (state.selected < 0) {
       setInfo('welcome', `<div class="welcome"><h2>🧭 自由參觀模式</h2>
         <p>現在可以自己在工廠裡走走看：</p>
-        <ul><li><b>左鍵拖曳</b>：旋轉視角</li><li><b>右鍵拖曳</b>：平移</li><li><b>滾輪</b>：放大縮小</li><li><b>點任一台機器</b>或左邊的站名：飛過去看說明</li></ul>
-        <p style="margin-top:10px">想看完整流程，按右上角的 <b>🎬 導覽模式</b>。</p></div>`);
+        <ul>${TOUCH ? '<li><b>單指拖曳</b>：旋轉視角</li><li><b>雙指</b>：放大縮小、平移</li><li><b>點任一台機器</b>或 ☰ 清單裡的站名：飛過去看說明</li>'
+          : '<li><b>左鍵拖曳</b>：旋轉視角</li><li><b>右鍵拖曳</b>：平移</li><li><b>滾輪</b>：放大縮小</li><li><b>點任一台機器</b>或左邊的站名：飛過去看說明</li>'}</ul>
+        <p style="margin-top:10px">想看完整流程，按上方的 <b>🎬 導覽模式</b>。</p></div>`);
     } else {
       const st = STATIONS[state.selected];
       setInfo('fs' + state.selected, stationHTML(state.selected));
@@ -3738,7 +3832,7 @@ function updateUI(rdt) {
 }
 function setPaused(p) {
   state.paused = p;
-  $('btnPlay').textContent = p ? '▶ 播放' : '⏸ 暫停';
+  $('btnPlay').innerHTML = p ? '▶<span class="lbl"> 播放</span>' : '⏸<span class="lbl"> 暫停</span>';   // 手機版只顯示圖示
   $('pauseBadge').style.display = p ? 'block' : 'none';
 }
 function setMode(m) {
@@ -3764,7 +3858,8 @@ function setMode(m) {
     if (listMode !== 'stations') buildStationList();
     if (prev === 'day') buildTimeline();
   }
-  if (m === 'tour' && getHeroPos(heroPos)) flyTo(heroPos.clone().add(TOUR_OFFSET), heroPos.clone(), 1.6, true);
+  if (m === 'tour' && getHeroPos(heroPos)) flyTo(heroPos.clone().add(sOff(tourOff())), heroPos.clone(), 1.6, true);
+  if (isMobile()) setTimeout(fitView, 50);     // 手機版：人員一日多了上方時間列，重新計算畫面中心
 }
 function seekHeroToStation(k) {
   k = clamp(k, 0, STATIONS.length - 1);
@@ -3791,7 +3886,7 @@ function restartTour() {
   state.lastHeroK = -1;
   const start = new THREE.Vector3(-17, PY, -13.5);   // 輸送帶起點
   if (state.mode !== 'tour') setMode('tour');
-  flyTo(start.clone().add(TOUR_OFFSET), start, 1.6);
+  flyTo(start.clone().add(sOff(tourOff())), start, 1.6);
 }
 
 $('btnTour').onclick = () => setMode('tour');
@@ -3800,7 +3895,7 @@ $('btnDay').onclick = () => setMode('day');
 $('btnOverview').onclick = () => {
   if (state.mode === 'tour') setMode('free');
   if (state.mode === 'day') { state.follow = null; if (state.play) state.camFree = true; } else state.selected = -1;   // 人員一日維持在同一個模式，只是鏡頭不再跟人（玩家一走動就會再跟上）
-  infoKey = ''; flyTo(OVERVIEW.pos, OVERVIEW.tgt, 1.8); $('btnOverview').classList.add('active');
+  infoKey = ''; flyTo(overviewPos(), OVERVIEW.tgt, 1.8); $('btnOverview').classList.add('active');
 };
 // 說明卡裡的按鈕（內容會重畫，所以用事件委派）
 $('infoBody').addEventListener('click', e => {
@@ -3818,14 +3913,33 @@ $('btnPrev').onclick = () => stepStation(-1);
 $('btnNext').onclick = () => stepStation(1);
 $('btnRestart').onclick = restartTour;
 $('chkAutoPause').onchange = e => { state.autoPause = e.target.checked; };
-$('btnPanel').onclick = () => {
-  const p = $('stationPanel'); p.classList.toggle('collapsed');
-  $('btnPanel').textContent = p.classList.contains('collapsed') ? '☰' : '⟨';
-};
-$('speedBox').querySelectorAll('button').forEach(b => b.onclick = () => {
-  state.speed = +b.dataset.speed;
-  $('speedBox').querySelectorAll('button').forEach(x => x.classList.toggle('active', x === b));
+// 名單：電腦版是收合／展開；手機版是從左邊滑出的抽屜（後面加一層半透明遮罩，點遮罩就關上）
+function setDrawer(open) {
+  $('stationPanel').classList.toggle('collapsed', !open);
+  $('btnPanel').textContent = open ? '⟨' : '☰';
+  document.body.classList.toggle('drawer-open', open && isMobile());
+}
+$('btnPanel').onclick = () => setDrawer($('stationPanel').classList.contains('collapsed'));
+$('btnMenu').onclick = () => setDrawer(true);
+$('drawerMask').onclick = () => setDrawer(false);
+// 說明卡（手機版）：平常收合，點拉把或卡片就展開；展開後點拉把或 3D 畫面就收合
+function setSheet(open) {
+  $('infoCard').classList.toggle('open', open);
+  setTimeout(fitView, 300);                    // 等卡片的高度動畫結束，再重新計算畫面中心
+}
+$('sheetHandle').onclick = () => setSheet(!$('infoCard').classList.contains('open'));
+$('infoCard').addEventListener('click', e => {
+  if (isMobile() && !$('infoCard').classList.contains('open') && !e.target.closest('button,a,input')) setSheet(true);
 });
+// 播放速度：電腦版四顆按鈕；手機版一顆按鈕，點一下就換下一種速度
+const SPEEDS = [0.5, 1, 2, 4];
+function setSpeed(v) {
+  state.speed = v;
+  $('speedBox').querySelectorAll('button').forEach(x => x.classList.toggle('active', +x.dataset.speed === v));
+  $('btnSpeed').textContent = v + '×';
+}
+$('speedBox').querySelectorAll('button').forEach(b => b.onclick = () => setSpeed(+b.dataset.speed));
+$('btnSpeed').onclick = () => setSpeed(SPEEDS[(SPEEDS.indexOf(state.speed) + 1) % SPEEDS.length]);
 // 時間軸拖曳
 (() => {
   const tl = $('timeline'); let drag = false;
@@ -3890,6 +4004,7 @@ $('talkHint').onclick = () => { if (PLAYER.near) openTalk(PLAYER.near.id); };
   renderer.domElement.addEventListener('pointerdown', e => { down = [e.clientX, e.clientY]; });
   renderer.domElement.addEventListener('pointerup', e => {
     if (!down || Math.hypot(e.clientX - down[0], e.clientY - down[1]) > 6) return;
+    if (isMobile() && $('infoCard').classList.contains('open')) { setSheet(false); return; }   // 手機版：說明卡展開時，點畫面先把它收起來
     const h = hit(e);
     if (state.play && state.mode === 'day') {  // 下場走走：點人物就走過去聊天，點地板就走過去
       if (h && h.person) {
@@ -3913,8 +4028,9 @@ $('talkHint').onclick = () => { if (PLAYER.near) openTalk(PLAYER.near.id); };
   });
 })();
 window.addEventListener('resize', () => {
-  camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
+  fitView();
+  if (!isMobile()) document.body.classList.remove('drawer-open');
 });
 
 /* =====================================================================
@@ -3924,8 +4040,9 @@ buildStationList();
 buildTimeline();
 window.__sim = { state, STATIONS, SCHED, SC, PEOPLE_BY_ID, renderer, camera, controls, fly, seekHeroToStation, setMode, setPaused, selectPerson, dAtClock, hm,
   PLAYER, NAVG, AMBIENT, DLG, setPlay, openTalk, closeTalk, advanceTalk, walkTo, walkToPerson, findPath, groundY, walkable };   // 方便除錯用
-if (window.innerWidth < 820) { $('stationPanel').classList.add('collapsed'); $('btnPanel').textContent = '☰'; }
-camera.position.copy(OVERVIEW.pos); controls.target.copy(OVERVIEW.tgt);
+if (isMobile()) setDrawer(false);              // 手機版：名單預設收起來
+fitView();
+camera.position.copy(overviewPos()); controls.target.copy(OVERVIEW.tgt);
 
 // 網址參數（簡報或測試用）：
 //   #station=9        示範機直接跳到第 9 站（可加 &p=0.5 指定加工進度）
@@ -4040,10 +4157,11 @@ renderer.setAnimationLoop(now => {
   if (firstFrame) {
     firstFrame = false; window.__simReady = true;
     $('loading').classList.add('hidden');
-    if (HASH.has('station') && getHeroPos(heroPos)) { fly.active = false; controls.target.copy(heroPos); camera.position.copy(heroPos).add(TOUR_OFFSET); }
+    if (HASH.has('station') && getHeroPos(heroPos)) { fly.active = false; controls.target.copy(heroPos); camera.position.copy(heroPos).add(sOff(tourOff())); }
     else if (state.mode === 'day' && getFollowPos(heroPos)) { fly.active = false; controls.target.copy(heroPos); camera.position.copy(heroPos).add(state.play ? PLAY_OFF : dayOff); }
     if (PENDING_TALK && PEOPLE_BY_ID[PENDING_TALK]) openTalk(PENDING_TALK);
-    else setTimeout(() => { if (state.mode === 'tour' && getHeroPos(heroPos)) flyTo(heroPos.clone().add(TOUR_OFFSET), heroPos.clone(), 2.6); }, 500);
+    else setTimeout(() => { if (state.mode === 'tour' && getHeroPos(heroPos)) flyTo(heroPos.clone().add(sOff(tourOff())), heroPos.clone(), 2.6); }, 500);
+    fitView();                                  // 介面都畫好之後，再算一次畫面中心
   }
 });
 </script>
