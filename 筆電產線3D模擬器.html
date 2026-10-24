@@ -187,6 +187,57 @@
   #talkHint{position:fixed;left:50%;bottom:146px;transform:translateX(-50%);background:rgba(40,35,34,.88);color:#FFFDFA;padding:9px 18px;border-radius:999px;font-size:14px;font-weight:700;z-index:8;display:none;cursor:pointer;white-space:nowrap;border:0}
   #toast{position:fixed;left:50%;top:150px;transform:translateX(-50%);background:var(--ink);color:#FFFDFA;padding:11px 20px;border-radius:14px;font-size:15px;font-weight:800;z-index:12;opacity:0;pointer-events:none;transition:opacity .4s;max-width:calc(100% - 24px);text-align:center}
   #toast.show{opacity:1}
+
+  /* ---------- 新人闖關：上方進度列、下方關卡卡片；闖關時其他介面先藏起來 ---------- */
+  .seg-quest{background:var(--coral-soft);color:var(--coral-dark)}
+  .seg-quest:hover:not(.active){background:#F8D3C2}
+  body.quest-on #topbar,body.quest-on #stationPanel,body.quest-on #infoCard,body.quest-on #controls,body.quest-on #dayBar,
+  body.quest-on #pauseBadge,body.quest-on #talkHint,body.quest-on #dialog,body.quest-on #drawerMask{display:none !important}
+  #qHead{position:fixed;top:12px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:14px;padding:7px 8px 7px 16px;z-index:10;white-space:nowrap}
+  #qHead[hidden],#qCard[hidden]{display:none}
+  #qHead .qt{font-weight:900;font-size:15px}
+  #qHead .qs{font-size:13px;font-weight:800;color:var(--text-2);font-variant-numeric:tabular-nums}
+  #qHead .qs b{color:var(--coral-dark);font-size:15px}
+  #qCard{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);width:min(680px,calc(100% - 32px));max-height:62vh;overflow-y:auto;padding:16px 18px;z-index:10;border:2px solid var(--ink);box-shadow:0 14px 36px rgba(40,35,34,.28)}
+  .q-title{font-size:12px;font-weight:900;color:var(--coral-dark);letter-spacing:1px;margin-bottom:6px}
+  .q-say{display:flex;gap:12px;align-items:flex-start}
+  .q-say .dlg-av{width:58px;height:58px;border-radius:14px}
+  .q-say b.who{font-size:12.5px;color:var(--muted)}
+  .q-say p{margin:2px 0 0;font-size:15px;line-height:1.7}
+  .q-slots{display:grid;gap:6px;margin:12px 0 10px}
+  .q-slot{display:flex;align-items:center;gap:10px;min-height:38px;padding:6px 12px;border-radius:12px;border:1.5px dashed var(--line);color:var(--muted);font-weight:800;font-size:14px}
+  .q-slot.fill{border-style:solid;border-color:#CFE2D3;background:var(--sage-soft);color:#2F5238}
+  .q-slot i{font-style:normal;font-family:var(--serif);font-weight:700;width:18px;color:var(--coral-dark)}
+  .q-chips{display:flex;flex-wrap:wrap;gap:8px}
+  .q-chip{border:1.5px solid var(--line);background:#FFFDFA;border-radius:12px;padding:10px 14px;font-weight:800;font-size:15px;display:flex;align-items:center;gap:8px;color:var(--text)}
+  .q-chip:hover{background:var(--panel-tint)}
+  .q-chip .dot{width:10px;height:10px;border-radius:50%;flex:none}
+  .q-chip.used{visibility:hidden}
+  .q-chip.wrong{opacity:.4;pointer-events:none;text-decoration:line-through}
+  .q-task{margin-top:12px;padding:10px 12px;border-radius:12px;background:var(--yellow-soft);font-weight:800;font-size:15px;color:#6B4A16}
+  .q-roles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+  .q-role{border:1.5px solid var(--line);background:#FFFDFA;border-radius:14px;padding:8px 4px;display:flex;flex-direction:column;align-items:center;gap:3px;font-weight:800;font-size:13.5px;color:var(--text)}
+  .q-role:hover{background:var(--panel-tint)}
+  .q-role .dlg-av{width:54px;height:54px;border-radius:50%}
+  .q-role small{font-weight:700;color:var(--muted);font-size:12px}
+  .q-scale{margin-top:12px;padding:10px 12px;border-radius:12px;background:#0f172a;color:#e2e8f0;font-weight:800;font-size:15px;font-variant-numeric:tabular-nums}
+  .q-scale .bad{color:#f87171}
+  .q-spot{width:100%;max-width:560px;height:auto;display:block;margin:10px auto 0;border-radius:12px;background:#F4EEE6;touch-action:manipulation;cursor:crosshair;font-family:inherit}
+  .q-fb{min-height:24px;margin-top:10px;font-size:14px;font-weight:700;line-height:1.6}
+  .q-fb.ok{color:#2F7A45}
+  .q-fb.no{color:var(--coral-dark)}
+  .q-foot{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap}
+  .q-foot a.btn{text-decoration:none;display:inline-block}
+  .q-gain{margin-right:auto;font-weight:900;color:var(--coral-dark);font-size:16px}
+  .q-input{width:100%;font:inherit;font-size:16px;padding:11px 14px;border-radius:12px;border:1.5px solid var(--line);margin:12px 0 2px;background:#FFFDFA;color:var(--text)}
+  .q-result{margin:12px 0 4px;font-weight:800;color:var(--text-2)}
+  .q-big{font-size:40px;font-weight:900;font-family:var(--serif);color:var(--coral-dark);line-height:1}
+  .q-stars{font-size:24px;color:var(--coral);letter-spacing:2px}
+  .q-cert{width:100%;border-radius:12px;margin-top:10px;box-shadow:0 4px 14px rgba(67,49,39,.18);display:block}
+  #qCard .hint{font-size:13px;color:var(--muted);margin:6px 0 0}
+  .q-board{margin-top:12px;padding:12px 14px;border-radius:12px;border:1.5px dashed var(--line);font-size:14px;line-height:1.7;color:var(--text-2)}
+  .shake{animation:shake .35s}
+  @keyframes shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
   @media (max-width:1180px){
     #dialog{left:234px;right:344px}
     #dayBar .tl-note{display:none}
@@ -257,6 +308,15 @@
     body.talking #infoCard,.playing #infoCard{display:none}
     #talkHint{bottom:104px;font-size:13px}
     #toast{top:118px;font-size:13.5px}
+    /* 新人闖關（手機）：進度列貼齊上方、關卡卡片貼齊下方 */
+    #qHead{top:8px;left:8px;right:8px;transform:none;justify-content:space-between;gap:8px;padding:6px 6px 6px 12px}
+    #qHead .qt{font-size:13.5px}
+    #qHead .qs{font-size:12px}
+    #qCard{left:8px;right:8px;bottom:8px;transform:none;width:auto;max-height:60vh;padding:12px 14px}
+    .q-say .dlg-av{width:46px;height:46px;border-radius:12px}
+    .q-say p{font-size:14px;line-height:1.65}
+    .q-chip{padding:9px 12px;font-size:14px}
+    .q-role .dlg-av{width:46px;height:46px}
   }
   /* 橫式手機：說明卡和對話框靠右下，不擋住畫面中間 */
   @media (max-height:520px) and (orientation:landscape){
@@ -283,6 +343,7 @@
     <button class="seg" id="btnFree"><span class="ic">🧭</span><span class="lg">自由參觀</span><span class="sh">參觀</span></button>
     <button class="seg" id="btnDay"><span class="ic">👷</span><span class="lg">人員一日</span><span class="sh">人員</span></button>
     <button class="seg" id="btnOverview"><span class="ic">🗺️</span><span class="lg">全景</span><span class="sh">全景</span></button>
+    <button class="seg seg-quest" id="btnQuest"><span class="ic">🏆</span><span class="lg">新人闖關</span><span class="sh">闖關</span></button>
     <button class="seg" id="btnHelp"><span class="ic">❓</span><span class="lg">說明</span><span class="sh">說明</span></button>
   </div>
 </header>
@@ -319,6 +380,12 @@
 </div>
 <button id="talkHint"></button>
 <div id="toast"></div>
+<!-- 新人闖關：上方是關卡、分數、計時；下方是關卡卡片（內容由程式產生） -->
+<div id="qHead" class="card" hidden>
+  <span class="qt">🏆 新人闖關</span><span class="qs" id="qStep"></span><span class="qs" id="qScore"></span><span class="qs" id="qTime"></span>
+  <button class="mini" id="qExit" title="離開闖關">✕</button>
+</div>
+<section id="qCard" class="card" hidden></section>
 
 <footer id="controls" class="card">
   <div class="ctl-row">
@@ -352,6 +419,7 @@
     <ul>
       <li><b>🎬 導覽模式</b>：鏡頭自動跟著「示範機」（頭上有黃色箭頭）走完全程，右邊的卡片會解說每一站。</li>
       <li><b>🧭 自由參觀</b>：滑鼠<b>左鍵拖曳</b>旋轉、<b>右鍵拖曳</b>平移、<b>滾輪</b>縮放（手機：<b>單指拖曳</b>旋轉、<b>雙指</b>縮放與平移）；<b>點任一台機器</b>就會飛過去並顯示說明。</li>
+      <li><b>🏆 新人闖關</b>：5 分鐘、5 個關卡，用遊戲認識筆電工廠：報到流程、6 大區的順序、出事要找誰、品檢找碴、出貨防呆。完成後可以下載結業證書（排行榜下一版開放）。</li>
       <li><b>📱 手機</b>：左上角 <b>☰ 清單</b>打開站點或人員名單；下方說明卡平常收合，<b>點一下</b>展開完整說明；速度按鈕點一下就切換 0.5×～4×。</li>
       <li><b>👷 人員一日</b>：用縮時方式看工廠人員的一天（兩班制日班 08:00–20:00）：打卡、換靜電衣、早會、生產、休息用餐、處理機台異常，一直到交接班下班。點左邊名單或畫面中的人物，會跳出<b>對話框</b>聽他說現在在做什麼，右邊也會顯示他的肖像和行程。頭上有「<b>！</b>」的人正在做重要的事。</li>
       <li><b>🎮 下場走走</b>（在人員一日的時間列上）：扮演一位參觀者走進工廠。<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> 或方向鍵走路，按住 <kbd>Shift</kbd> 跑步；靠近人按 <kbd>E</kbd> 聊天。滑鼠或手機：<b>點地板</b>自動走過去，<b>點人物</b>就走過去和他聊天。左邊的「聊天任務」會記錄你聊過誰。</li>
@@ -3445,11 +3513,11 @@ function fitView() {
   const hw = a * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
   VIEW.k = a >= 1 ? 1 : Math.pow(clamp(0.613 / hw, 1, 3.2), 0.95);
   let oy = 0;
-  if (isMobile()) {
+  if (isMobile() || QZ.on) {                   // 手機版，或闖關時（電腦版的關卡卡片也會擋住下方）
     const shown = el => getComputedStyle(el).display !== 'none' && el.getClientRects().length > 0;
     let top = 0, bottom = H;
-    for (const id of ['topbar', 'dayBar']) { const el = $(id); if (shown(el)) top = Math.max(top, el.getBoundingClientRect().bottom); }
-    for (const id of ['controls', 'infoCard', 'dialog']) { const el = $(id); if (shown(el)) bottom = Math.min(bottom, el.getBoundingClientRect().top); }
+    for (const id of ['topbar', 'dayBar', 'qHead']) { const el = $(id); if (shown(el)) top = Math.max(top, el.getBoundingClientRect().bottom); }
+    for (const id of ['controls', 'infoCard', 'dialog', 'qCard']) { const el = $(id); if (shown(el)) bottom = Math.min(bottom, el.getBoundingClientRect().top); }
     oy = Math.max(0, Math.round(((H - bottom) - top) / 2));    // 下方被擋住比較多，就把畫面往上移
   }
   VIEW.oy = oy;
@@ -3784,6 +3852,7 @@ let uiClock = 1, boardClock = 1;   // 第一幀就立刻更新介面
 function updateUI(rdt) {
   boardClock += rdt; if (boardClock > 0.5) { boardClock = 0; drawBoard(); if (isMobile()) fitView(); }   // 手機版：介面高度會變（卡片內容、對話框），定期重算畫面中心
   uiClock += rdt; if (uiClock < 0.1) return; uiClock = 0;
+  updateQuestHud();
   if (state.mode === 'day') { updateDayUI(); return; }
   const tau = heroTau(), total = SCHED.total, items = stItems();
   const frac = clamp01(tau / total);
@@ -3889,6 +3958,274 @@ function restartTour() {
   flyTo(start.clone().add(sOff(tourOff())), start, 1.6);
 }
 
+// ---- 新人闖關：5 分鐘、5 關（報到 → 認識產線 → 找對的人 → 品檢找碴 → 出貨防呆），最後拿結業證書 ----
+//   每關最多 100 分：一次都沒錯 100 分；錯的次數在 slack 以內 60 分；再多就 30 分
+//   排行榜下一版再接資料庫；這一版先把「這台裝置的最佳紀錄」存在瀏覽器裡
+const qStore = {
+  get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* 無痕模式等情況存不了，不影響遊戲 */ } },
+};
+const esc = s => String(s).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));   // 暱稱放進網頁前先轉義，避免被當成程式碼
+const qTimeText = ms => { const s = Math.max(0, Math.floor(ms / 1000)); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
+const qView = (tgt, off) => ({ tgt, pos: tgt.clone().add(off.clone().multiplyScalar(Math.sqrt(VIEW.k))) });
+const Q_LEVELS = [
+  { title: '報到', slack: 1, clock: '07:43', type: 'order',
+    view: () => qView(new THREE.Vector3(29.6, 0.6, -9.2), new THREE.Vector3(-6.5, 6.2, 7.5)),
+    say: '歡迎報到！我是線長林雅婷，今天由我帶你。進產線之前要先做三件事，請照順序點出來：',
+    items: ['打卡上班', '換靜電衣、戴靜電帽', '通過靜電測試'],
+    hints: ['先證明你來上班了。', '要先換上靜電衣，才能做靜電測試。', '最後要確認身上沒有靜電。'],
+    decoys: ['直接走進產線'], decoyHint: '還沒做靜電防護，不能直接進產線喔！',
+    done: '答對了！人走動時身上的靜電可能有上千伏特，所以要換靜電衣、通過靜電測試，才能碰電路板。' },
+  { title: '認識產線', slack: 2, clock: '09:00', type: 'order', view: () => ({ pos: overviewPos(), tgt: OVERVIEW.tgt.clone() }),
+    say: '這就是我們的產線！一台筆電要依序經過 6 個區域，請照生產的順序點出來。提示：工廠裡每一區的看板上都有編號。',
+    items: ZONES.map(z => z.name), colors: ZONES.map(z => z.color),
+    hints: ['一切從空的電路板開始。', '電路板做好後，要先把上千顆零件焊上去。', '零件焊好了，要先確認主機板能不能開機。', '主機板沒問題，才裝進外殼、組成筆電。', '筆電組好後，要燒機測試、檢查外觀。', '最後才貼標、裝箱、上棧板。'],
+    done: '完全正確！做電路板 → 焊零件 → 測主機板 → 組裝 → 測試品檢 → 包裝出貨，這就是一台筆電誕生的順序。' },
+  { title: '找對的人', slack: 1, clock: 'alarm', pause: true, type: 'match', view: () => stationView(STATIONS[8]),
+    say: '糟糕，14:00 貼片機一直「拋料」，亮紅燈了！這時候每件事都要找對的人。下面這件事，誰負責？',
+    roles: ['leader', 'tech', 'ipqc'],
+    tasks: [
+      { q: '決定要不要停線、安排加班把產量追回來', a: 'leader', hint: '要找負責整條線產量和人力的人。', why: '線長對整條線的產量和人力負責。' },
+      { q: '帶著工具箱，修理故障的貼片機', a: 'tech', hint: '要找會修機器的人。', why: '機台的保養和維修是技術員的工作。' },
+      { q: '修好後，確認貼出來的板子品質沒問題', a: 'ipqc', hint: '要找專門檢查品質的人。', why: '品質確認沒問題才能恢復生產，這是 IPQC 品檢員的工作。' },
+    ],
+    done: '全對！線長管整條線、技術員修機台、品檢員顧品質，各司其職，產線才能很快恢復。' },
+  { title: '品檢找碴', slack: 2, clock: '15:00', type: 'spot', view: () => stationView(STATIONS[18]),
+    say: '這台筆電出貨前被品檢攔下來了。正面和背面一共有 3 個問題，點點看在哪裡！',
+    spots: [
+      { x: 205, y: 72, r: 26, name: '螢幕亮點', hint: '仔細看螢幕，有一個特別亮的小點。' },
+      { x: 254, y: 266, r: 28, name: '外殼刮傷', hint: '看看手放的地方（觸控板右邊）。' },
+      { x: 598, y: 238, r: 26, name: '少一顆螺絲', hint: '數數看背面的螺絲，是不是少了一顆？' },
+    ],
+    done: '眼力真好！螢幕亮點、外殼刮傷、少一顆螺絲，都是出貨前一定要攔下來的不良。' },
+  { title: '出貨防呆', slack: 1, clock: '15:10', type: 'choice', view: () => stationView(STATIONS[21]),
+    say: '最後一關！封箱後每一箱都會秤重。標準是 2.35 kg，這一箱只有 2.10 kg，少了 250 公克。漏放了哪一樣？',
+    options: [
+      { t: '變壓器（約 250 公克）', ok: true },
+      { t: '電源線（約 100 公克）', why: '電源線大約 100 公克，少掉的重量不只這樣。' },
+      { t: '說明書（約 30 公克）', why: '說明書只有 30 公克左右，差太多了。' },
+      { t: '保護袋（約 10 公克）', why: '保護袋很輕，只有 10 公克左右。' },
+    ],
+    done: '沒錯！這就是「秤重防呆」：只要少放一樣東西，重量就不對，系統會自動把這箱攔下來。' },
+];
+const QZ = { on: false, done: false, step: -1, name: '', scores: [], miss: 0, pos: 0, ti: 0, found: [], passed: false, t0: 0, t1: 0, prevMode: 'tour' };
+function qSay(text) {                          // 導師（線長）說話的框框，用 Codex 畫的寫實肖像
+  const p = PEOPLE_BY_ID.leader;
+  return `<div class="q-say">${avatarHTML(p, 'dlg-av')}<div><b class="who">${p.name}・${ROLES[p.role].title}</b><p>${text}</p></div></div>`;
+}
+function qRender(html) { $('qCard').innerHTML = html; $('qCard').scrollTop = 0; }
+function qFb(msg, cls) { const el = $('qFb'); if (el) { el.textContent = msg; el.className = 'q-fb ' + (cls || ''); } }
+const qTotal = () => QZ.scores.reduce((a, b) => a + b, 0);
+function qHud() {
+  $('qStep').innerHTML = QZ.done ? '完成！' : QZ.step >= 0 ? `第 <b>${QZ.step + 1}</b> / ${Q_LEVELS.length} 關` : '準備';
+  $('qScore').innerHTML = `<b>${qTotal()}</b> 分`;
+}
+function updateQuestHud() {                    // 計時：從按下「開始闖關」到最後一關答對
+  if (QZ.on) $('qTime').textContent = '⏱ ' + qTimeText(QZ.t0 ? (QZ.done ? QZ.t1 : performance.now()) - QZ.t0 : 0);
+}
+function questOpen() {                         // 開始畫面：輸入暱稱
+  if (state.play) setPlay(false);
+  closeTalk();
+  if (!QZ.on) QZ.prevMode = state.mode;
+  Object.assign(QZ, { on: true, done: false, step: -1, scores: [], t0: 0, t1: 0 });
+  document.body.classList.add('quest-on'); $('qHead').hidden = false; $('qCard').hidden = false;
+  if (isMobile()) setDrawer(false);
+  setMode('day'); state.follow = null; state.selPerson = null;
+  state.D = dAtClock(hm('07:43')); state.lastScene = sceneIdx(state.D); setPaused(false);
+  flyTo(overviewPos(), OVERVIEW.tgt.clone(), 1.6);
+  const best = qStore.get('nbQuestBest');
+  qRender(`<div class="q-title">新人報到闖關</div>`
+    + qSay('嗨，新同事！5 分鐘、5 個關卡，帶你認識筆電工廠：一台筆電怎麼做出來、產線上誰負責什麼。先告訴我你的暱稱吧！')
+    + `<input class="q-input" id="qName" maxlength="12" autocomplete="nickname" placeholder="你的暱稱（最多 12 個字）" value="${esc(qStore.get('nbQuestName') || '')}">`
+    + `<div class="q-fb no" id="qFb"></div>`
+    + (best ? `<p class="hint">你在這台裝置的最佳紀錄：<b>${best.score}</b> 分（${qTimeText(best.ms)}）</p>` : '')
+    + `<div class="q-foot"><button class="btn primary" data-q="go">開始闖關 ▶</button></div>`);
+  qHud(); updateQuestHud(); setTimeout(fitView, 60);
+}
+function questStart() {
+  const name = ($('qName').value || '').trim();
+  if (!name) { qFb('先輸入暱稱，才能開始喔。', 'no'); $('qName').focus(); return; }
+  QZ.name = name.slice(0, 12); qStore.set('nbQuestName', QZ.name);
+  QZ.t0 = performance.now();
+  questLevel(0);
+}
+function questLevel(i) {
+  const L = Q_LEVELS[i];
+  Object.assign(QZ, { step: i, miss: 0, pos: 0, ti: 0, found: [], passed: false });
+  // 場景：人員一日的某個時刻；鏡頭飛到這一關相關的位置（第 3 關停在機台異常的那一刻）
+  state.D = L.clock === 'alarm' ? SC[8].d0 + 4 : dAtClock(hm(L.clock)); state.lastScene = sceneIdx(state.D);
+  setPaused(!!L.pause);
+  const v = L.view(); flyTo(v.pos, v.tgt, 1.6);
+  let body = '';
+  if (L.type === 'order') {                    // 排順序：點的順序對了，就放進上面的格子
+    const chips = L.items.map((t, k) => ({ t, k })).concat((L.decoys || []).map(t => ({ t, k: -1 })));
+    for (let n = chips.length - 1; n > 0; n--) { const m = Math.floor(Math.random() * (n + 1)); [chips[n], chips[m]] = [chips[m], chips[n]]; }   // 洗牌
+    body = `<div class="q-slots">${L.items.map((_, k) => `<div class="q-slot" id="qs${k}"><i>${k + 1}</i><span>？</span></div>`).join('')}</div>`
+      + `<div class="q-chips">${chips.map(c => `<button class="q-chip" data-q="chip" data-i="${c.k}">${L.colors && c.k >= 0 ? `<span class="dot" style="background:${L.colors[c.k]}"></span>` : ''}${c.t}</button>`).join('')}</div>`;
+  } else if (L.type === 'match') {             // 配對：一件事、三個人，選對的人
+    body = `<div class="q-task" id="qTask">${L.tasks[0].q}</div>`
+      + `<div class="q-roles" id="qRoles">${L.roles.map(id => { const p = PEOPLE_BY_ID[id]; return `<button class="q-role" data-q="role" data-r="${id}">${avatarHTML(p, 'dlg-av')}<span>${ROLES[p.role].title}</span><small>${p.name}</small></button>`; }).join('')}</div>`
+      + `<div class="q-slots" id="qDone"></div>`;
+  } else if (L.type === 'spot') {              // 找碴：點圖片上的問題位置
+    body = qLaptopSVG();
+  } else if (L.type === 'choice') {            // 選擇題
+    body = `<div class="q-scale">⚖️ 標準重量 <b>2.35 kg</b>　這一箱 <b class="bad">2.10 kg</b></div>`
+      + `<div class="q-chips" style="margin-top:10px">${L.options.map((o, n) => `<button class="q-chip" data-q="opt" data-i="${n}">${o.t}</button>`).join('')}</div>`;
+  }
+  qRender(`<div class="q-title">第 ${i + 1} 關・${L.title}</div>` + qSay(L.say) + body + `<div class="q-fb" id="qFb"></div><div class="q-foot" id="qFoot"></div>`);
+  qHud(); setTimeout(fitView, 60);
+}
+function qMiss(msg, el) {                      // 答錯：記一次錯誤、顯示提示、按鈕搖一下
+  QZ.miss++; qFb(msg, 'no');
+  if (el) { el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake'); }
+}
+function qPass() {                             // 過關：依錯誤次數給分
+  const L = Q_LEVELS[QZ.step], s = QZ.miss === 0 ? 100 : QZ.miss <= L.slack ? 60 : 30;
+  QZ.passed = true; QZ.scores.push(s); qHud();
+  qFb('✓ ' + L.done, 'ok');
+  const last = QZ.step === Q_LEVELS.length - 1;
+  $('qFoot').innerHTML = `<span class="q-gain">+${s} 分</span><button class="btn primary" data-q="next">${last ? '看成績 🎉' : '下一關 ▶'}</button>`;
+  $('qFoot').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+}
+function qOrderPick(k, btn) {
+  const L = Q_LEVELS[QZ.step];
+  if (k === QZ.pos) {
+    const slot = $('qs' + k); slot.classList.add('fill'); slot.querySelector('span').textContent = L.items[k];
+    btn.classList.add('used'); QZ.pos++; qFb('', '');
+    if (QZ.pos === L.items.length) qPass();
+  } else qMiss(k < 0 ? L.decoyHint : `還不是這一個。提示：${L.hints[QZ.pos]}`, btn);
+}
+function qRolePick(r, btn) {
+  const L = Q_LEVELS[QZ.step], T = L.tasks[QZ.ti], title = ROLES[PEOPLE_BY_ID[r].role].title;
+  if (r !== T.a) { qMiss(`不是${title}喔。提示：${T.hint}`, btn); return; }
+  $('qDone').insertAdjacentHTML('beforeend', `<div class="q-slot fill"><i>✓</i><span>${T.q} → ${title}</span></div>`);
+  qFb('✓ ' + T.why, 'ok');
+  QZ.ti++;
+  if (QZ.ti < L.tasks.length) $('qTask').textContent = L.tasks[QZ.ti].q;
+  else { $('qTask').remove(); $('qRoles').remove(); qPass(); }
+}
+function qChoicePick(n, btn) {
+  const o = Q_LEVELS[QZ.step].options[n];
+  if (!o.ok) { qMiss(o.why, btn); btn.classList.add('wrong'); return; }
+  btn.style.borderColor = 'var(--sage)'; btn.style.background = 'var(--sage-soft)';
+  document.querySelectorAll('#qCard [data-q="opt"]').forEach(b => { if (b !== btn) b.classList.add('wrong'); });
+  qPass();
+}
+function qSpotClick(svg, e) {
+  const L = Q_LEVELS[QZ.step];
+  const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
+  const p = pt.matrixTransform(svg.getScreenCTM().inverse());   // 螢幕座標 → 圖片座標
+  const near = s => Math.hypot(p.x - s.x, p.y - s.y) < s.r;
+  const hit = L.spots.findIndex((s, k) => !QZ.found[k] && near(s));
+  if (hit >= 0) {
+    const s = L.spots[hit]; QZ.found[hit] = true;
+    $('qMarks').insertAdjacentHTML('beforeend', `<circle cx="${s.x}" cy="${s.y}" r="${s.r - 6}" fill="none" stroke="#DB6A41" stroke-width="4"/><text x="${s.x}" y="${s.y - s.r + 2}" text-anchor="middle" font-size="16" font-weight="900" fill="#B84F2D" stroke="#FFF8F1" stroke-width="4" paint-order="stroke">${s.name}</text>`);
+    const left = L.spots.length - QZ.found.filter(Boolean).length;
+    if (left === 0) qPass(); else qFb(`✓ 找到「${s.name}」！還有 ${left} 個。`, 'ok');
+  } else if (!L.spots.some(near)) {            // 點到已經找到的地方不算錯
+    const next = L.spots.find((s, k) => !QZ.found[k]);
+    qMiss('這裡看起來沒有問題，再仔細找找。' + (QZ.miss >= 2 && next ? `提示：${next.hint}` : ''), null);
+  }
+}
+function qLaptopSVG() {                        // 左：打開的筆電正面；右：底部。三個不良：螢幕亮點、掌托刮傷、少一顆螺絲
+  let keys = '', vents = '';
+  for (let r = 0; r < 4; r++) for (let c = 0; c < 12; c++) keys += `<rect x="${52 + c * 19}" y="${197 + r * 12}" width="16" height="9" rx="2" fill="#2f3540"/>`;
+  for (let k = 0; k < 10; k++) vents += `<path d="M${438 + k * 10} 108v64" stroke="#454c56" stroke-width="4" stroke-linecap="round"/>`;
+  const screws = [[372, 62], [450, 52], [520, 52], [598, 62], [372, 238], [450, 248], [520, 248]]
+    .map(([x, y]) => `<circle cx="${x}" cy="${y}" r="7" fill="#d4d8de" stroke="#8a929c" stroke-width="1.5"/><path d="M${x - 3.5} ${y}h7M${x} ${y - 3.5}v7" stroke="#6b7280" stroke-width="1.6"/>`).join('');
+  return `<svg class="q-spot" viewBox="0 0 640 300" role="img" aria-label="筆電的正面和背面，點出三個不良的位置">
+    <text x="165" y="16" text-anchor="middle" font-size="14" font-weight="800" fill="#7A706A">正面</text>
+    <text x="485" y="16" text-anchor="middle" font-size="14" font-weight="800" fill="#7A706A">背面</text>
+    <rect x="40" y="22" width="250" height="160" rx="10" fill="#2b2f36"/>
+    <rect x="52" y="34" width="226" height="136" rx="3" fill="#5B8DB8"/>
+    <rect x="64" y="46" width="88" height="56" rx="5" fill="#FFFDFA" opacity=".85"/><rect x="64" y="46" width="88" height="10" rx="3" fill="#DB6A41"/>
+    <rect x="164" y="112" width="96" height="44" rx="5" fill="#FFFDFA" opacity=".7"/>
+    <rect x="52" y="160" width="226" height="10" fill="#3f6f99"/>
+    <circle cx="205" cy="72" r="9" fill="#fff" opacity=".35"/><circle cx="205" cy="72" r="4.5" fill="#fff"/>
+    <rect x="34" y="182" width="262" height="6" rx="3" fill="#9aa3ad"/>
+    <path d="M24 188H306L296 286H34Z" fill="#c9ced6"/>
+    ${keys}
+    <rect x="128" y="250" width="74" height="30" rx="5" fill="#b8bec7"/>
+    <path d="M232 276L274 254" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round"/><path d="M238 279L262 266" stroke="#eef1f4" stroke-width="2" stroke-linecap="round"/>
+    <rect x="350" y="30" width="270" height="240" rx="18" fill="#5f6772"/>
+    ${vents}
+    <rect x="366" y="40" width="34" height="10" rx="5" fill="#2f343b"/><rect x="570" y="40" width="34" height="10" rx="5" fill="#2f343b"/>
+    <rect x="366" y="250" width="34" height="10" rx="5" fill="#2f343b"/><rect x="570" y="250" width="34" height="10" rx="5" fill="#2f343b"/>
+    ${screws}
+    <circle cx="598" cy="238" r="7" fill="#23272e"/>
+    <g id="qMarks"></g>
+  </svg>`;
+}
+function questFinish() {                       // 成績、結業證書、排行榜預留位置
+  QZ.done = true; QZ.t1 = performance.now();
+  const total = qTotal(), ms = QZ.t1 - QZ.t0, stars = total >= 450 ? 3 : total >= 330 ? 2 : 1;
+  const best = qStore.get('nbQuestBest');
+  const isBest = !best || total > best.score || (total === best.score && ms < best.ms);
+  if (isBest) qStore.set('nbQuestBest', { score: total, ms, name: QZ.name });
+  const b = isBest ? { score: total, ms } : best;
+  state.D = dAtClock(hm('17:45')); state.lastScene = sceneIdx(state.D); setPaused(false);   // 傍晚的暖色光線，當作結業典禮
+  flyTo(overviewPos(), OVERVIEW.tgt.clone(), 2);
+  const cert = qCertificate(total, ms, stars);
+  qRender(`<div class="q-title">闖關完成</div>`
+    + qSay(`太厲害了，${esc(QZ.name)}！你已經知道一台筆電是怎麼從電路板一路做到出貨，也知道產線上誰負責什麼。`)
+    + `<div class="q-result"><span class="q-big">${total}</span> / 500 分　<span class="q-stars">${'★'.repeat(stars)}${'☆'.repeat(3 - stars)}</span><br><small>用時 ${qTimeText(ms)}${isBest ? '・🎉 新的最佳紀錄' : ''}</small></div>`
+    + `<div class="q-slots">${Q_LEVELS.map((L, k) => `<div class="q-slot fill"><i>${k + 1}</i><span>${L.title}</span><b style="margin-left:auto">${QZ.scores[k]} 分</b></div>`).join('')}</div>`
+    + `<img class="q-cert" src="${cert}" alt="${esc(QZ.name)}的結業證書">`
+    + `<div class="q-foot" style="justify-content:space-between"><span class="hint">手機可以長按證書圖片儲存</span><a class="btn" href="${cert}" download="筆電工廠結業證書.png">⬇ 下載證書</a></div>`
+    + `<div class="q-board">🏆 <b>排行榜</b>：下一版開放，到時候大家的分數都會排在這裡。<br>你在這台裝置的最佳紀錄：<b>${b.score}</b> 分（${qTimeText(b.ms)}）</div>`
+    + `<div class="q-foot"><button class="btn" data-q="exit">離開闖關</button><button class="btn primary" data-q="again">↺ 再玩一次</button></div>`);
+  qHud(); updateQuestHud(); setTimeout(fitView, 60);
+}
+function qCertificate(total, ms, stars) {      // 用 Canvas 畫一張結業證書（可以下載，手機也可以長按儲存）
+  const c = document.createElement('canvas'); c.width = 1200; c.height = 840;
+  const g = c.getContext('2d'), W = c.width, d = new Date();
+  g.fillStyle = '#FFF8F1'; g.fillRect(0, 0, W, c.height);
+  g.strokeStyle = '#DB6A41'; g.lineWidth = 14; g.strokeRect(30, 30, W - 60, c.height - 60);
+  g.strokeStyle = '#E8B39C'; g.lineWidth = 3; g.strokeRect(56, 56, W - 112, c.height - 112);
+  g.fillStyle = '#DB6A41'; rrect(g, 92, 92, 92, 92, 22); g.fill();
+  g.textAlign = 'center';
+  g.fillStyle = '#282322'; g.font = `900 38px ${FONT}`; g.fillText('NB', 138, 152);
+  g.fillStyle = '#B84F2D'; g.font = `bold 30px ${FONT}`; g.fillText('筆電工廠・新人報到闖關', W / 2, 150);
+  g.fillStyle = '#282322'; g.font = `900 92px ${FONT}`; g.fillText('結 業 證 書', W / 2, 262);
+  g.fillStyle = '#7A706A'; g.font = `30px ${FONT}`; g.fillText('頒 給', W / 2, 338);
+  g.fillStyle = '#282322'; g.font = `900 72px ${FONT}`; g.fillText(QZ.name, W / 2, 428);
+  g.strokeStyle = '#DB6A41'; g.lineWidth = 3; g.beginPath(); g.moveTo(W / 2 - 280, 456); g.lineTo(W / 2 + 280, 456); g.stroke();
+  g.fillStyle = '#4A423F'; g.font = `32px ${FONT}`;
+  g.fillText('完成 5 道關卡，認識了筆電從電路板到出貨的生產流程，', W / 2, 526);
+  g.fillText('也知道產線上的線長、技術員、品檢員各自負責什麼。', W / 2, 574);
+  g.fillStyle = '#DB6A41'; g.font = `bold 56px ${FONT}`; g.fillText('★'.repeat(stars) + '☆'.repeat(3 - stars), W / 2, 654);
+  g.fillStyle = '#282322'; g.font = `bold 36px ${FONT}`; g.fillText(`總分 ${total} / 500　用時 ${qTimeText(ms)}`, W / 2, 716);
+  const date = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  g.fillStyle = '#8A7F78'; g.font = `24px ${FONT}`; g.fillText(`${date}　筆電產線 3D 模擬器　yunotang.github.io/laptop-factory-simulator`, W / 2, 776);
+  return c.toDataURL('image/png');
+}
+function questNext() { if (QZ.step < Q_LEVELS.length - 1) questLevel(QZ.step + 1); else questFinish(); }
+function questExit() {
+  if (QZ.t0 && !QZ.done && !confirm('確定要離開闖關嗎？這次的進度不會保存。')) return;
+  Object.assign(QZ, { on: false, done: false, step: -1, t0: 0 });
+  document.body.classList.remove('quest-on'); $('qHead').hidden = true; $('qCard').hidden = true;
+  setPaused(false);
+  setMode(QZ.prevMode);                        // 回到闖關前的模式
+  if (QZ.prevMode === 'free') flyTo(overviewPos(), OVERVIEW.tgt.clone(), 1.6);
+  setTimeout(fitView, 60);
+}
+$('btnQuest').onclick = questOpen;
+$('qExit').onclick = questExit;
+$('qCard').addEventListener('click', e => {    // 關卡卡片裡的所有按鈕（內容會重畫，所以用事件委派）
+  const b = e.target.closest('[data-q]'), svg = e.target.closest('svg.q-spot');
+  if (!b) { if (svg && !QZ.passed) qSpotClick(svg, e); return; }
+  const act = b.dataset.q;
+  if (QZ.passed && ['chip', 'role', 'opt'].includes(act)) return;   // 這一關已經過了，不再計分
+  if (act === 'go') questStart();
+  else if (act === 'chip') qOrderPick(+b.dataset.i, b);
+  else if (act === 'role') qRolePick(b.dataset.r, b);
+  else if (act === 'opt') qChoicePick(+b.dataset.i, b);
+  else if (act === 'next') questNext();
+  else if (act === 'again') questOpen();
+  else if (act === 'exit') questExit();
+});
+$('qCard').addEventListener('keydown', e => { if (e.target.id === 'qName' && e.key === 'Enter') questStart(); });
+
 $('btnTour').onclick = () => setMode('tour');
 $('btnFree').onclick = () => setMode('free');
 $('btnDay').onclick = () => setMode('day');
@@ -3956,6 +4293,7 @@ $('btnSpeed').onclick = () => setSpeed(SPEEDS[(SPEEDS.indexOf(state.speed) + 1) 
 const MOVE_KEYS = new Set(['KeyW', 'KeyA', 'KeyS', 'KeyD', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ShiftLeft', 'ShiftRight']);
 window.addEventListener('keydown', e => {
   if (e.target.tagName === 'INPUT') return;
+  if (QZ.on) return;                           // 闖關時不用快捷鍵，避免誤按跳走
   if (DLG.open && e.code === 'Escape') { closeTalk(); return; }
   if (state.play && state.mode === 'day') {    // 下場走走：WASD／方向鍵走路，E、空白鍵、Enter 聊天
     if (MOVE_KEYS.has(e.code)) { e.preventDefault(); PLAYER.keys.add(e.code); return; }
@@ -4004,6 +4342,7 @@ $('talkHint').onclick = () => { if (PLAYER.near) openTalk(PLAYER.near.id); };
   renderer.domElement.addEventListener('pointerdown', e => { down = [e.clientX, e.clientY]; });
   renderer.domElement.addEventListener('pointerup', e => {
     if (!down || Math.hypot(e.clientX - down[0], e.clientY - down[1]) > 6) return;
+    if (QZ.on) return;                         // 闖關時只能轉動畫面，不能點機台或人物
     if (isMobile() && $('infoCard').classList.contains('open')) { setSheet(false); return; }   // 手機版：說明卡展開時，點畫面先把它收起來
     const h = hit(e);
     if (state.play && state.mode === 'day') {  // 下場走走：點人物就走過去聊天，點地板就走過去
@@ -4039,7 +4378,8 @@ window.addEventListener('resize', () => {
 buildStationList();
 buildTimeline();
 window.__sim = { state, STATIONS, SCHED, SC, PEOPLE_BY_ID, renderer, camera, controls, fly, seekHeroToStation, setMode, setPaused, selectPerson, dAtClock, hm,
-  PLAYER, NAVG, AMBIENT, DLG, setPlay, openTalk, closeTalk, advanceTalk, walkTo, walkToPerson, findPath, groundY, walkable };   // 方便除錯用
+  PLAYER, NAVG, AMBIENT, DLG, setPlay, openTalk, closeTalk, advanceTalk, walkTo, walkToPerson, findPath, groundY, walkable,
+  QZ, Q_LEVELS, questOpen, questLevel, questNext, questExit };   // 方便除錯用
 if (isMobile()) setDrawer(false);              // 手機版：名單預設收起來
 fitView();
 camera.position.copy(overviewPos()); controls.target.copy(OVERVIEW.tgt);
@@ -4078,6 +4418,7 @@ if (HASH.has('look') || HASH.get('view') === 'overview') {
   }
 }
 if (HASH.has('pause')) setPaused(true);
+if (HASH.has('quest')) questOpen();            // #quest：一打開就進入新人闖關（分享給同事用）
 // ---- 日夜光線：人員一日模式時，天空、陽光、海面與路燈跟著工廠時鐘變化（其他模式固定在白天）----
 const SKY_KEYS = [
   { t: '07:00', top: '#B9C9D3', hor: '#F2DCC4', hs: '#FFE8D0', hg: '#6F7E7B', hi: 1.0, sc: '#FFD3A4', si: 1.5, az: 20, el: 18, sea: '#F1F2EC', lamp: 0.2, exp: 1.0, env: 0.38 },
