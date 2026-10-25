@@ -323,6 +323,82 @@
     #infoCard{left:auto;width:min(340px,46vw)}
     #dialog{left:auto;width:min(520px,70vw)}
   }
+
+  /* ---------- 報關島導覽、寶箱（圖鑑）、獲得寶物 ---------- */
+  .seg{position:relative}
+  .seg .cnt{display:inline-block;min-width:18px;margin-left:5px;padding:0 5px;border-radius:999px;background:var(--coral);color:#FFFDFA;font-size:11px;line-height:17px;font-weight:900;vertical-align:1px;text-align:center}
+  .seg .cnt:empty{display:none}
+  .customs-mode .chk{display:none}
+  .chest{max-width:720px !important;position:relative}
+  .chest h2{padding-right:36px}
+  .chest-prog{font-size:14px;font-weight:800;color:var(--text-2);margin:2px 0 8px}
+  .chest-prog b{color:var(--coral-dark);font-size:16px}
+  .chest-prog .qbar{height:8px;border-radius:99px;background:#EFE3D9;margin-top:6px;overflow:hidden}
+  .chest-prog .qbar i{display:block;height:100%;background:linear-gradient(90deg,var(--sage),var(--coral))}
+  .tr-sec{margin-top:14px}
+  .tr-sec h3{font-size:14.5px;font-weight:900;margin:0;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+  .tr-sec h3 small{font-weight:700;color:var(--muted);font-size:12px}
+  .tr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px;margin-top:8px}
+  .tr-tile{border:1.5px solid var(--line);background:#FFFDFA;border-radius:14px;padding:8px 4px 7px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:84px;position:relative}
+  .tr-tile:hover{background:var(--panel-tint)}
+  .tr-tile .ic{font-size:30px;line-height:1.15}
+  .tr-tile .nm{font-size:12px;font-weight:800;text-align:center;line-height:1.3;color:var(--text)}
+  .tr-tile.got{border-color:color-mix(in srgb,var(--rc) 55%,#FFFDFA);background:color-mix(in srgb,var(--rc) 9%,#FFFDFA)}
+  .tr-tile.got::after{content:'';position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:50%;background:var(--rc)}
+  .tr-tile.lock .ic{filter:grayscale(1) brightness(0);opacity:.2}
+  .tr-tile.lock .nm{color:#B3A79F}
+  .tr-tile.sel{outline:3px solid rgba(219,106,65,.5);outline-offset:1px}
+  .tr-detail{display:flex;gap:14px;align-items:flex-start;padding:12px 14px;border-radius:16px;background:var(--panel-soft);border:1px solid var(--line)}
+  .tr-detail .big{font-size:50px;line-height:1;flex:none}
+  .tr-detail h3{margin:0;font-size:17px;font-weight:900}
+  .tr-detail p{margin:4px 0 0 !important;font-size:14px !important;line-height:1.7 !important}
+  .rar{display:inline-block;font-size:11.5px;font-weight:900;padding:2px 9px;border-radius:999px;color:#FFFDFA;background:var(--rc);margin-left:8px;vertical-align:2px}
+  .gem-note{font-size:12.5px !important;color:var(--muted) !important;margin:4px 0 0 !important}
+  .chest-code{margin-top:16px;padding-top:12px;border-top:1px dashed var(--line)}
+  .chest-code h3{font-size:14.5px;font-weight:900;margin:0 0 4px}
+  .chest-code p{font-size:13px !important;line-height:1.7 !important;margin:0 0 4px}
+  .code-row{display:flex;gap:8px;align-items:center;margin-top:8px}
+  .code-row code{flex:1;min-width:0;font-family:var(--mono);font-size:17px;font-weight:700;letter-spacing:1px;padding:9px 12px;border-radius:12px;background:#282322;color:#FFE8B8;overflow-x:auto;white-space:nowrap}
+  .code-row .q-input{margin:0;flex:1;min-width:0;font-family:var(--mono);text-transform:uppercase}
+  #gotCard{z-index:25}
+  #gotCard .card{max-width:380px;text-align:center;padding:22px 24px 18px;position:relative;overflow:hidden;isolation:isolate}
+  .got-title{font-size:13px;font-weight:900;letter-spacing:2px;color:var(--coral-dark)}
+  .got-ic{font-size:84px;line-height:1.1;margin:8px 0 4px;animation:pop .5s cubic-bezier(.2,1.6,.4,1)}
+  @keyframes pop{0%{transform:scale(.2) rotate(-20deg);opacity:0}100%{transform:none;opacity:1}}
+  #gotCard h2{margin:2px 0 6px}
+  #gotCard p{font-size:14px;line-height:1.75;margin:0}
+  #gotCard .q-foot{justify-content:center;margin-top:14px}
+  .got-rays{position:absolute;inset:-40%;background:repeating-conic-gradient(from 0deg,rgba(255,201,60,.16) 0 10deg,transparent 10deg 20deg);animation:spin 14s linear infinite;pointer-events:none;z-index:-1}
+  /* 集滿零件：12 個零件從四周飛到中間，變成一台筆電 */
+  .assemble{position:relative;height:160px;margin:6px 0}
+  .assemble span{position:absolute;left:50%;top:50%;font-size:30px;line-height:1;transform:translate(-50%,-50%) rotate(var(--a)) translateY(-64px) rotate(calc(-1 * var(--a)));animation:fly 1.3s ease-in forwards;animation-delay:var(--d)}
+  @keyframes fly{to{transform:translate(-50%,-50%) scale(.2);opacity:0}}
+  .assemble b{position:absolute;left:50%;top:50%;font-size:92px;line-height:1;transform:translate(-50%,-50%) scale(0);animation:pop2 .6s 1.5s cubic-bezier(.2,1.6,.4,1) forwards}
+  @keyframes pop2{to{transform:translate(-50%,-50%) scale(1)}}
+  /* 闖關第 6 關：左邊是裝箱單（文件），右邊是 X 光查驗（實際的貨） */
+  .q-jhead{margin-top:12px;font-weight:900;font-size:15px}
+  .q-jcols{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+  .q-jcols>div{border-radius:12px;padding:8px 10px;background:var(--panel-soft);border:1px solid var(--line)}
+  .q-jcols>div:last-child{background:#0f172a;color:#e2e8f0;border-color:#0f172a}
+  .q-jcols b{font-size:13px;display:block}
+  .q-jcols small{display:block;font-size:11.5px;font-weight:700;opacity:.65}
+  .q-jcols table{width:100%;border-collapse:collapse;margin-top:4px;font-size:14.5px;font-variant-numeric:tabular-nums}
+  .q-jcols th{text-align:left;font-weight:700;opacity:.75;padding:3px 0}
+  .q-jcols td{text-align:right;font-weight:800;padding:3px 0}
+  .q-jbtn{margin-top:10px}
+  .q-jbtn .q-chip{flex:1;justify-content:center}
+  .q-drop{font-weight:900;color:#2F7A45;font-size:14px}
+  @media (max-width:820px),(max-height:520px){
+    .seg .cnt{position:absolute;top:1px;right:1px;margin:0;min-width:15px;line-height:14px;font-size:9.5px;padding:0 3px}
+    .tr-grid{grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:6px}
+    .tr-tile{min-height:74px;padding:6px 2px}
+    .tr-tile .ic{font-size:26px}
+    .tr-tile .nm{font-size:11px}
+    .code-row{flex-wrap:wrap}
+    .code-row code{font-size:15px}
+    .q-jcols table{font-size:13px}
+    .got-ic{font-size:70px}
+  }
 </style>
 </head>
 <body>
@@ -342,8 +418,10 @@
     <button class="seg active" id="btnTour"><span class="ic">🎬</span><span class="lg">導覽模式</span><span class="sh">導覽</span></button>
     <button class="seg" id="btnFree"><span class="ic">🧭</span><span class="lg">自由參觀</span><span class="sh">參觀</span></button>
     <button class="seg" id="btnDay"><span class="ic">👷</span><span class="lg">人員一日</span><span class="sh">人員</span></button>
+    <button class="seg" id="btnCustoms"><span class="ic">🛃</span><span class="lg">報關島</span><span class="sh">報關</span></button>
     <button class="seg" id="btnOverview"><span class="ic">🗺️</span><span class="lg">全景</span><span class="sh">全景</span></button>
     <button class="seg seg-quest" id="btnQuest"><span class="ic">🏆</span><span class="lg">新人闖關</span><span class="sh">闖關</span></button>
+    <button class="seg" id="btnChest" title="我的寶箱（寶物圖鑑）"><span class="ic">🎒</span><span class="lg">寶箱</span><span class="sh">寶箱</span><span class="cnt" id="chestCnt"></span></button>
     <button class="seg" id="btnHelp"><span class="ic">❓</span><span class="lg">說明</span><span class="sh">說明</span></button>
   </div>
 </header>
@@ -415,11 +493,13 @@
 <div id="helpModal" class="modal hidden">
   <div class="card">
     <h2>❓ 操作說明</h2>
-    <p>這是一座「虛擬筆電工廠」。一片銅箔基板會依序經過 <b>6 大區、23 個站</b>，最後變成裝箱好、可以出貨的筆電。</p>
+    <p>這是一座「虛擬筆電工廠」。一片銅箔基板會依序經過 <b>6 大區、23 個站</b>，最後變成裝箱好、可以出貨的筆電；再開過大橋到<b>報關島</b>通關，吊上貨船出國。</p>
     <ul>
       <li><b>🎬 導覽模式</b>：鏡頭自動跟著「示範機」（頭上有黃色箭頭）走完全程，右邊的卡片會解說每一站。</li>
       <li><b>🧭 自由參觀</b>：滑鼠<b>左鍵拖曳</b>旋轉、<b>右鍵拖曳</b>平移、<b>滾輪</b>縮放（手機：<b>單指拖曳</b>旋轉、<b>雙指</b>縮放與平移）；<b>點任一台機器</b>就會飛過去並顯示說明。</li>
-      <li><b>🏆 新人闖關</b>：5 分鐘、5 個關卡，用遊戲認識筆電工廠：報到流程、6 大區的順序、出事要找誰、品檢找碴、出貨防呆。完成後可以下載結業證書（排行榜下一版開放）。</li>
+      <li><b>🏆 新人闖關</b>：6 分鐘、6 個關卡，用遊戲認識筆電工廠：報到流程、6 大區的順序、出事要找誰、品檢找碴、出貨防呆，最後到報關島通關放行。每過一關會掉一個寶物，完成後可以下載結業證書（排行榜下一版開放）。</li>
+      <li><b>🛃 報關島</b>：筆電做好之後怎麼合法出國？跟著 10 個步驟看出口通關（C1／C2／C3、X 光查驗、放行、吊上船），以及零件進口、保稅倉。島上貨櫃車的車頭顏色，就是它被分到的通道。</li>
+      <li><b>🎒 寶箱</b>：像寶可夢圖鑑一樣收集 44 個寶物：「下場走走」時到工站旁和報關島撿零件卡、文件卡（地上發光的寶石），和每種角色聊天拿人物卡，闖關拿徽章。寶箱記在這台裝置的瀏覽器裡，也可以用「寶箱代碼」備份。</li>
       <li><b>📱 手機</b>：左上角 <b>☰ 清單</b>打開站點或人員名單；下方說明卡平常收合，<b>點一下</b>展開完整說明；速度按鈕點一下就切換 0.5×～4×。</li>
       <li><b>👷 人員一日</b>：用縮時方式看工廠人員的一天（兩班制日班 08:00–20:00）：打卡、換靜電衣、早會、生產、休息用餐、處理機台異常，一直到交接班下班。點左邊名單或畫面中的人物，會跳出<b>對話框</b>聽他說現在在做什麼，右邊也會顯示他的肖像和行程。頭上有「<b>！</b>」的人正在做重要的事。</li>
       <li><b>🎮 下場走走</b>（在人員一日的時間列上）：扮演一位參觀者走進工廠。<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> 或方向鍵走路，按住 <kbd>Shift</kbd> 跑步；靠近人按 <kbd>E</kbd> 聊天。滑鼠或手機：<b>點地板</b>自動走過去，<b>點人物</b>就走過去和他聊天。左邊的「聊天任務」會記錄你聊過誰。</li>
@@ -430,6 +510,34 @@
     </ul>
     <p style="font-size:13px;color:#64748b">※ 本模擬器為教學示意：機台外觀、產品尺寸與加工時間都經過簡化與放大，方便觀看。人物姓名皆為虛構，肖像由 Codex（OpenAI）以 AI 繪製。</p>
     <button class="btn primary close" id="btnHelpClose">我知道了</button>
+  </div>
+</div>
+
+<!-- 寶箱（寶物圖鑑）：卡片內容由程式產生 -->
+<div id="chestModal" class="modal hidden">
+  <div class="card chest">
+    <button class="mini close-x" id="chestClose" title="關閉（Esc）">✕</button>
+    <h2>🎒 我的寶箱</h2>
+    <div class="chest-prog" id="chestProg"></div>
+    <div id="chestDetail"></div>
+    <div id="chestGrid"></div>
+    <div class="chest-code">
+      <h3>🔑 寶箱代碼（備份用）</h3>
+      <p>寶箱存在<b>這台裝置的這個瀏覽器</b>裡，關掉再打開都還在。但清除「Cookie 和其他網站資料」、用無痕視窗、換手機或換瀏覽器（從 LINE 點開和用 Safari 開也算不同的瀏覽器），就看不到了。先把代碼截圖或抄下來，就能在別的地方還原。</p>
+      <div class="code-row"><code id="chestCode"></code><button class="btn" id="chestCopy">📋 複製</button></div>
+      <div class="code-row"><input class="q-input" id="chestIn" maxlength="24" autocomplete="off" spellcheck="false" placeholder="輸入寶箱代碼還原"><button class="btn primary" id="chestLoad">還原</button></div>
+      <div class="q-fb" id="chestFb"></div>
+    </div>
+  </div>
+</div>
+<!-- 撿到寶物時跳出的卡片 -->
+<div id="gotCard" class="modal hidden">
+  <div class="card"><div class="got-rays"></div>
+    <div class="got-title" id="gotTitle">✨ 獲得寶物 ✨</div>
+    <div class="got-ic" id="gotIc"></div>
+    <h2 id="gotName"></h2>
+    <p id="gotDesc"></p>
+    <div class="q-foot"><button class="btn" id="gotChest">🎒 打開寶箱</button><button class="btn primary" id="gotOk">收下 ✓</button></div>
   </div>
 </div>
 
@@ -1398,24 +1506,43 @@ function slab(shape, topY, depth, topMat, sideMat, bevel = 0) {
   sign.position.set(-6, ISLE_TOP + 3.2, -23.6); scene.add(sign);
   for (const dx of [-4.2, 4.2]) cyl(scene, 0.09, 0.09, 2.4, M.bodyDark, -6 + dx, ISLE_TOP + 1.2, -23.65, 8);
 }
-// 西側出貨碼頭＋貨櫃＋貨船（成品從這裡出貨）
+// ---- 報關島與跨海大橋的位置（下面的建模、走路地圖、貨櫃車路線都會用到）----
+const PIER = { x0: -53, x1: -34, z0: 8.5, z1: 19 };            // 西側出貨碼頭（加寬：貨櫃車在這裡裝櫃、迴轉）
+const BRIDGE2 = { x0: -64.3, x1: -53, z0: 9, z1: 18 };          // 跨海大橋：北側車道往報關島、南側車道回工廠
+const ISLE2 = { x0: -110, z0: -18, x1: -64, z1: 32, r: 7 };     // 報關島（島面高度和主島一樣 -0.35）
+const LANE = { c1: 8.5, c2: 12, c3: 15.5 };                     // 出口三色通道的 z（由北到南：C1 綠、C2 黃、C3 紅）
+const QUAY_X = -104, CRANE_LEGS = [-101.6, -108.6];             // 碼頭邊車道的 x；岸邊吊車兩排腳的 x
+const CRANE_EX_Z = 22, CRANE_IM_Z = -2;                         // 出口吊車（裝船）、進口吊車（卸船）的 z
+const SHIP_POS = { x: -114.5, z: 7 };                           // 貨船停在報關島西岸
+const NAV_SKIP = [];                                            // 會動的東西（柵欄、吊車吊具…），不算走路的障礙物
+const CONT_MATS = ['#D96B45', '#6F9B78', '#5B8DB8', '#D19A35', '#8074A7', '#4D9C97'].map(c => std(new THREE.Color(c), { roughness: 0.85 }));
+// 西側出貨碼頭：北邊是碼頭工人的走道，中間是裝櫃區（貨櫃車往西停），南邊是回程車道，東端讓貨櫃車迴轉
 {
-  const deckY = -0.55;
-  box(scene, 19, 0.3, 6, M.wood, -43.5, deckY, 13.5);
-  for (let x = -36; x >= -52; x -= 4) for (const dz of [-2.6, 2.6]) cyl(scene, 0.22, 0.22, 3, M.bodyDark, x, deckY - 1.6, 13.5 + dz, 8);
-  for (let x = -37; x >= -51; x -= 3.5) cyl(scene, 0.18, 0.22, 0.45, M.bodyDark, x, deckY + 0.37, 16.2, 8);   // 繫船柱
-  const cont = ['#D96B45', '#6F9B78', '#5B8DB8', '#D19A35', '#8074A7'].map(c => std(new THREE.Color(c), { roughness: 0.85 }));
-  [[-47, 11.2, 0], [-47, 13.8, 1], [-50.5, 11.2, 2], [-50.5, 13.8, 3], [-47, 11.2, 4, 1], [-50.5, 13.8, 0, 1]].forEach(([x, z, c, lv = 0]) =>
-    box(scene, 3.2, 1.3, 2.4, cont[c], x, deckY + 0.15 + 0.65 + lv * 1.32, z));
-  const ship = new THREE.Group(); ship.position.set(-47, SEA_Y, 21.4); scene.add(ship);
-  const hull = std(0x4C5554, { roughness: 0.8 });
-  box(ship, 24, 2.6, 6.4, hull, 0, 0.9, 0);
-  const bow = cyl(ship, 3.2, 3.2, 2.6, hull, -12, 0.9, 0, 3); bow.rotation.y = -Math.PI / 2;   // 船頭（三角柱）
-  box(ship, 24.2, 0.35, 6.5, ZMAT.asm, 0, 2.05, 0, false);
-  box(ship, 4.2, 3.2, 5.4, M.white, 9, 3.8, 0);
-  box(ship, 4.4, 0.25, 5.6, M.bodyDark, 9, 5.5, 0, false);
-  [[-6, 0], [-2.5, 1], [1, 2], [-6, 3, 1], [-2.5, 4, 1]].forEach(([x, c, lv = 0]) => box(ship, 3.2, 1.3, 5.2, cont[c], x, 2.9 + lv * 1.32, 0));
-  WORLD.ship = ship;
+  const deckY = -0.55, cx = (PIER.x0 + PIER.x1) / 2, cz = (PIER.z0 + PIER.z1) / 2;
+  box(scene, PIER.x1 - PIER.x0, 0.3, PIER.z1 - PIER.z0, M.wood, cx, deckY, cz);
+  for (let x = -36; x >= -52; x -= 4) for (const z of [PIER.z0 + 0.5, cz, PIER.z1 - 0.5]) cyl(scene, 0.22, 0.22, 3, M.bodyDark, x, deckY - 1.6, z, 8);
+  for (let x = -37; x >= -51; x -= 3.5) cyl(scene, 0.18, 0.22, 0.45, M.bodyDark, x, deckY + 0.37, PIER.z1 - 0.35, 8);   // 繫船柱
+  const yel = std(0xE4B64B, { roughness: 0.75 }), top = deckY + 0.156;                                 // 裝櫃區的黃色框線
+  for (const [w, d, x, z] of [[7, 0.1, -45, 9.95], [7, 0.1, -45, 12.05], [0.1, 2.2, -48.5, 11], [0.1, 2.2, -41.5, 11]]) flat(scene, w, d, yel, x, top, z);
+  const s = textSprite('裝櫃區', 'Loading Bay：成品裝上貨櫃車', ZONES[5].color, 1.0); s.position.set(-45, 2.7, 8.9); scene.add(s);
+}
+// 跨海大橋：兩線車道＋欄杆＋路燈（晚上會亮）
+{
+  const y = -0.4, cx = (BRIDGE2.x0 + BRIDGE2.x1) / 2, L = BRIDGE2.x1 - BRIDGE2.x0, W = BRIDGE2.z1 - BRIDGE2.z0;
+  const concrete = std(0xC9C2B4, { roughness: 0.9 }), asphalt = std(0x6E6B66, { roughness: 0.92 });
+  box(scene, L, 0.5, W, concrete, cx, y - 0.25, (BRIDGE2.z0 + BRIDGE2.z1) / 2);
+  flat(scene, L, 7.2, asphalt, cx, y + 0.006, 13.5).receiveShadow = true;
+  for (let x = BRIDGE2.x0 + 1; x < BRIDGE2.x1 - 0.5; x += 2.2) flat(scene, 1.1, 0.12, M.white, x, y + 0.01, 13.5);   // 中線（虛線）
+  for (const z of [BRIDGE2.z0 + 0.15, BRIDGE2.z1 - 0.15]) {                                            // 欄杆
+    box(scene, L, 0.08, 0.08, M.steel, cx, y + 0.95, z, false);
+    for (let x = BRIDGE2.x0 + 0.4; x <= BRIDGE2.x1 - 0.2; x += 1.6) box(scene, 0.08, 0.95, 0.08, M.steel, x, y + 0.48, z, false);
+  }
+  for (const x of [-56.5, -61]) for (const z of [BRIDGE2.z0 + 1.6, BRIDGE2.z1 - 1.6]) cyl(scene, 0.5, 0.6, 2.2, concrete, x, y - 1.6, z, 12);   // 橋墩
+  for (const x of [-55.5, -62]) for (const z of [BRIDGE2.z0 + 0.15, BRIDGE2.z1 - 0.15]) {
+    cyl(scene, 0.06, 0.08, 3.4, M.bodyDark, x, y + 1.7, z, 8);
+    addMesh(scene, sphereGeo(0.2), WORLD.bulb, x, y + 3.5, z, false);
+  }
+  const sp = textSprite('跨海大橋', 'To Customs Island：通往報關島', '#2F6F8F', 1.1); sp.position.set(-58.6, 3.3, BRIDGE2.z0 - 0.4); scene.add(sp);
 }
 // 浮標、繞島的小船、遠方小島與風機
 {
@@ -1448,10 +1575,221 @@ function slab(shape, topY, depth, topMat, sideMat, bevel = 0) {
       WORLD.blades.push(hub);
     }
   };
-  islet(-95, -58, 14, 9, 0); islet(112, -62, 10, 4, 2); islet(102, 78, 12, 7, 0); islet(-88, 82, 9, 3, 2); islet(26, -125, 20, 14, 3);
+  islet(-112, -66, 14, 9, 0); islet(112, -62, 10, 4, 2); islet(102, 78, 12, 7, 0); islet(-88, 82, 9, 3, 2); islet(26, -125, 20, 14, 3);
   // 北方遠山（被霧淡化，增加縱深）
   const hill = std(0x8FA676, { roughness: 1 });
   for (const [x, z, r] of [[-150, -280, 90], [-20, -310, 110], [130, -290, 95], [260, -240, 80]]) addMesh(scene, sphereGeo(1), hill, x, SEA_Y - 4, z, false).scale.set(r, r * 0.32, r * 0.6);
+}
+
+/* =====================================================================
+ * 10-2. 報關島：貨物出國前的最後一關
+ *       出口：三色通道（C1 免審免驗／C2 文件審核／C3 X 光查驗）→ 放行柵欄 → 貨櫃場 → 岸邊吊車吊上船
+ *       進口：岸邊吊車卸下零件櫃 → 進口通關 → 保稅倉
+ *       真實的報關大多在電腦上完成；這座島是把「看不見的流程」變成看得到、走得到的地方
+ * =================================================================== */
+const CI = {};                                  // 報關島上要做動畫的東西（吊車、柵欄、X 光、燈號、貨船）
+{
+  const Y = -0.35;                              // 島面高度
+  const top = std(0xCBC4B6, { roughness: 0.95 }), side = std(0xA39B8C, { roughness: 0.95 });   // 港區的水泥地，比主島的沙地灰一點
+  const wetTop = std(0x8C8475, { roughness: 0.95 }), wet = std(0x756F63, { roughness: 0.95 });
+  slab(roundRect(ISLE2.x0, ISLE2.z0, ISLE2.x1, ISLE2.z1, ISLE2.r), Y, 1.5, top, side, 0.25);
+  slab(roundRect(ISLE2.x0 - 0.6, ISLE2.z0 - 0.6, ISLE2.x1 + 0.6, ISLE2.z1 + 0.6, ISLE2.r + 0.6), -1.75, 1.4, wetTop, wet);
+  // 道路（深灰柏油）
+  const asphalt = std(0x6E6B66, { roughness: 0.92 });
+  const road = (x0, z0, x1, z1) => { flat(scene, x1 - x0, z1 - z0, asphalt, (x0 + x1) / 2, Y + 0.012, (z0 + z1) / 2).receiveShadow = true; };
+  road(-105.4, -9.9, -102.6, 30.4);             // 碼頭邊的車道（南北向）
+  road(-102.6, -9.9, -65.6, -7.1);              // 北側：進口貨櫃車往東
+  road(-68.4, -7.1, -65.6, 6.4);                // 東側：進口貨櫃車往南
+  road(-102.6, 3.6, -68.4, 6.4);                // 中間：進口貨櫃車回吊車
+  road(-102.6, 6.8, -64.2, 17.2);               // 從大橋進來，一直到出口三色通道和匯流區
+  road(-102.6, 27.6, -66.6, 30.4);              // 南側：空車回程
+  road(-69.4, 17.2, -66.6, 27.6);               // 東側：回程上橋
+  // 出口三色通道：路面塗上顏色，中間用白線隔開
+  for (const [k, c] of [['c1', '#3E9B5A'], ['c2', '#E2B13C'], ['c3', '#C8463A']]) {
+    const m = flat(scene, 18, 3, new THREE.MeshBasicMaterial({ color: c, transparent: true, opacity: 0.32, depthWrite: false }), -83, Y + 0.02, LANE[k]); m.renderOrder = -1;
+  }
+  for (const z of [10.25, 13.75]) flat(scene, 18, 0.1, M.white, -83, Y + 0.024, z);
+  // 通道入口的號誌架：三塊牌子面向東邊（貨櫃車開過來的方向）
+  const signTex = (code, text, color) => makeTex(512, 200, (g, W, H) => {
+    g.fillStyle = color; rrect(g, 4, 4, W - 8, H - 8, 26); g.fill();
+    g.strokeStyle = '#FFFDFA'; g.lineWidth = 6; rrect(g, 16, 16, W - 32, H - 32, 18); g.stroke();
+    g.fillStyle = '#FFFDFA'; g.textAlign = 'center';
+    g.font = `900 92px ${FONT}`; g.fillText(code, W / 2, 106);
+    g.font = `900 44px ${FONT}`; g.fillText(text, W / 2, 162);
+  });
+  {
+    const g = new THREE.Group(); g.position.set(-75, Y, 0); scene.add(g);
+    for (const z of [6.7, 17.8]) box(g, 0.35, 5.2, 0.35, M.steelDark, 0, 2.6, z);
+    box(g, 0.4, 0.4, 11.5, M.steelDark, 0, 5.0, 12.25);
+    [['c1', 'C1', '免審免驗', '#3E9B5A'], ['c2', 'C2', '文件審核', '#D9A12E'], ['c3', 'C3', '貨物查驗', '#C8463A']].forEach(([k, code, t, c]) => {
+      box(g, 0.08, 1.2, 3.0, M.steelDark, 0.12, 4.3, LANE[k], false);
+      const p = new THREE.Mesh(planeGeo(2.9, 1.13), basic({ map: signTex(code, t, c) }));
+      p.rotation.y = Math.PI / 2; p.position.set(0.17, 4.3, LANE[k]); g.add(p);
+    });
+  }
+  // C2 文件審核窗口（夾在 C1 和 C2 通道中間）：有貨櫃車停下來審文件時，黃燈會閃
+  {
+    const g = new THREE.Group(); g.position.set(-84, Y, 10.25); scene.add(g);
+    box(g, 1.6, 2.3, 1.1, M.white, 0, 1.15, 0);
+    box(g, 1.9, 0.12, 1.4, M.bodyDark, 0, 2.36, 0, false);
+    for (const s of [-1, 1]) plane(g, 1.1, 0.6, M.glass, 0, 1.45, s * 0.56, s);
+    CI.c2Lamp = std(0x854d0e, { emissive: 0xfacc15, emissiveIntensity: 0.15 });
+    addMesh(g, sphereGeo(0.16), CI.c2Lamp, 0, 2.6, 0, false);
+    const sp = textSprite('C2 文件審核', 'Document Check', '#D9A12E', 0.85); sp.position.set(0, 3.4, 0); g.add(sp);
+  }
+  // C3 X 光檢查站：黃黑斜紋的門架；貨櫃車停進去時，綠色的掃描光會來回掃過貨櫃
+  {
+    const g = new THREE.Group(); g.position.set(-84, Y, LANE.c3); scene.add(g);
+    const stripe = std(0xffffff, { roughness: 0.7, map: makeTex(128, 128, (c, W, H) => {
+      c.fillStyle = '#E4B64B'; c.fillRect(0, 0, W, H); c.fillStyle = '#2A2522';
+      for (let i = -2; i < 4; i++) { c.beginPath(); c.moveTo(i * 48, 0); c.lineTo(i * 48 + 24, 0); c.lineTo(i * 48 + 88, H); c.lineTo(i * 48 + 64, H); c.fill(); }
+    }) });
+    for (const s of [-1, 1]) box(g, 2.2, 3.6, 0.5, stripe, 0, 1.8, s * 2.1);
+    box(g, 2.2, 0.6, 4.7, M.white, 0, 3.9, 0);
+    CI.xBeacon = std(0x7f1d1d, { emissive: 0xef4444, emissiveIntensity: 0.15 });
+    addMesh(g, sphereGeo(0.2), CI.xBeacon, 0, 4.4, 0, false);
+    CI.xBeam = new THREE.Mesh(planeGeo(3.7, 3.3), new THREE.MeshBasicMaterial({ color: 0x5ff2c8, transparent: true, opacity: 0.38, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, toneMapped: false }));
+    CI.xBeam.rotation.y = Math.PI / 2; CI.xBeam.position.y = 1.75; CI.xBeam.visible = false; g.add(CI.xBeam); NAV_SKIP.push(CI.xBeam);
+    const sp = textSprite('C3 X 光查驗', 'X-ray Inspection', '#C8463A', 0.95); sp.position.set(0, 5.2, 0); g.add(sp);
+  }
+  // 放行柵欄：每條通道一支，貨櫃車開近就抬起來
+  CI.bars = [];
+  for (const k of ['c1', 'c2', 'c3']) {
+    const z = LANE[k] - 1.55;
+    cyl(scene, 0.13, 0.15, 1.1, M.bodyDark, -91, Y + 0.55, z, 10);
+    const pivot = new THREE.Group(); pivot.position.set(-91, Y + 1.0, z); scene.add(pivot);
+    box(pivot, 0.1, 0.1, 3.0, M.white, 0, 0, 1.5, false);
+    for (let i = 0; i < 3; i++) box(pivot, 0.11, 0.11, 0.42, M.binRed, 0, 0, 0.4 + i * 1.0, false);
+    CI.bars.push({ lane: k, pivot, a: 0 }); NAV_SKIP.push(pivot);
+  }
+  { const s = textSprite('放行 ✓', 'Released：可以裝船了', '#3E9B5A', 1.0); s.position.set(-93.5, 4.3, 6.0); scene.add(s); }
+  // 海關大樓
+  {
+    const g = new THREE.Group(); g.position.set(-91, Y, -1.5); scene.add(g);
+    const wall = std(0xEFE9DD, { roughness: 0.9 }), navy = std(0x2F4A6B, { roughness: 0.8 }), win = std(0x3D5A73, { roughness: 0.2, metalness: 0.4 });
+    box(g, 12, 5.2, 7, wall, 0, 2.6, 0);
+    box(g, 12.3, 0.35, 7.3, navy, 0, 5.3, 0, false);
+    box(g, 12.3, 0.25, 7.3, navy, 0, 2.6, 0, false);
+    for (const y of [1.6, 4.0]) for (let x = -5; x <= 5; x += 2) if (!(y < 2 && Math.abs(x) < 1.5)) plane(g, 1.3, 0.9, win, x, y, 3.51);
+    box(g, 2.4, 0.15, 1.4, navy, 0, 2.3, 4.1, false);
+    plane(g, 1.6, 2.0, std(0x6B4F3A, { roughness: 0.8 }), 0, 1.0, 3.51);
+    const b = banner('海關', 'CUSTOMS・審核報單、查驗、放行', '#2F4A6B', 5.8, 1.13); b.position.set(0, 6.3, 2.9); g.add(b);
+    cyl(g, 0.06, 0.08, 7.5, M.steel, -7.2, 3.75, 3.4, 8);
+    const flag = new THREE.Mesh(planeGeo(1.6, 1.0), std(0x2F6F8F, { side: THREE.DoubleSide, roughness: 0.8 })); flag.position.set(-6.4, 6.9, 3.4); g.add(flag);
+  }
+  // 報關行
+  {
+    const g = new THREE.Group(); g.position.set(-78, Y, -1.25); scene.add(g);
+    box(g, 8, 3.2, 5.5, std(0xE9DCC9, { roughness: 0.9 }), 0, 1.6, 0);
+    box(g, 8.3, 0.3, 5.8, std(0x8A6F55, { roughness: 0.85 }), 0, 3.35, 0, false);
+    for (const x of [-2.6, 2.6]) plane(g, 2.0, 1.1, std(0x3D5A73, { roughness: 0.2, metalness: 0.4 }), x, 1.8, 2.76);
+    plane(g, 1.2, 2.0, std(0x6B4F3A, { roughness: 0.8 }), 0, 1.0, 2.76);
+    const b = banner('報關行', 'Customs Broker・幫公司向海關申報', '#2F6F8F', 4.8, 0.94); b.position.set(0, 4.15, 2.5); g.add(b);
+  }
+  // 保稅倉：門口朝南，對著北側的進口車道
+  {
+    const g = new THREE.Group(); g.position.set(-80, Y, -13.75); scene.add(g);
+    box(g, 16, 4.6, 6.5, std(0xD9CCB4, { roughness: 0.9 }), 0, 2.3, 0);
+    const roof = std(0x6F9B78, { roughness: 0.85 });
+    for (const s of [-1, 1]) box(g, 16.4, 0.2, 3.7, roof, 0, 5.15, s * 1.6, false).rotation.x = s * 0.28;
+    plane(g, 4.2, 3.0, std(0x8C8C86, { roughness: 0.8 }), 0, 1.5, 3.26);   // 捲門
+    for (let i = 1; i < 8; i++) plane(g, 4.2, 0.05, M.bodyDark, 0, i * 0.37, 3.27);
+    const b = banner('保稅倉', 'Bonded Warehouse・進口零件先不繳稅', '#5E7F4E', 5.6, 1.1); b.position.set(0, 4.0, 3.3); g.add(b);
+    box(g, 1.6, 1.35, 3.9, CONT_MATS[2], 10.4, 0.68, 0.2); box(g, 1.6, 1.35, 3.9, CONT_MATS[4], 12.4, 0.68, 0.2);   // 門外停著的進口貨櫃
+  }
+  // 進口通關站：北側車道上的號誌架（兩面都有字）＋旁邊的崗亭
+  {
+    const g = new THREE.Group(); g.position.set(-96, Y, -8.5); scene.add(g);
+    for (const z of [-1.9, 1.9]) box(g, 0.3, 4.4, 0.3, M.steelDark, 0, 2.2, z);
+    box(g, 0.35, 0.35, 4.2, M.steelDark, 0, 4.3, 0);
+    const tex = makeTex(512, 160, (c, W, H) => {
+      c.fillStyle = '#3F73AE'; rrect(c, 4, 4, W - 8, H - 8, 24); c.fill();
+      c.fillStyle = '#FFFDFA'; c.textAlign = 'center'; c.font = `900 60px ${FONT}`; c.fillText('進口通關', W / 2, 74);
+      [['#3E9B5A', 'C1'], ['#E2B13C', 'C2'], ['#C8463A', 'C3']].forEach(([col, t], i) => {
+        const x = W / 2 + (i - 1) * 120; c.fillStyle = col; c.beginPath(); c.arc(x - 30, 118, 14, 0, Math.PI * 2); c.fill();
+        c.fillStyle = '#FFFDFA'; c.font = `900 34px ${FONT}`; c.fillText(t, x + 12, 130);
+      });
+    });
+    for (const s of [-1, 1]) { const p = new THREE.Mesh(planeGeo(3.4, 1.06), basic({ map: tex })); p.rotation.y = s * Math.PI / 2; p.position.set(s * 0.2, 3.6, 0); g.add(p); }
+    box(g, 1.3, 2.2, 1.3, M.white, 0, 1.1, -3.0);
+    box(g, 1.6, 0.12, 1.6, M.bodyDark, 0, 2.26, -3.0, false);
+    CI.imLamp = std(0x854d0e, { emissive: 0xfacc15, emissiveIntensity: 0.15 });
+    addMesh(g, sphereGeo(0.15), CI.imLamp, 0, 2.5, -3.0, false);
+  }
+  // 貨櫃場：放行的貨櫃在這裡等船
+  {
+    const R = rng(907);
+    for (const z of [20.6, 22.5, 24.4]) for (const x of [-97.6, -93.2, -88.8, -84.4, -80.0]) {
+      const n = 1 + Math.floor(R() * 3);
+      for (let k = 0; k < n; k++) box(scene, 3.9, 1.35, 1.6, CONT_MATS[Math.floor(R() * CONT_MATS.length)], x, Y + 0.68 + k * 1.37, z);
+    }
+    const sp = textSprite('貨櫃場', 'Container Yard：放行後等著上船', '#4D9C97', 1.2); sp.position.set(-88.8, 5.8, 22.5); scene.add(sp);
+  }
+  // 岸邊吊車（橋式起重機）：兩排腳跨在碼頭車道上，吊臂伸到貨船上方；小車沿著吊臂移動，吊具上下吊貨櫃
+  const craneMat = std(0xD96B45, { roughness: 0.7 }), craneDark = std(0x4C5554, { roughness: 0.7 });
+  const beam = (p, a, b, t, mat) => {                 // 兩點之間的一根細桿
+    const d = new THREE.Vector3().subVectors(b, a), m = new THREE.Mesh(boxGeo(t, 1, t), mat);
+    m.scale.y = d.length(); m.position.copy(a).addScaledVector(d, 0.5);
+    m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), d.normalize()); m.castShadow = true; p.add(m); return m;
+  };
+  const buildCrane = (z, title, sub) => {
+    const g = new THREE.Group(); g.position.set(0, Y, z); scene.add(g);
+    for (const x of CRANE_LEGS) {
+      for (const s of [-1, 1]) box(g, 0.5, 6.9, 0.5, craneMat, x, 3.45, s * 2.6);
+      box(g, 0.45, 0.4, 5.7, craneMat, x, 0.35, 0);                                    // 底樑（沿著碼頭方向）
+    }
+    for (const s of [-1, 1]) box(g, 7.5, 0.5, 0.5, craneMat, -105.1, 6.9, s * 2.6);   // 門架橫樑
+    box(g, 25, 0.6, 1.4, craneMat, -108.5, 8.2, 0);                                     // 吊臂
+    box(g, 2.6, 1.6, 2.4, M.white, -97.6, 9.3, 0);                                      // 機房
+    const apex = new THREE.Vector3(-104.3, 12.6, 0);
+    for (const s of [-1, 1]) for (const x of CRANE_LEGS) beam(g, new THREE.Vector3(x, 7.1, s * 2.6), apex, 0.3, craneMat);
+    beam(g, apex, new THREE.Vector3(-120.6, 8.5, 0), 0.1, craneDark);                 // 拉索
+    beam(g, apex, new THREE.Vector3(-96.5, 8.5, 0), 0.1, craneDark);
+    const trolley = new THREE.Group(); trolley.position.set(QUAY_X, 7.65, 0); g.add(trolley);
+    box(trolley, 1.6, 0.5, 1.8, craneDark, 0, 0, 0, false);
+    box(trolley, 1.0, 0.9, 1.0, M.white, 1.4, -0.6, 0, false);                           // 吊車司機的駕駛室（掛在小車旁邊）
+    const cables = [-0.7, 0.7].map(dz => box(trolley, 0.05, 1, 0.05, craneDark, 0, -1, dz, false));
+    const spreader = new THREE.Group(); trolley.add(spreader);
+    box(spreader, 1.7, 0.2, 4.0, std(0xE4B64B, { roughness: 0.7 }), 0, 0, 0, false);
+    const carry = box(spreader, 1.6, 1.35, 3.9, CONT_MATS[0], 0, -0.78, 0, false); carry.visible = false;
+    NAV_SKIP.push(trolley);
+    const sp = textSprite(title, sub, '#D96B45', 1.0); sp.position.set(-97.6, 10.8, 0); g.add(sp);
+    return { g, z, trolley, cables, spreader, carry };
+  };
+  CI.craneEx = buildCrane(CRANE_EX_Z, '出口吊車', 'Quay Crane：把貨櫃吊上船');
+  CI.craneIm = buildCrane(CRANE_IM_Z, '進口吊車', 'Quay Crane：把零件卸下船');
+  // 貨船：船頭朝南，船橋在北端；甲板上吊車作業的位置是艙口（貨櫃從這裡進出船艙）
+  {
+    const ship = new THREE.Group(); ship.position.set(SHIP_POS.x, SEA_Y, SHIP_POS.z); scene.add(ship);
+    const hull = std(0x4C5554, { roughness: 0.8 });
+    box(ship, 7, 3.2, 36, hull, 0, 1.0, 0);
+    cyl(ship, 4.04, 4.04, 3.2, hull, 0, 1.0, 19.21, 3).scale.z = 0.6;                  // 船頭（三角柱）
+    box(ship, 7.1, 0.3, 36.1, ZMAT.asm, 0, 2.65, 0, false);
+    box(ship, 6.2, 4.4, 4.2, M.white, 0, 5.0, -15.4);
+    box(ship, 6.6, 0.3, 4.6, M.bodyDark, 0, 7.35, -15.4, false);
+    plane(ship, 5.6, 0.7, std(0x3D5A73, { roughness: 0.2, metalness: 0.4 }), 0, 6.3, -13.28);
+    cyl(ship, 0.7, 0.8, 2.4, ZMAT.asm, 0, 8.6, -16.2, 16);
+    const R = rng(515), hatch = [CRANE_EX_Z - SHIP_POS.z, CRANE_IM_Z - SHIP_POS.z];
+    for (let z = -11; z <= 13; z += 4.2) {
+      if (hatch.some(h => Math.abs(z - h) < 3)) continue;
+      for (const x of [-2.15, 0, 2.15]) for (let k = 0, n = 1 + Math.floor(R() * 3); k < n; k++) box(ship, 1.6, 1.35, 3.9, CONT_MATS[Math.floor(R() * CONT_MATS.length)], x, 3.48 + k * 1.37, z);
+    }
+    for (const h of hatch) flat(ship, 6.2, 4.6, M.black, 0, 2.81, h);
+    WORLD.ship = CI.ship = ship;
+    for (let z = -8; z <= 24; z += 4) cyl(scene, 0.18, 0.22, 0.45, M.bodyDark, -109.4, Y + 0.22, z, 8);   // 繫船柱
+  }
+  // 路燈（南側道路）、草地與松樹（貨櫃場東邊）
+  for (let x = -100; x <= -72; x += 7) { cyl(scene, 0.06, 0.08, 3.4, M.bodyDark, x, Y + 1.7, 31.1, 8); addMesh(scene, sphereGeo(0.2), WORLD.bulb, x, Y + 3.5, 31.1, false); }
+  slab(roundRect(-76.4, 19.6, -70.4, 26.4, 1.4), Y + 0.07, 0.07, std(0x91A77A, { roughness: 0.95 }), std(0x7E9468, { roughness: 0.95 }));
+  const pine = new THREE.MeshStandardMaterial({ color: 0x5F7D58, roughness: 0.9, flatShading: true });
+  for (const [x, z, h] of [[-74.6, 21.4, 3.6], [-72.2, 23.6, 4.4], [-74.4, 25.2, 3.2]]) addMesh(scene, cachedGeo('pine', () => new THREE.ConeGeometry(1, 1, 7)), pine, x, Y + 0.07 + h / 2, z).scale.set(h * 0.3, h, h * 0.3);
+  // 島名：靠大橋的大看板＋全景也看得到的懸浮標籤
+  {
+    const b = banner('報關島', 'Customs Island・貨物出國前的最後一關', '#2F6F8F', 7.4, 1.45);
+    b.rotation.y = Math.PI / 2; b.position.set(-64.9, Y + 3.1, 3.4); scene.add(b);
+    for (const z of [0.3, 6.5]) cyl(scene, 0.08, 0.08, 3.1, M.bodyDark, -64.95, Y + 1.55, z, 8);
+    const lb = zoneLabel('7', '報關島', 'Customs Island', '#2F6F8F'); lb.position.set(-87, 10, 7); scene.add(lb);
+  }
 }
 
 /* =====================================================================
@@ -2306,8 +2644,8 @@ const ROLES = {
     duty: '負責園區步道與公共區域的清潔。灰塵如果被鞋子帶進廠內，可能落在電路板上造成不良。',
     tip: '更講究的產線（例如晶片、面板）甚至要在「無塵室」裡生產，空氣中的灰塵數量都有嚴格的標準。' },
   dock: { title: '碼頭工人', en: 'Dock Worker', color: '#C77B2E', smock: '#64748b', vest: '#f97316', cap: '#facc15', pants: '#334155', shoes: '#3f3f46', hat: 'helmet', emoji: '🚢',
-    duty: '把出貨區包好的成品搬到碼頭、裝進貨櫃，再由貨船運到世界各地。',
-    tip: '裝櫃前要核對箱數和出貨單，數量對了才能封櫃出貨。' },
+    duty: '把出貨區包好的成品搬到碼頭、裝上貨櫃車。貨櫃車再開過大橋到報關島，海關放行後才吊上貨船，運到世界各地。',
+    tip: '裝櫃前要核對箱數和裝箱單，數量對了才能封櫃。貨櫃的封條號碼也會寫在文件上，海關會檢查。' },
   visitor: { title: '訪客（客戶）', en: 'Visitor', color: '#6F9B78', smock: '#d9c7a7', pants: '#3f3f46', shoes: '#5b4636', hat: 'none', emoji: '🧳',
     duty: '來工廠參觀的客戶。下訂單之前，客戶常會親自來看產線、品管流程和工廠的管理。',
     tip: '客戶來工廠「稽核」時會檢查很多項目：作業有沒有照 SOP、品質紀錄是否完整、環境與工安是否合格。' },
@@ -2317,6 +2655,19 @@ const ROLES = {
   office: { title: '休息中的員工', en: 'Employee on Break', color: '#8074A7', smock: '#a5b4fc', pants: '#334155', hat: 'none', emoji: '📱',
     duty: '辦公室的生管（生產管理）人員，負責排生產計畫：哪天做哪些機種、做多少台、物料什麼時候要到。',
     tip: '生管排程要同時考慮訂單交期、產線產能和物料到貨時間，就像在拼一幅大拼圖。' },
+  // 報關島上的人
+  broker: { title: '報關行專員', en: 'Customs Broker', color: '#2F6F8F', smock: '#e7edf3', pants: '#1f2937', shoes: '#1f2937', hat: 'none', emoji: '🗂️',
+    duty: '受公司委託，把發票、裝箱單整理成「報單」，用網路送給海關申報；海關有問題時，也由報關行負責說明、補件。',
+    tip: '報關行要有執照，裡面的「專責報關人員」要通過國家考試，才能審核、簽證報單。' },
+  customs: { title: '海關關員', en: 'Customs Officer', color: '#24476B', smock: '#2d4a7a', cap: '#1e293b', pants: '#1e293b', shoes: '#111827', hat: 'cap', emoji: '🛃',
+    duty: '審核報單、查驗貨物，確認貨和文件一致、該繳的稅都繳了，沒問題就「放行」。也負責查緝走私和違禁品。',
+    tip: '海關用電腦依風險把報單分成 C1、C2、C3：守規矩的貨物很快就能通關，人力集中在高風險的貨上。' },
+  crane: { title: '吊車司機', en: 'Crane Operator', color: '#C2452D', smock: '#475569', vest: '#facc15', cap: '#f8fafc', pants: '#334155', shoes: '#3f3f46', hat: 'helmet', emoji: '🏗️',
+    duty: '操作岸邊的大型吊車（橋式起重機），把放行的貨櫃吊上船，或把進口的貨櫃從船上卸下來。',
+    tip: '一台岸邊吊車一小時可以吊二、三十個貨櫃。碼頭作業又快又準，船才能準時開。' },
+  bonded: { title: '保稅倉管理員', en: 'Bonded Warehouse Keeper', color: '#5E7F4E', smock: '#64748b', vest: '#22c55e', cap: '#e2e8f0', pants: '#334155', shoes: '#3f3f46', hat: 'cap', emoji: '🔐',
+    duty: '管理保稅倉：記錄每一批保稅零件什麼時候進來、領了多少去生產、做成多少成品出口，帳要隨時對得上。',
+    tip: '保稅的零件還沒繳稅，所以進出都要記帳；海關會定期來盤點、核對帳冊。' },
   // 玩家：下場走走時扮演的參觀者
   // 玩家：黃色小熊耳帽＋珊瑚橘參觀服＋綠色小背包，工廠裡沒有其他人穿這個顏色，一眼就認得出來
   player: { title: '參觀者', en: 'You', color: '#DB6A41', smock: '#F26B4A', cap: '#FFC93C', pants: '#3f3f46', hat: 'bear', pack: '#3BA99C', emoji: '🙂', duty: '', tip: '' },
@@ -2819,11 +3170,11 @@ function buildFigure(def) {
     }
   } else part(hc, CHG.dome, hairM, 0, 0.09, -0.01, true).scale.set(0.97, 0.82, 0.97);   // 不戴帽子：露出頭髮
   const fig = { root, body, legL, legR, armL, armR, head, carryBox: null, toolHand: null, toolFloor: null, sitY: CH.sitY };
-  if (def.role === 'ipqc') {                   // 平板（螢幕朝向自己）
+  if (def.role === 'ipqc' || def.role === 'customs') {   // 平板（螢幕朝向自己）
     part(armR, boxGeo(0.12, 0.16, 0.015), M.black, 0, -0.29, 0.07);
     const scr = part(armR, planeGeo(0.1, 0.135), basic({ color: 0x7dd3fc }), 0, -0.29, 0.0615); scr.rotation.y = Math.PI;
   }
-  if (def.role === 'leader') {                 // 夾板
+  if (def.role === 'leader' || def.role === 'broker' || def.role === 'bonded') {   // 夾板
     part(armL, boxGeo(0.13, 0.17, 0.012), std(0x92400e), 0, -0.29, 0.065);
     const paper = part(armL, planeGeo(0.11, 0.145), M.white, 0, -0.29, 0.0585); paper.rotation.y = Math.PI;
   }
@@ -3121,13 +3472,13 @@ const AMBIENT_DEF = [
     route: [wp(-23, 19.9, { act: 'clean', wait: 4, face: F.E, label: '打掃南側步道' }), wp(30, 19.9, { act: 'clean', wait: 4, face: F.W, label: '打掃南側步道' })],
     talk: ['我負責園區步道和公共區域的清潔。', '電子工廠很怕灰塵，連廠外的步道都要保持乾淨，才不會被鞋子帶進廠裡。'] },
   { id: 'dock1', label: '碼頭工人 A', role: 'dock', hair: 'short', skin: '#c98e65', hairC: '#151515', speed: 1.15, walkLabel: '走回出貨區',
-    route: [wp(-10.6, 13.5, { act: 'unload', wait: 3, face: F.E, label: '在出貨區搬成品', go: 'carry', goLabel: '把成品搬到碼頭' }), wp(-24.0, 13.5, { go: 'carry', goLabel: '把成品搬到碼頭' }),
-      wp(-44.6, 12.0, { act: 'unload', wait: 3, face: F.W, label: '把貨裝進貨櫃' }), wp(-24.0, 12.9)],
-    talk: ['我是碼頭工人，負責把出貨區包好的成品搬到碼頭。', '貨櫃裝滿之後，就由貨船運到世界各地的倉庫。'] },
+    route: [wp(-10.6, 13.5, { act: 'unload', wait: 3, face: F.E, label: '在出貨區搬成品', go: 'carry', goLabel: '把成品搬到碼頭' }), wp(-24.0, 12.4, { go: 'carry', goLabel: '把成品搬到碼頭' }),
+      wp(-33.5, 9.6, { go: 'carry', goLabel: '把成品搬到碼頭' }), wp(-44.0, 9.6, { act: 'unload', wait: 3, face: F.S, label: '把成品搬上貨櫃車' }), wp(-33.5, 9.8), wp(-24.0, 12.9)],
+    talk: ['我是碼頭工人，負責把出貨區包好的成品搬上貨櫃車。', '貨櫃裝滿後，貨櫃車會開過大橋到報關島：先報關、海關放行，才能吊上貨船。'] },
   { id: 'dock2', label: '碼頭工人 B', role: 'dock', hair: 'short', skin: '#e0b089', hairC: '#2a2018', speed: 1.1, phase: 0.5, walkLabel: '走回出貨區',
-    route: [wp(-10.6, 14.4, { act: 'unload', wait: 3, face: F.E, label: '在出貨區搬成品', go: 'carry', goLabel: '把成品搬到碼頭' }), wp(-24.0, 14.4, { go: 'carry', goLabel: '把成品搬到碼頭' }),
-      wp(-44.6, 14.0, { act: 'unload', wait: 3, face: F.W, label: '把貨裝進貨櫃' }), wp(-24.0, 15.0)],
-    talk: ['今天的貨很多，貨櫃要裝滿，貨船才能開。', '搬重物要用腿出力、背打直，才不會受傷。'] },
+    route: [wp(-10.6, 14.4, { act: 'unload', wait: 3, face: F.E, label: '在出貨區搬成品', go: 'carry', goLabel: '把成品搬到碼頭' }), wp(-24.0, 13.6, { go: 'carry', goLabel: '把成品搬到碼頭' }),
+      wp(-33.5, 9.3, { go: 'carry', goLabel: '把成品搬到碼頭' }), wp(-45.8, 9.3, { act: 'unload', wait: 3, face: F.S, label: '把成品搬上貨櫃車' }), wp(-33.5, 9.5), wp(-24.0, 14.6)],
+    talk: ['今天的貨很多，貨櫃要裝滿才能出發。', '搬重物要用腿出力、背打直，才不會受傷。'] },
   { id: 'visitor', label: '訪客（客戶）', role: 'visitor', hair: 'long', skin: '#f3cfb0', hairC: '#4a3426', speed: 1.0, side: 0.36, walkLabel: '在園區參觀', from: '09:00', to: '17:00', route: VISIT_LOOP,
     talk: ['我是來參觀的客戶，想看看筆電是怎麼做出來的！', '剛剛看到貼片機，一秒鐘就能貼好幾十顆零件，真厲害！'] },
   { id: 'sales', label: '訪客（業務）', role: 'sales', hair: 'short', skin: '#e4b58f', hairC: '#1c1c1c', speed: 1.0, side: -0.36, walkLabel: '陪客戶參觀', from: '09:00', to: '17:00', route: VISIT_LOOP,
@@ -3135,6 +3486,22 @@ const AMBIENT_DEF = [
   { id: 'office', label: '休息中的員工', role: 'office', hair: 'short', skin: '#f1c7a3', hairC: '#2b211b', speed: 1, sitY: 0.16,
     route: [wp(2.5, 21.5, { act: 'phone', wait: 1e6, face: F.S, label: '坐在長椅上休息' })],
     talk: ['我是辦公室的生管人員，出來吹吹海風。', '生管要排生產計畫：哪天做哪些機種、做多少台、物料什麼時候要到。'] },
+  // 報關島上的人（isle：在名單上另外列成「報關島」）
+  { id: 'broker', label: '報關行專員', role: 'broker', isle: true, hair: 'long', skin: '#f3cfb0', hairC: '#2b211b', speed: 0.9, walkLabel: '把報單送到海關',
+    route: [wp(-78.2, 2.3, { act: 'inspect', wait: 8, face: F.S, label: '在報關行門口核對發票和裝箱單' }), wp(-84.5, 2.6), wp(-91, 2.8, { act: 'talk', wait: 6, face: F.N, label: '在海關大門口說明報單內容' }), wp(-84.5, 2.6)],
+    talk: ['我是報關行的專員。工廠把發票和裝箱單交給我，我整理成「出口報單」，用網路送給海關。', '報單上要填稅則號別：筆電是 8471.30。號別填錯，關稅和管制可能就不一樣。', '文件和貨一定要一致：數量差一台，貨就可能被海關扣下來。'] },
+  { id: 'customs', label: '海關關員 A', role: 'customs', isle: true, hair: 'short', skin: '#d9a47e', hairC: '#151515', speed: 0.8, walkLabel: '巡視通關閘門',
+    route: [wp(-81.4, 18.2, { act: 'inspect', wait: 9, face: F.N, label: '在 X 光檢查站查驗 C3 貨櫃' }), wp(-87.5, 18.2, { act: 'look', wait: 5, face: F.N, label: '核對裝箱單和 X 光影像' })],
+    talk: ['我是海關關員，負責 C3 貨物查驗。', '貨櫃開進 X 光檢查站，螢幕上就看得到裡面裝了什麼。品名、數量要和報單一樣才放行。', '文件和貨對不上的貨櫃，會被扣下來補件、更正，嚴重的還要罰款。'] },
+  { id: 'customs2', label: '海關關員 B', role: 'customs', isle: true, hair: 'bun', skin: '#e8b994', hairC: '#231a15', speed: 0.8, walkLabel: '到保稅倉查帳',
+    route: [wp(-97.6, -11.3, { act: 'inspect', wait: 8, face: F.S, label: '在進口通關站審核進口貨櫃' }), wp(-91, -10.9), wp(-85.5, -10.0, { act: 'inspect', wait: 6, face: F.E, label: '到保稅倉核對帳冊' }), wp(-91, -10.9)],
+    talk: ['我是負責進口的海關關員。', '零件進口一樣要報關，分成 C1、C2、C3 審核。', '保稅倉裡的零件還沒繳稅，我們會定期來核對帳冊：進了多少、用了多少、出口多少。'] },
+  { id: 'crane', label: '吊車司機', role: 'crane', isle: true, hair: 'short', skin: '#c98e65', hairC: '#1a1a1a', speed: 0.7, walkLabel: '在碼頭邊巡視',
+    route: [wp(-100.6, 26.4, { act: 'look', wait: 9, face: F.W, label: '在出口吊車下看裝船作業' }), wp(-100.6, 24.4, { act: 'talk', wait: 5, face: F.W, label: '用對講機和吊車上的同事聯絡' })],
+    talk: ['我是吊車司機，剛從吊車上的駕駛室下來換班。', '海關放行的貨櫃才能吊上船；沒有放行的，一個都不能動。', '一台岸邊吊車一小時可以吊二、三十個貨櫃，船才能準時開。'] },
+  { id: 'bonded', label: '保稅倉管理員', role: 'bonded', isle: true, hair: 'bun', skin: '#f1c7a3', hairC: '#3a2a1e', speed: 0.6, walkLabel: '在保稅倉門口巡視',
+    route: [wp(-75.6, -10.0, { act: 'inspect', wait: 8, face: F.S, label: '清點剛進倉的零件' }), wp(-80, -10.0), wp(-84.2, -10.0, { act: 'look', wait: 5, face: F.S, label: '檢查倉庫門口' }), wp(-80, -10.0)],
+    talk: ['我是保稅倉的管理員。從國外進口的零件，會先放在這裡。', '保稅的零件還沒繳稅：做成筆電外銷出口，就不用繳這筆稅。', '所以每一批零件進來、領出去，我都要記在帳冊上，海關會來核對。'] },
 ];
 function buildRoute(def) {                     // 把路線換算成「每一段從第幾秒到第幾秒」
   const pts = def.route, legs = []; let t = 0;
@@ -3199,7 +3566,7 @@ PLAYER.fig.root.visible = false;
 const GOAL = new THREE.Mesh(new THREE.RingGeometry(0.16, 0.26, 28), new THREE.MeshBasicMaterial({ color: 0xDB6A41, transparent: true, opacity: 0.9, depthWrite: false, toneMapped: false }));
 GOAL.rotation.x = -Math.PI / 2; GOAL.visible = false; scene.add(GOAL);
 
-// 地面高度：工廠地坪 0、人工島 -0.35、碼頭 -0.4；天橋依樓梯與平台算高度；地坪邊緣用 0.5 公尺的斜坡接起來
+// 地面高度：工廠地坪 0、人工島與報關島 -0.35、碼頭和跨海大橋 -0.4；天橋依樓梯與平台算高度；地坪邊緣用 0.5 公尺的斜坡接起來
 function groundY(x, z) {
   for (const br of BRIDGES) {
     const dz = Math.abs(z - br.r);
@@ -3207,14 +3574,14 @@ function groundY(x, z) {
   }
   const d = Math.hypot(Math.max(FLOOR.x0 - x, 0, x - FLOOR.x1), Math.max(FLOOR.z0 - z, 0, z - FLOOR.z1));
   if (d === 0) return 0;
-  if (x < -34 && z > 10 && z < 17) return -0.4;
+  if (x < -34 && x > BRIDGE2.x0 && z > PIER.z0 - 0.1 && z < PIER.z1 + 0.1) return -0.4;
   return d < 0.5 ? lerp(0, -0.35, d / 0.5) : -0.35;
 }
 
 // ---- 可行走地圖（給玩家用）：把整座島切成 0.25 公尺的小格子 ----
 //   0 = 不能走（海、牆、機台、輸送帶、樹……）、1 = 可以走、2 = 天橋（高度另外算）
 const NAVG = (() => {
-  const C = 0.25, X0 = -54, Z0 = -31, NX = Math.round((52 - X0) / C), NZ = Math.round((30 - Z0) / C), RAD = 0.25;   // RAD：人的半徑
+  const C = 0.25, X0 = -112, Z0 = -31, NX = Math.round((52 - X0) / C), NZ = Math.round((34 - Z0) / C), RAD = 0.25;   // RAD：人的半徑
   const grid = new Uint8Array(NX * NZ);
   const ci = x => Math.floor((x - X0) / C), cj = z => Math.floor((z - Z0) / C);
   const inRR = (x, z, x0, z0, x1, z1, r) => {   // 點在不在圓角矩形裡
@@ -3222,10 +3589,13 @@ const NAVG = (() => {
     const qx = Math.max(x0 + r - x, 0, x - (x1 - r)), qz = Math.max(z0 + r - z, 0, z - (z1 - r));
     return qx * qx + qz * qz <= r * r;
   };
-  const E = 0.6;                                // 1) 島和碼頭可以走（離岸邊留一點距離）
+  const E = 0.6;                                // 1) 兩座島、碼頭、跨海大橋都可以走（離岸邊留一點距離）
   for (let j = 0; j < NZ; j++) for (let i = 0; i < NX; i++) {
     const x = X0 + (i + 0.5) * C, z = Z0 + (j + 0.5) * C;
-    if (inRR(x, z, -34 + E, -29 + E, 41 - E, 28 - E, 8 - E) || inRR(x, z, 37 + E, -9 + E, 50 - E, 9 - E, 5 - E) || (x > -52.6 && x < -33 && z > 10.9 && z < 16.1)) grid[j * NX + i] = 1;
+    if (inRR(x, z, -34 + E, -29 + E, 41 - E, 28 - E, 8 - E) || inRR(x, z, 37 + E, -9 + E, 50 - E, 9 - E, 5 - E)
+      || (x > PIER.x0 + 0.4 && x < -33 && z > PIER.z0 + 0.4 && z < PIER.z1 - 0.4)
+      || (x > BRIDGE2.x0 - 1 && x < BRIDGE2.x1 + 0.5 && z > BRIDGE2.z0 + 0.5 && z < BRIDGE2.z1 - 0.5)   // 往島上多延伸一點，接上島的可走範圍
+      || inRR(x, z, ISLE2.x0 + E, ISLE2.z0 + E, ISLE2.x1 - E, ISLE2.z1 - E, ISLE2.r - E)) grid[j * NX + i] = 1;
   }
   const block = (x0, z0, x1, z1) => {
     const i0 = Math.max(0, ci(x0)), i1 = Math.min(NX - 1, ci(x1)), j0 = Math.max(0, cj(z0)), j1 = Math.min(NZ - 1, cj(z1));
@@ -3239,7 +3609,7 @@ const NAVG = (() => {
   };
   // 2) 場景裡固定不動的東西都算障礙：用它的外框（AABB）再往外擴一個人的半徑
   scene.updateMatrixWorld(true);
-  const skip = new Set([WORLD.sky, WORLD.ripple, WORLD.boat, WORLD.ship, marker, alarmSign, CART, GOAL, ...units.map(u => u.g), ...BRIDGE_GROUPS, ...ALL_NPC.map(p => p.fig.root), PLAYER.fig.root]);
+  const skip = new Set([WORLD.sky, WORLD.ripple, WORLD.boat, WORLD.ship, marker, alarmSign, CART, GOAL, ...units.map(u => u.g), ...BRIDGE_GROUPS, ...ALL_NPC.map(p => p.fig.root), PLAYER.fig.root, ...NAV_SKIP]);
   const bb = new THREE.Box3();
   const visit = o => {
     if (skip.has(o)) return;
@@ -3438,6 +3808,176 @@ function updateMarkers(time) {                 // 頭上的「！」與「💬�
   }
 }
 
+// ---- 報關島的貨櫃車與吊車：跟著園區時鐘（AMB.t）不停循環，暫停時一起停 ----
+//   出口：3 台貨櫃車，車頭顏色就是它走的通道（C1 綠、C2 黃、C3 紅）：
+//         碼頭裝櫃 → 過橋 → 通關 → 岸邊吊車把貨櫃吊上船 → 貨櫃場領空櫃 → 回碼頭
+//   進口：1 台藍色貨櫃車在島上循環：進口吊車放上零件櫃 → 進口通關 → 保稅倉卸貨 → 回吊車
+const TRUCK_V = 5;                                 // 貨櫃車速度（公尺／秒）
+const SP_TRUCK = 2.05, SP_UP = 6.6, SP_SHIP = 1.2; // 吊具中心的高度（相對島面）：對準車上的貨櫃、吊高、放進船艙
+function makeRoute(pts) {                          // 穿過每個路點的平滑封閉曲線，先取樣成一串點並算好累積距離
+  const curve = new THREE.CatmullRomCurve3(pts.map(p => new THREE.Vector3(p.x, 0, p.z)), true, 'centripetal');
+  const SUB = 20, N = pts.length * SUB, xs = new Float32Array(N + 1), zs = new Float32Array(N + 1), ls = new Float32Array(N + 1), v = new THREE.Vector3();
+  for (let i = 0; i <= N; i++) { curve.getPoint(i / N, v); xs[i] = v.x; zs[i] = v.z; if (i) ls[i] = ls[i - 1] + Math.hypot(xs[i] - xs[i - 1], zs[i] - zs[i - 1]); }
+  const labels = []; let last = '';                // 每一段路在做什麼（沒寫的話沿用前一個）
+  pts.forEach((p, i) => { if (p.label) last = p.label; labels.push({ s: ls[i * SUB], text: p.label || last }); });
+  if (!pts[0].label) labels[0].text = last;
+  return { pts, xs, zs, ls, labels, len: ls[N], at: i => ls[i * SUB] };
+}
+function routePos(R, s, out) {
+  s = mod(s, R.len);
+  const ls = R.ls; let lo = 0, hi = ls.length - 1;
+  while (hi - lo > 1) { const m = (lo + hi) >> 1; if (ls[m] <= s) lo = m; else hi = m; }
+  const f = (s - ls[lo]) / Math.max(1e-6, ls[hi] - ls[lo]);
+  out.x = lerp(R.xs[lo], R.xs[hi], f); out.z = lerp(R.zs[lo], R.zs[hi], f);
+  return out;
+}
+const routeLabel = (R, s) => { let t = R.labels[R.labels.length - 1].text; for (const l of R.labels) if (l.s <= s + 0.01) t = l.text; return t; };
+function makePlan(R, stops) {                      // stops：{ 路點編號: 停幾秒 }，一定要有 0（起點）；兩站之間加速、等速、減速
+  const idx = Object.keys(stops).map(Number).sort((a, b) => a - b), legs = []; let t = 0;
+  idx.forEach((i, k) => {
+    const s0 = R.at(i), s1 = k + 1 < idx.length ? R.at(idx[k + 1]) : R.len;
+    legs.push({ stop: true, t0: t, t1: t + stops[i], s0, key: R.pts[i].key }); t += stops[i];
+    const L = s1 - s0, a = Math.min(4, L / 2), ta = 2 * a / TRUCK_V, T = (L - 2 * a) / TRUCK_V + 2 * ta;
+    legs.push({ stop: false, t0: t, t1: t + T, s0, L, a, ta, T }); t += T;
+  });
+  return { legs, total: t };
+}
+function planAt(P, t, out) {
+  t = mod(t, P.total);
+  let k = P.legs.length - 1;
+  for (let i = 0; i < P.legs.length; i++) if (t < P.legs[i].t1) { k = i; break; }
+  const g = P.legs[k], u = t - g.t0;
+  out.k = k; out.leg = g; out.u = u;
+  if (g.stop) out.s = g.s0;
+  else { const acc = TRUCK_V / g.ta; out.s = g.s0 + (u < g.ta ? 0.5 * acc * u * u : u < g.T - g.ta ? g.a + TRUCK_V * (u - g.ta) : g.L - 0.5 * acc * (g.T - u) ** 2); }
+  return out;
+}
+function buildTruck(cabColor, tagText) {           // 貨櫃車（前進方向為 +z）：車頭、底盤、輪子、貨櫃，車頂上有通道標籤
+  const g = new THREE.Group(); scene.add(g);
+  const cab = std(new THREE.Color(cabColor), { roughness: 0.6 });
+  box(g, 1.5, 0.22, 5.6, M.bodyDark, 0, 0.5, -0.2);
+  box(g, 1.7, 1.3, 1.45, cab, 0, 1.15, 2.05);
+  box(g, 1.72, 0.12, 1.5, M.bodyDark, 0, 1.86, 2.05, false);
+  plane(g, 1.4, 0.55, std(0x2F3B48, { roughness: 0.2, metalness: 0.4 }), 0, 1.45, 2.78);
+  for (const z of [2.0, -1.2, -2.2]) for (const s of [-1, 1]) cyl(g, 0.34, 0.34, 0.26, M.rubber, s * 0.72, 0.34, z, 14, false).rotation.z = Math.PI / 2;
+  const cont = box(g, 1.6, 1.35, 3.9, CONT_MATS[0], 0, 1.28, -0.85);
+  const tag = new THREE.Sprite(new THREE.SpriteMaterial({ map: makeTex(160, 96, (c, W, H) => {
+    c.fillStyle = cabColor; rrect(c, 4, 4, W - 8, H - 8, 30); c.fill();
+    c.strokeStyle = '#FFFDFA'; c.lineWidth = 6; rrect(c, 4, 4, W - 8, H - 8, 30); c.stroke();
+    c.fillStyle = '#FFFDFA'; c.font = `900 50px ${FONT}`; c.textAlign = 'center'; c.fillText(tagText, W / 2, 66);
+  }), toneMapped: false, depthWrite: false, sizeAttenuation: false }));
+  tag.scale.set(0.034, 0.02, 1); tag.position.set(0, 2.9, 1.0); tag.renderOrder = 5; g.add(tag);
+  return { g, cont, tag };
+}
+const TRUCKS = [];
+{
+  const gateText = { c1: '免審免驗，直接開過通道', c2: '停在窗口，給關員審文件', c3: '開進 X 光檢查站查驗' };
+  const gateX = { c1: -84, c2: -82, c3: -84.6 }, gateWait = { c1: 0, c2: 4, c3: 6 };
+  const expPts = k => { const lz = LANE[k]; return [
+    { x: -45, z: 11, key: 'bay', label: '在碼頭裝櫃：碼頭工人把成品搬上車' },
+    { x: -51, z: 11, label: '開過跨海大橋，前往報關島' }, { x: -58, z: 11 }, { x: -64.5, z: 11 },
+    { x: -67.5, z: 11 + (lz - 11) * 0.15, label: `海關電腦把它分到 ${k.toUpperCase()} 通道` }, { x: -71, z: 11 + (lz - 11) * 0.8 }, { x: -74.5, z: lz }, { x: -78.5, z: lz },
+    { x: gateX[k], z: lz, key: 'gate', label: gateText[k] }, { x: -88.5, z: lz },
+    { x: -94, z: lz, label: '海關放行！開往岸邊吊車' }, { x: -98.5, z: lz + 0.4 }, { x: -102.6, z: lz + 2.4 }, { x: -104, z: lz + 4.5 },
+    { x: QUAY_X, z: CRANE_EX_Z + 0.85, key: 'crane', label: '岸邊吊車把貨櫃吊上船' },
+    { x: -104, z: 26.6, label: '空車開往貨櫃場' }, { x: -102.2, z: 28.6 }, { x: -97, z: 29 },
+    { x: -88, z: 29, key: 'yard', label: '在貨櫃場領一個空貨櫃' },
+    { x: -79, z: 29, label: '載著空貨櫃開回工廠碼頭' }, { x: -71.5, z: 29 }, { x: -68.4, z: 27 }, { x: -68, z: 22 },
+    { x: -68, z: 19.2 }, { x: -66.6, z: 16.6 }, { x: -63.5, z: 16 }, { x: -56, z: 16 }, { x: -46, z: 16 },
+    { x: -39, z: 16, label: '在碼頭迴轉，準備裝下一櫃' }, { x: -36.2, z: 15.2 }, { x: -35, z: 13.5 }, { x: -36.2, z: 11.8 }, { x: -39, z: 11 },
+  ]; };
+  const ks = ['c1', 'c2', 'c3'], cabs = { c1: '#3E9B5A', c2: '#D9A12E', c3: '#C8463A' };
+  const keyIdx = (R, key) => R.pts.findIndex(p => p.key === key);
+  const routes = ks.map(k => makeRoute(expPts(k)));
+  const base = routes.map((R, n) => ({ 0: 0, [keyIdx(R, 'crane')]: 5, [keyIdx(R, 'yard')]: 2.5, ...(gateWait[ks[n]] ? { [keyIdx(R, 'gate')]: gateWait[ks[n]] } : {}) }));
+  const natural = routes.map((R, n) => makePlan(R, base[n]).total);
+  const P = Math.ceil(Math.max(...natural) + 8);   // 3 台車的週期一樣（差的時間加在碼頭裝櫃），彼此相隔 1/3 圈，就不會撞在一起
+  routes.forEach((R, n) => {
+    const plan = makePlan(R, { ...base[n], 0: P - natural[n] }), T = buildTruck(cabs[ks[n]], ks[n].toUpperCase());
+    T.cont.material = CONT_MATS[[2, 4, 5][n]];
+    const legOf = key => plan.legs.findIndex(l => l.stop && l.key === key);
+    TRUCKS.push({ kind: 'ex', lane: ks[n], R, plan, off: n * P / 3, crane: legOf('crane'), yard: legOf('yard'), gate: legOf('gate'), ...T, at: {}, label: '' });
+  });
+  CI.exP = P;
+  const imPts = [
+    { x: QUAY_X, z: CRANE_IM_Z - 0.85, key: 'crane', label: '進口吊車把零件貨櫃放上車' },
+    { x: -104, z: -5.8 }, { x: -102.8, z: -8 }, { x: -100, z: -8.5, label: '載著零件開往進口通關站' },
+    { x: -96, z: -8.5, key: 'gate', label: '進口通關：海關審核進口報單' }, { x: -90, z: -8.5, label: '放行！開往保稅倉' },
+    { x: -80, z: -8.5, key: 'ware', label: '在保稅倉卸下零件（先不繳稅）' },
+    { x: -72, z: -8.5, label: '空車開回進口吊車' }, { x: -68.4, z: -7.6 }, { x: -67, z: -5 }, { x: -67, z: 1.5 }, { x: -68.2, z: 4.3 }, { x: -71, z: 5 },
+    { x: -98, z: 5 }, { x: -102.5, z: 4.4 }, { x: -104, z: 2 },
+  ];
+  const R = makeRoute(imPts), st = { 0: 0, [keyIdx(R, 'gate')]: 4, [keyIdx(R, 'ware')]: 6 }, nat = makePlan(R, st).total, Pi = Math.ceil(nat + 6);
+  const plan = makePlan(R, { ...st, 0: Pi - nat }), T = buildTruck('#3F73AE', '進口');
+  T.cont.material = CONT_MATS[3];
+  TRUCKS.push({ kind: 'im', R, plan, off: 0, crane: 0, ware: plan.legs.findIndex(l => l.stop && l.key === 'ware'), gate: plan.legs.findIndex(l => l.stop && l.key === 'gate'), ...T, at: {}, label: '' });
+  CI.imP = Pi;
+  // 出口吊車：每台車抵達吊車的時間（同一個週期裡）
+  CI.exArrive = TRUCKS.filter(t => t.kind === 'ex').map(t => mod(t.off + t.plan.legs[t.crane].t0, P));
+}
+// 吊車動作的關鍵影格：[開始秒, 結束秒, 小車 x 起, 迄, 吊具高度 起, 迄]
+const QX = QUAY_X, SX = SHIP_POS.x;
+const CRANE_EX_KEYS = [[0, 1.0, QX, QX, SP_UP, SP_TRUCK], [1.0, 1.4, QX, QX, SP_TRUCK, SP_TRUCK], [1.4, 2.6, QX, QX, SP_TRUCK, SP_UP], [2.6, 5.4, QX, SX, SP_UP, SP_UP],
+  [5.4, 6.8, SX, SX, SP_UP, SP_SHIP], [6.8, 7.2, SX, SX, SP_SHIP, SP_SHIP], [7.2, 8.6, SX, SX, SP_SHIP, SP_UP], [8.6, 11.4, SX, QX, SP_UP, SP_UP]];
+const CRANE_IM_FETCH = [[0, 2.8, QX, SX, SP_UP, SP_UP], [2.8, 4.2, SX, SX, SP_UP, SP_SHIP], [4.2, 4.6, SX, SX, SP_SHIP, SP_SHIP], [4.6, 6.0, SX, SX, SP_SHIP, SP_UP], [6.0, 8.8, SX, QX, SP_UP, SP_UP]];
+const CRANE_IM_DROP = [[0, 1.0, QX, QX, SP_UP, SP_TRUCK], [1.0, 1.4, QX, QX, SP_TRUCK, SP_TRUCK], [1.4, 2.6, QX, QX, SP_TRUCK, SP_UP]];
+function keyAt(K, u) {
+  for (const k of K) if (u < k[1]) { const f = ease((u - k[0]) / (k[1] - k[0])); return [lerp(k[2], k[3], f), lerp(k[4], k[5], f)]; }
+  const k = K[K.length - 1]; return [k[3], k[5]];
+}
+function setCrane(C, x, sy, carry, mat) {          // 小車移到 x、吊具降到 sy；carry = 吊著貨櫃
+  C.trolley.position.x = x;
+  C.spreader.position.y = sy - 7.65;
+  const top = -0.25, spTop = sy - 7.65 + 0.1;
+  for (const c of C.cables) { c.scale.y = Math.max(0.05, top - spTop); c.position.y = (top + spTop) / 2; }
+  C.carry.visible = carry; if (mat) C.carry.material = mat;
+}
+const _tp = {}, _ta = {}, _tb = {};
+function updateCustoms(rdt, now) {
+  const t = AMB.t, blink = Math.sin(now * 9) > 0;
+  let c2Stop = false, xScan = -1, imGate = false;
+  for (const T of TRUCKS) {
+    const TP = T.plan, at = planAt(TP, t - T.off, _tp), s = at.s;
+    routePos(T.R, s, _ta); routePos(T.R, s + 0.8, _tb); const bx = _tb.x, bz = _tb.z; routePos(T.R, s - 0.8, _tb);
+    T.g.position.set(_ta.x, groundY(_ta.x, _ta.z), _ta.z);
+    T.g.rotation.y = Math.atan2(bx - _tb.x, bz - _tb.z);
+    T.at = { x: _ta.x, z: _ta.z, k: at.k, u: at.u };
+    T.label = routeLabel(T.R, s);
+    if (T.kind === 'ex') {                         // 貨櫃：在吊車被吊走（1.2 秒）→ 到貨櫃場領空櫃（1 秒）之間，車上沒有貨櫃
+      T.cont.visible = at.k < T.crane || at.k > T.yard || (at.k === T.crane && at.u < 1.2) || (at.k === T.yard && at.u >= 1.0);
+      if (at.k === T.gate && T.lane === 'c2') c2Stop = true;
+      if (at.k === T.gate && T.lane === 'c3') xScan = at.u;
+    } else {                                       // 進口：吊車放上貨櫃（1.2 秒）→ 保稅倉卸貨（停一半）之間，車上有貨櫃
+      T.cont.visible = (at.k === 0 && at.u >= 1.2) || (at.k > 0 && at.k < T.ware) || (at.k === T.ware && at.u < TP.legs[T.ware].t1 - TP.legs[T.ware].t0 - 3);
+      if (at.k === T.gate) imGate = true;
+    }
+  }
+  // 放行柵欄：貨櫃車開近就抬起來
+  for (const b of CI.bars) {
+    const T = TRUCKS.find(x => x.lane === b.lane), near = T.at.x < -84.5 && T.at.x > -97.5 && Math.abs(T.at.z - LANE[b.lane]) < 3;
+    b.a += ((near ? 1.35 : 0) - b.a) * (1 - Math.exp(-rdt * 5)); b.pivot.rotation.x = -b.a;
+  }
+  // X 光：C3 貨櫃車停在檢查站時，掃描光來回掃兩次，紅燈閃爍
+  CI.xBeam.visible = xScan >= 0;
+  if (xScan >= 0) CI.xBeam.position.x = lerp(-2.3, 2.3, 0.5 - 0.5 * Math.cos(xScan / 3 * Math.PI * 2));
+  CI.xBeacon.emissiveIntensity = xScan >= 0 ? (blink ? 3 : 0.4) : 0.15;
+  CI.c2Lamp.emissiveIntensity = c2Stop ? (blink ? 2.6 : 0.3) : 0.15;
+  CI.imLamp.emissiveIntensity = imGate ? (blink ? 2.6 : 0.3) : 0.15;
+  // 出口吊車：跟著「最近一台抵達的貨櫃車」做動作
+  let tau = Infinity, who = null;
+  TRUCKS.forEach(T => { if (T.kind === 'ex') { const d = mod(t - T.off - T.plan.legs[T.crane].t0, CI.exP); if (d < tau) { tau = d; who = T; } } });
+  if (tau < CRANE_EX_KEYS[CRANE_EX_KEYS.length - 1][1]) { const [x, y] = keyAt(CRANE_EX_KEYS, tau); setCrane(CI.craneEx, x, y, tau >= 1.2 && tau < 6.9, who.cont.material); }
+  else setCrane(CI.craneEx, QX, SP_UP, false);
+  // 進口吊車：貨櫃車到之前先去船艙吊一櫃，車一到就放上去
+  const Ti = TRUCKS.find(x => x.kind === 'im'), Pi = CI.imP, ti = mod(t - Ti.off, Pi), fetch0 = Pi - 9.6;
+  if (ti < 2.6) { const [x, y] = keyAt(CRANE_IM_DROP, ti); setCrane(CI.craneIm, x, y, ti < 1.2, Ti.cont.material); }
+  else if (ti >= fetch0) { const u = ti - fetch0, [x, y] = u < 8.8 ? keyAt(CRANE_IM_FETCH, u) : [QX, SP_UP]; setCrane(CI.craneIm, x, y, u >= 4.4, Ti.cont.material); }
+  else setCrane(CI.craneIm, QX, SP_UP, false);
+  // 闖關結束：貨船載著放行的筆電開走（往南駛向外海）
+  if (CI.depart) { const e = clamp01((now - CI.depart) / 26); CI.ship.position.z = SHIP_POS.z + 90 * e * e; }
+  else CI.ship.position.z = SHIP_POS.z;
+}
+
 /* =====================================================================
  * 15. 狀態與每一幀的更新
  * =================================================================== */
@@ -3615,16 +4155,17 @@ function buildPeopleList() {
   listMode = 'people'; $('panelTitle').textContent = state.play ? '🎯 聊天任務' : '👷 人員名單';
   const item = p => `<button class="pp-item" data-id="${p.id}">${avatarHTML(p, 'av')}<span class="pp-txt"><b>${displayName(p)}</b><small id="pa-${p.id}">${ROLES[p.role].title}</small></span><span class="met" id="pm-${p.id}">${DLG.met.has(p.id) ? '✓' : ''}</span></button>`;
   const head = (c, t) => `<div class="zone-head"><span class="dot" style="background:${c}"></span>${t}</div>`;
-  $('stationList').innerHTML = (state.play ? '<div class="quest" id="questBar"></div>' : '')
+  $('stationList').innerHTML = (state.play ? '<div class="quest" id="questBar"></div><div class="quest" id="gemBar"></div>' : '')
     + head('#D96B45', state.play ? '主要人物（點名字就會走過去找他）' : '主要人物（點一下聽他說話）')
     + MAIN_ORDER.map(id => item(PEOPLE_BY_ID[id])).join('')
     + head('#A39E94', '其他人員') + PEOPLE.filter(p => p.generic).map(item).join('')
-    + head('#6F9B78', '園區路人') + AMBIENT.map(item).join('');
+    + head('#6F9B78', '園區路人') + AMBIENT.filter(p => !p.isle).map(item).join('')
+    + head('#2F6F8F', state.play ? '報關島（從出貨碼頭過橋就到了）' : '報關島') + AMBIENT.filter(p => p.isle).map(item).join('');
   $('stationList').querySelectorAll('.pp-item').forEach(b => b.addEventListener('click', () => {
     if (state.play) walkToPerson(b.dataset.id); else selectPerson(b.dataset.id);
     if (isMobile()) setDrawer(false);           // 手機版：選好人就把抽屜關上，看得到 3D 畫面
   }));
-  updateQuest();
+  updateQuest(); updateGemBar();
 }
 function buildDayTimeline() {
   $('tlZones').innerHTML = SC.map(s => `<div style="width:${s.dur / DAY_TOTAL * 100}%;background:${KIND_COLOR[s.kind]}"></div>`).join('');
@@ -3648,7 +4189,7 @@ function personHTML(p) {
   const top = `<button class="mini close-x" id="btnUnsel" title="回到整體狀況">✕</button>
     <div class="person-head">${avatarHTML(p, 'portrait')}
       <div><span class="zone-tag" style="--c:${R.color}">${R.title}・${R.en}</span>
-      <h2>${displayName(p)}</h2>${p.portrait ? '<div class="en">虛構人物・肖像由 Codex 繪製</div>' : p.ambient ? '<div class="en">園區路人</div>' : ''}</div></div>
+      <h2>${displayName(p)}</h2>${p.portrait ? '<div class="en">虛構人物・肖像由 Codex 繪製</div>' : p.ambient ? `<div class="en">${p.isle ? '報關島' : '園區路人'}</div>` : ''}</div></div>
     <div class="status" id="infoStatus"></div>
     ${state.play ? '' : '<button class="btn follow" id="btnFollow">🎥 鏡頭跟隨</button>'}
     <h3>🧑‍🏭 工作內容</h3><p>${R.duty}</p>`;
@@ -3673,7 +4214,8 @@ function playHTML() {                          // 下場走走：還沒選人時
     <h2>你是今天的參觀者</h2>
     <div class="status" id="infoStatus"></div>
     <h3>🕹️ 怎麼玩</h3><ul>${how}</ul>
-    <h3>🎯 聊天任務</h3><p>和左邊名單裡的人都聊聊看。頭上有「<b>！</b>」的人正在做重要的事，先去找他！</p>
+    <h3>🎯 聊天任務</h3><p>和左邊名單裡的人都聊聊看。頭上有「<b>！</b>」的人正在做重要的事，先去找他！每認識一種角色，寶箱就多一張<b>人物卡</b>。</p>
+    <h3>🎒 撿寶物</h3><p>地上發光的寶石就是寶物，走過去就能撿：藍色是<b>零件卡</b>，藏在各工站旁邊；橘色是<b>文件卡</b>，在出貨碼頭和報關島（從碼頭過橋就到了）。</p>
     <p class="hint">時間會照常流動。想看 14:00 的機台異常，可以按下方的 ⏭ 跳到下一段。</p>`;
 }
 
@@ -3711,7 +4253,7 @@ function openTalk(id) {
   DLG.met.add(id);
   $('dlgAv').innerHTML = avatarHTML(p, 'dlg-av');
   $('dlgName').textContent = displayName(p);
-  $('dlgRole').textContent = R.title === displayName(p) ? '園區路人' : R.title; $('dlgRole').style.setProperty('--c', R.color);
+  $('dlgRole').textContent = R.title === displayName(p) ? (p.isle ? '報關島' : '園區路人') : R.title; $('dlgRole').style.setProperty('--c', R.color);
   $('dialog').hidden = false; document.body.classList.add('talking');
   if (state.play) {                            // 下場走走：時間先停下來，兩個人面對面
     state.talkHold = true; state.selPerson = id; infoKey = '';
@@ -3719,6 +4261,7 @@ function openTalk(id) {
     PLAYER.yaw = Math.atan2(p.o.pos.x - PLAYER.pos.x, p.o.pos.z - PLAYER.pos.z);
   }
   updateQuest(firstMeet ? id : null);
+  chestGrant('p_' + p.role);                   // 第一次認識這種角色：寶箱多一張人物卡
   renderTalk();
 }
 function closeTalk() {
@@ -3758,10 +4301,18 @@ function updateQuest(newId) {                  // 聊天任務的進度與打勾
   if (n >= TALK_TOTAL) toast('🏆 所有人都聊過了！你已經是半個工廠通了！');
   else if (MAIN_ORDER.includes(newId) && MAIN_ORDER.every(id => DLG.met.has(id))) toast('🎉 任務完成：你認識了產線的 5 位核心人物！');
 }
-let toastTimer = 0;
+let toastTimer = 0; const toastQ = [];          // 通知排隊：一次顯示一則，不會互相蓋掉
 function toast(msg) {
-  const t = $('toast'); t.textContent = msg; t.classList.add('show');
-  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 3200);
+  const t = $('toast');
+  if ((t.classList.contains('show') && t.textContent === msg) || toastQ.includes(msg)) return;   // 同一句話正在顯示或已在排隊
+  toastQ.push(msg); if (toastQ.length > 3) toastQ.shift();
+  if (!toastTimer) nextToast();
+}
+function nextToast() {
+  const t = $('toast'), m = toastQ.shift();
+  if (!m) { toastTimer = 0; t.classList.remove('show'); return; }
+  t.textContent = m; t.classList.add('show');
+  toastTimer = setTimeout(nextToast, 2800);
 }
 function setPlay(on) {                         // 打開／關掉「下場走走」
   if (on && state.mode !== 'day') setMode('day');
@@ -3776,7 +4327,7 @@ function setPlay(on) {                         // 打開／關掉「下場走走
     PLAYER.pos.y = groundY(PLAYER.pos.x, PLAYER.pos.z);
     const c = PLAYER.pos.clone(); c.y += 0.9;
     flyTo(c.clone().add(PLAY_OFF), c, 1.4, true);
-    if (!PLAYER.welcomed) { PLAYER.welcomed = true; toast(TOUCH ? '點地板走路、點人物聊天！先去員工出入口找警衛吧。' : 'W A S D 走路、E 聊天！先去員工出入口找警衛吧。'); }
+    if (!PLAYER.welcomed) { PLAYER.welcomed = true; toast(TOUCH ? '點地板走路、點人物聊天！先去員工出入口找警衛吧。' : 'W A S D 走路、E 聊天！先去員工出入口找警衛吧。'); toast('💎 地上發光的寶石是寶物，走過去就能撿！'); }
   }
   infoKey = ''; buildPeopleList();
 }
@@ -3854,6 +4405,7 @@ function updateUI(rdt) {
   uiClock += rdt; if (uiClock < 0.1) return; uiClock = 0;
   updateQuestHud();
   if (state.mode === 'day') { updateDayUI(); return; }
+  if (state.mode === 'customs') { updateCustomsUI(); return; }
   const tau = heroTau(), total = SCHED.total, items = stItems();
   const frac = clamp01(tau / total);
   $('tlFill').style.width = (frac * 100) + '%';
@@ -3870,7 +4422,8 @@ function updateUI(rdt) {
       setInfo('done', `<div class="welcome"><div class="done-badge">🎉</div><h2>完成！示範機已經出貨</h2>
         <p>這台筆電從一片<b>銅箔基板</b>開始，經過 <b>6 大區、23 個站</b>，變成貼好標籤、裝箱封好、疊上棧板的成品。</p>
         <ul><li>PCB 打板：做出空的電路板</li><li>SMT：把上千顆零件焊上去</li><li>主機板測試：確認能開機</li><li>系統組裝：裝成一台筆電</li><li>測試品檢：燒機與外觀檢查</li><li>包裝出貨：貼標、裝盒、上棧板</li></ul>
-        <p style="margin-top:10px;color:#64748b">幾秒後會自動換下一台示範機，從頭再走一次。</p></div>`);
+        <p style="margin-top:10px">裝好箱還不算真的出貨喔！想知道筆電怎麼合法出國，按上方的 <b>🛃 報關島</b>。</p>
+        <p style="margin-top:6px;color:#64748b">幾秒後會自動換下一台示範機，從頭再走一次。</p></div>`);
       return;
     }
     setInfo('st' + curK, stationHTML(curK));
@@ -3912,20 +4465,28 @@ function setMode(m) {
   $('btnTour').classList.toggle('active', m === 'tour');
   $('btnFree').classList.toggle('active', m === 'free');
   $('btnDay').classList.toggle('active', m === 'day');
+  $('btnCustoms').classList.toggle('active', m === 'customs');
   $('btnOverview').classList.remove('active');
   controls.enablePan = m !== 'tour';
   document.body.classList.toggle('day-mode', m === 'day');
-  $('autoPauseLabel').textContent = m === 'day' ? '每段自動暫停' : '每站自動暫停';
-  $('btnPrev').querySelector('.lbl').textContent = m === 'day' ? ' 上一段' : ' 上一站';
-  $('btnNext').querySelector('.lbl').textContent = m === 'day' ? '下一段 ' : '下一站 ';
+  document.body.classList.toggle('customs-mode', m === 'customs');
+  const unit = m === 'day' ? '段' : m === 'customs' ? '步' : '站';   // 人員一日一段一段、報關島一步一步、產線一站一站
+  $('autoPauseLabel').textContent = `每${unit}自動暫停`;
+  $('btnPrev').querySelector('.lbl').textContent = ` 上一${unit}`;
+  $('btnNext').querySelector('.lbl').textContent = `下一${unit} `;
+  $('btnPrev').title = `上一${unit}`; $('btnNext').title = `下一${unit}`;
   if (m === 'day') {
     if (listMode !== 'people') buildPeopleList();
     buildDayTimeline();
     if (!state.follow && !state.selPerson) state.follow = 'leader';   // 預設跟著線長走一天
     state.lastScene = sceneIdx(state.D);
+  } else if (m === 'customs') {
+    if (listMode !== 'customs') buildCustomsList();
+    buildCustomsTimeline();
+    goCustoms(CZ.step);
   } else {
     if (listMode !== 'stations') buildStationList();
-    if (prev === 'day') buildTimeline();
+    if (prev === 'day' || prev === 'customs') buildTimeline();
   }
   if (m === 'tour' && getHeroPos(heroPos)) flyTo(heroPos.clone().add(sOff(tourOff())), heroPos.clone(), 1.6, true);
   if (isMobile()) setTimeout(fitView, 50);     // 手機版：人員一日多了上方時間列，重新計算畫面中心
@@ -3941,7 +4502,8 @@ function pickStation(k) {
   const v = stationView(STATIONS[k]); flyTo(v.pos, v.tgt, 1.3);
 }
 function stepStation(dir) {
-  if (state.mode === 'day') stepScene(dir);
+  if (state.mode === 'customs') goCustoms(CZ.step + dir);
+  else if (state.mode === 'day') stepScene(dir);
   else if (state.mode === 'tour') {
     const tau = heroTau(); let cur = STATIONS.length;
     if (tau <= SCHED.total) { lookup(Math.max(0, tau), info); cur = info.next; }
@@ -3949,6 +4511,7 @@ function stepStation(dir) {
   } else pickStation(clamp((state.selected < 0 ? 0 : state.selected + dir), 0, STATIONS.length - 1));
 }
 function restartTour() {
+  if (state.mode === 'customs') { goCustoms(0); return; }                     // 報關島：回到第 1 步
   if (state.mode === 'day') { state.D = 0; state.lastScene = -1; return; }   // 人員一日：從 07:40 重新開始
   state.heroN = Math.floor(state.T / SPAWN) + 1;
   state.T = state.heroN * SPAWN - 0.3;
@@ -3958,8 +4521,111 @@ function restartTour() {
   flyTo(start.clone().add(sOff(tourOff())), start, 1.6);
 }
 
-// ---- 新人闖關：5 分鐘、5 關（報到 → 認識產線 → 找對的人 → 品檢找碴 → 出貨防呆），最後拿結業證書 ----
-//   每關最多 100 分：一次都沒錯 100 分；錯的次數在 slack 以內 60 分；再多就 30 分
+// ---- 報關島導覽：出口 6 步＋進口 4 步，鏡頭飛到每一個地點；說明卡上即時顯示島上的貨櫃車正在做什麼 ----
+//   at：鏡頭要看的位置；off：鏡頭相對 at 的位置（手機直式畫面會自動拉遠）
+const CUSTOMS_STEPS = [
+  { flow: 'ex', title: '工廠裝櫃、備好文件', en: 'Shipping Documents', at: new THREE.Vector3(-40, 0, 12.5), off: new THREE.Vector3(3, 18, 22),
+    who: '碼頭工人、業務、船務', docs: '商業發票、裝箱單',
+    what: '包好的筆電由碼頭工人搬上貨櫃車、封好櫃門。同一時間，業務開出「商業發票」（賣給誰、多少錢），船務做好「裝箱單」（幾箱、幾台、多重），也先向船公司訂好船位。',
+    why: '海關、船公司和客戶，都是看這兩份文件才知道「櫃子裡裝了什麼」。文件一定要和實際的貨一模一樣。',
+    tip: '第 22 站「封箱秤重」就是在幫文件把關：漏放一個變壓器，裝箱單上的重量就對不上，到了報關島可能會被扣下來。' },
+  { flow: 'ex', title: '報關行送出口報單', en: 'Export Declaration', at: new THREE.Vector3(-82, 1, 0.5), off: new THREE.Vector3(12, 14, 21),
+    who: '報關行專員', docs: '出口報單',
+    what: '報關行把發票、裝箱單上的資料，整理成正式的「出口報單」，用網路送給海關。報單上要填貨品的「稅則號別」，筆電是 8471.30。',
+    why: '號別、數量、價格填錯，可能被罰款或延誤出貨，所以大部分公司會委託有執照的報關行來處理。',
+    tip: '稅則號別是全世界共用的「貨品身分證號碼」（HS Code），前 6 碼各國都一樣，關稅和管制都看它決定。' },
+  { flow: 'ex', title: '海關分流：C1／C2／C3', en: 'Risk-based Selection', at: new THREE.Vector3(-81, 0, 13), off: new THREE.Vector3(20, 18, -7),
+    who: '海關（電腦系統＋關員）', docs: '出口報單',
+    what: '海關電腦依照貨物種類、公司過去的紀錄等風險，把報單分成三條路：🟢 C1 免審免驗，電腦直接放行；🟡 C2 文件審核，關員審文件、不看貨；🔴 C3 貨物查驗，要看實際的貨。',
+    why: '每天進出口的貨櫃太多，不可能每一櫃都打開。用風險分流，海關就能把人力放在最需要檢查的貨上。',
+    tip: '公司平常守規矩、文件正確，被分到 C3 的機會就比較低，通關也比較快。看看畫面：三台貨櫃車的車頭顏色，就是它們被分到的通道。' },
+  { flow: 'ex', title: 'C3 查驗：X 光與開櫃', en: 'Cargo Inspection', at: new THREE.Vector3(-86, 1, 16), off: new THREE.Vector3(15, 13, -12),
+    who: '海關關員', docs: '裝箱單、出口報單',
+    what: '被分到 C3 的貨櫃，要開進 X 光檢查站掃描；必要時還會打開櫃門，核對品名、數量、重量和報單是不是一致。',
+    why: '這是在防「申報不實」：多裝少報、夾帶違禁品，或是貨和文件對不上。',
+    tip: '查到不一致，貨會被扣下來，要更正文件，甚至被罰款。拖過結關時間就趕不上船，客戶也會晚收到貨。' },
+  { flow: 'ex', title: '放行，進貨櫃場', en: 'Release & Container Yard', at: new THREE.Vector3(-95, 1, 17), off: new THREE.Vector3(14, 16, -12),
+    who: '海關、貨櫃場人員', docs: '放行通知',
+    what: '審核或查驗沒問題，海關就發出「放行」。柵欄打開，貨櫃車開往碼頭邊準備裝船；還沒輪到的貨櫃，就先放在貨櫃場等船。',
+    why: '沒有放行的貨櫃不能裝船。船公司還有「結關日」：貨要在開船前報關放行、送進貨櫃場，錯過了就趕不上這班船。',
+    tip: '生產排程常常是從船期往回推：哪天開船 → 哪天結關 → 哪天要包裝完成 → 哪天就要開始生產。' },
+  { flow: 'ex', title: '吊上船，開船', en: 'Loading & Departure', at: new THREE.Vector3(-108, 3, 19), off: new THREE.Vector3(30, 17, 28),
+    who: '吊車司機、船公司', docs: '提單（B/L）',
+    what: '岸邊吊車把貨櫃從貨櫃車上吊起來，放進貨船的船艙。開船後，船公司開出「提單」，客戶在目的地要拿提單才能領貨。',
+    why: '到這一步，貨才真的「出口」了。很多交易要等貨上了船、拿到提單，公司才能向客戶請款。',
+    tip: '大型貨櫃輪一次可以載上萬個貨櫃；從台灣開到美國西岸，大約要兩到三週。' },
+  { flow: 'im', title: '零件進口：卸櫃', en: 'Unloading Imported Parts', at: new THREE.Vector3(-108, 3, -2), off: new THREE.Vector3(30, 17, -22),
+    who: '吊車司機、船公司', docs: '提單',
+    what: '筆電的零件很多來自國外：CPU、面板、記憶體……。貨船靠岸後，進口吊車把裝著零件的貨櫃卸到貨櫃車上。',
+    why: '一台筆電的零件來自好幾個國家，任何一種料晚到，產線就得停下來等。',
+    tip: '所以物料和採購要隨時盯著船期：船晚到一天，生產排程可能就要跟著調整。' },
+  { flow: 'im', title: '進口報關', en: 'Import Declaration', at: new THREE.Vector3(-95, 1, -8.5), off: new THREE.Vector3(11, 12, -15),
+    who: '報關行、海關', docs: '進口報單',
+    what: '進口也要報關：報關行送出「進口報單」，海關一樣分成 C1／C2／C3 審核。一般的進口貨，要先繳稅（例如關稅、營業稅）才能放行。',
+    why: '海關要確認進口的東西安全、合法，該繳的稅也繳了。',
+    tip: '進口和出口是同一套道理：文件要和貨一致，才能順利通關。' },
+  { flow: 'im', title: '保稅倉', en: 'Bonded Warehouse', at: new THREE.Vector3(-80, 1.5, -11), off: new THREE.Vector3(11, 13, 18),
+    who: '保稅倉管理員、海關', docs: '保稅帳冊',
+    what: '工廠如果是「保稅工廠」，或是在加工出口區、科學園區，進口的零件可以先不繳稅，存在保稅倉；做成筆電外銷出口，就不用繳這筆稅。',
+    why: '零件做成成品又賣到國外，並沒有留在國內使用，所以先免稅，讓外銷的產品更有競爭力。',
+    tip: '海關會定期核對帳冊：進了多少零件、用掉多少、做成多少台出口。帳對不上，就要補稅。' },
+  { flow: 'im', title: '送回工廠', en: 'To the Factory', at: new THREE.Vector3(-20.5, 0.6, -13.5), off: new THREE.Vector3(7, 7, 10),
+    who: '物料員、司機', docs: '領料單',
+    what: '產線需要時，零件從保稅倉領出來，用貨車送到工廠的原料倉，再由物料員推到產線旁。',
+    why: '這裡就是產線第 1 站的上游：產線上的每一顆零件，都走過這一段旅程。',
+    tip: '進口零件 → 生產 → 出口成品，串起來就是一條完整的「供應鏈」。' },
+];
+const CZ = { step: 0 };
+const cColor = S => S.flow === 'ex' ? '#DB6A41' : '#3F73AE';
+function goCustoms(i) {                        // 跳到第 i 步，鏡頭飛過去
+  CZ.step = clamp(i, 0, CUSTOMS_STEPS.length - 1); infoKey = '';
+  const S = CUSTOMS_STEPS[CZ.step], v = qView(S.at.clone(), S.off);
+  flyTo(v.pos, v.tgt, 1.6);
+}
+function buildCustomsList() {
+  listMode = 'customs'; $('panelTitle').textContent = '🛃 報關島';
+  const item = (S, i) => `<button class="st-item" data-c="${i}"><span class="num" style="--c:${cColor(S)}">${String(i + 1).padStart(2, '0')}</span><span class="nm">${S.title}</span><span class="ck">✓</span></button>`;
+  const head = (c, t) => `<div class="zone-head"><span class="dot" style="background:${c}"></span>${t}</div>`;
+  $('stationList').innerHTML = head('#DB6A41', '📤 出口：筆電送出國') + CUSTOMS_STEPS.map((S, i) => S.flow === 'ex' ? item(S, i) : '').join('')
+    + head('#3F73AE', '📥 進口：零件送進來') + CUSTOMS_STEPS.map((S, i) => S.flow === 'im' ? item(S, i) : '').join('');
+  $('stationList').querySelectorAll('.st-item').forEach(b => b.addEventListener('click', () => { goCustoms(+b.dataset.c); if (isMobile()) setDrawer(false); }));
+}
+function buildCustomsTimeline() {
+  const n = CUSTOMS_STEPS.length;
+  $('tlZones').innerHTML = CUSTOMS_STEPS.map(S => `<div style="width:${100 / n}%;background:${cColor(S)}"></div>`).join('');
+  $('tlFillInner').innerHTML = $('tlZones').innerHTML;
+  $('tlTicks').innerHTML = CUSTOMS_STEPS.slice(1).map((S, i) => `<i style="left:${(i + 1) / n * 100}%"></i>`).join('');
+}
+function customsHTML(i) {
+  const S = CUSTOMS_STEPS[i], c = cColor(S);
+  return `<span class="zone-tag" style="--c:${c}">${S.flow === 'ex' ? '📤 出口' : '📥 進口'} · 報關島</span>
+    <h2 style="--c:${c}"><span class="num">${String(i + 1).padStart(2, '0')}</span>${S.title}</h2>
+    <div class="en">${S.en}</div>
+    <div class="status" id="infoStatus"></div>
+    <h3>👥 誰負責？</h3><p>${S.who}</p>
+    <h3>🔧 在做什麼？</h3><p>${S.what}</p>
+    <h3>🎯 為什麼重要？</h3><p>${S.why}</p>
+    <div class="tip"><b>💡 小知識</b><p>${S.tip}</p></div>
+    <div class="result"><span>📄 這一步的文件</span><b>${S.docs}</b></div>`;
+}
+function customsLive(S) {                      // 島上的貨櫃車現在在做什麼（每 0.1 秒更新）
+  if (S.flow === 'im') return `🚚 <b>島上現在：</b><br>🔵 進口貨櫃車：${TRUCKS.find(t => t.kind === 'im').label}`;
+  const dot = { c1: '🟢', c2: '🟡', c3: '🔴' };
+  return '🚚 <b>島上現在：</b>' + TRUCKS.filter(t => t.kind === 'ex').map(t => `<br>${dot[t.lane]} ${t.lane.toUpperCase()} 貨櫃車：${t.label}`).join('');
+}
+function updateCustomsUI() {
+  const n = CUSTOMS_STEPS.length, i = CZ.step, S = CUSTOMS_STEPS[i], frac = (i + 1) / n;
+  $('tlFill').style.width = (frac * 100) + '%';
+  $('tlFillInner').style.width = (100 / frac) + '%';
+  $('tlHandle').style.left = ((i + 0.5) / n * 100) + '%';
+  $('progText').innerHTML = `🛃 報關島　第 <b>${i + 1}</b> / ${n} 步（${S.flow === 'ex' ? '出口' : '進口'}）`;
+  stItems().forEach((el, k) => { el.classList.toggle('current', k === i); el.classList.toggle('done', k < i); });
+  setInfo('cu' + i, customsHTML(i));
+  const el = $('infoStatus'); if (el) el.innerHTML = customsLive(S);
+}
+
+// ---- 新人闖關：6 分鐘、6 關（報到 → 認識產線 → 找對的人 → 品檢找碴 → 出貨防呆 → 通關放行），最後拿結業證書 ----
+//   每關最多 100 分：一次都沒錯 100 分；錯的次數在 slack 以內 60 分；再多就 30 分；每過一關，寶箱多一個徽章
 //   排行榜下一版再接資料庫；這一版先把「這台裝置的最佳紀錄」存在瀏覽器裡
 const qStore = {
   get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
@@ -4007,6 +4673,14 @@ const Q_LEVELS = [
       { t: '保護袋（約 10 公克）', why: '保護袋很輕，只有 10 公克左右。' },
     ],
     done: '沒錯！這就是「秤重防呆」：只要少放一樣東西，重量就不對，系統會自動把這箱攔下來。' },
+  { title: '通關放行', slack: 1, clock: '16:30', type: 'judge', view: () => qView(new THREE.Vector3(-84, 0.8, LANE.c3), new THREE.Vector3(8, 7, 10)),
+    say: '最後一關！貨櫃開到報關島，海關電腦把這三個貨櫃分到 C3，要用 X 光查驗：核對「裝箱單」和「實際的貨」。對得上就放行，對不上就扣下來，你來判斷！',
+    boxes: [   // 每箱筆電 2.35 公斤（就是第 5 關的標準重量）
+      { name: '貨櫃 A', doc: [['筆電', '320 台'], ['變壓器', '320 個'], ['總重', '752.00 kg']], real: [['筆電', '320 台'], ['變壓器', '320 個'], ['總重', '752.00 kg']], ok: true, why: '每一項都和裝箱單一樣，放行！' },
+      { name: '貨櫃 B', doc: [['筆電', '320 台'], ['變壓器', '320 個'], ['總重', '752.00 kg']], real: [['筆電', '320 台'], ['變壓器', '319 個'], ['總重', '751.75 kg']], ok: false, why: '少了 1 個變壓器（250 公克），和裝箱單對不上，要扣下來補件、更正文件。' },
+      { name: '貨櫃 C', doc: [['筆電', '288 台'], ['變壓器', '288 個'], ['總重', '676.80 kg']], real: [['筆電', '288 台'], ['變壓器', '288 個'], ['總重', '676.80 kg']], ok: true, why: '數量和重量都對得上，放行！' },
+    ],
+    done: '判斷正確！文件和貨對得上，海關才會放行；對不上的貨櫃會被扣下來補件，很可能就趕不上這班船。' },
 ];
 const QZ = { on: false, done: false, step: -1, name: '', scores: [], miss: 0, pos: 0, ti: 0, found: [], passed: false, t0: 0, t1: 0, prevMode: 'tour' };
 function qSay(text) {                          // 導師（線長）說話的框框，用 Codex 畫的寫實肖像
@@ -4028,14 +4702,15 @@ function questOpen() {                         // 開始畫面：輸入暱稱
   closeTalk();
   if (!QZ.on) QZ.prevMode = state.mode;
   Object.assign(QZ, { on: true, done: false, step: -1, scores: [], t0: 0, t1: 0 });
+  CI.depart = 0;                               // 上一輪開走的貨船回到碼頭
   document.body.classList.add('quest-on'); $('qHead').hidden = false; $('qCard').hidden = false;
   if (isMobile()) setDrawer(false);
   setMode('day'); state.follow = null; state.selPerson = null;
   state.D = dAtClock(hm('07:43')); state.lastScene = sceneIdx(state.D); setPaused(false);
   flyTo(overviewPos(), OVERVIEW.tgt.clone(), 1.6);
-  const best = qStore.get('nbQuestBest');
+  const best = qBest();
   qRender(`<div class="q-title">新人報到闖關</div>`
-    + qSay('嗨，新同事！5 分鐘、5 個關卡，帶你認識筆電工廠：一台筆電怎麼做出來、產線上誰負責什麼。先告訴我你的暱稱吧！')
+    + qSay('嗨，新同事！6 分鐘、6 個關卡，帶你認識筆電工廠：一台筆電怎麼做出來、產線上誰負責什麼，最後怎麼通關出國。每過一關，寶箱還會多一個徽章喔！先告訴我你的暱稱吧！')
     + `<input class="q-input" id="qName" maxlength="12" autocomplete="nickname" placeholder="你的暱稱（最多 12 個字）" value="${esc(qStore.get('nbQuestName') || '')}">`
     + `<div class="q-fb no" id="qFb"></div>`
     + (best ? `<p class="hint">你在這台裝置的最佳紀錄：<b>${best.score}</b> 分（${qTimeText(best.ms)}）</p>` : '')
@@ -4071,6 +4746,10 @@ function questLevel(i) {
   } else if (L.type === 'choice') {            // 選擇題
     body = `<div class="q-scale">⚖️ 標準重量 <b>2.35 kg</b>　這一箱 <b class="bad">2.10 kg</b></div>`
       + `<div class="q-chips" style="margin-top:10px">${L.options.map((o, n) => `<button class="q-chip" data-q="opt" data-i="${n}">${o.t}</button>`).join('')}</div>`;
+  } else if (L.type === 'judge') {             // 判斷：裝箱單和 X 光查驗的結果對不對得上（三個貨櫃的順序每次都打亂）
+    QZ.order = L.boxes.map((_, k) => k);
+    for (let n = QZ.order.length - 1; n > 0; n--) { const m = Math.floor(Math.random() * (n + 1)); [QZ.order[n], QZ.order[m]] = [QZ.order[m], QZ.order[n]]; }
+    body = `<div id="qJudge">${qJudgeBox()}</div><div class="q-slots" id="qDone"></div>`;
   }
   qRender(`<div class="q-title">第 ${i + 1} 關・${L.title}</div>` + qSay(L.say) + body + `<div class="q-fb" id="qFb"></div><div class="q-foot" id="qFoot"></div>`);
   qHud(); setTimeout(fitView, 60);
@@ -4083,8 +4762,8 @@ function qPass() {                             // 過關：依錯誤次數給分
   const L = Q_LEVELS[QZ.step], s = QZ.miss === 0 ? 100 : QZ.miss <= L.slack ? 60 : 30;
   QZ.passed = true; QZ.scores.push(s); qHud();
   qFb('✓ ' + L.done, 'ok');
-  const last = QZ.step === Q_LEVELS.length - 1;
-  $('qFoot').innerHTML = `<span class="q-gain">+${s} 分</span><button class="btn primary" data-q="next">${last ? '看成績 🎉' : '下一關 ▶'}</button>`;
+  const last = QZ.step === Q_LEVELS.length - 1, T = chestGrant('q' + (QZ.step + 1), 'silent');   // 過關掉寶物：這一關的徽章
+  $('qFoot').innerHTML = `<span class="q-gain">+${s} 分</span>${T ? `<span class="q-drop">🎁 寶箱多了 ${T.icon} ${T.name}</span>` : ''}<button class="btn primary" data-q="next">${last ? '看成績 🎉' : '下一關 ▶'}</button>`;
   $('qFoot').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
 }
 function qOrderPick(k, btn) {
@@ -4110,6 +4789,21 @@ function qChoicePick(n, btn) {
   btn.style.borderColor = 'var(--sage)'; btn.style.background = 'var(--sage-soft)';
   document.querySelectorAll('#qCard [data-q="opt"]').forEach(b => { if (b !== btn) b.classList.add('wrong'); });
   qPass();
+}
+function qJudgeBox() {                         // 第 6 關：一次一個貨櫃，左邊裝箱單、右邊 X 光查驗結果
+  const L = Q_LEVELS[QZ.step], B = L.boxes[QZ.order[QZ.ti]];
+  const rows = a => a.map(([k, v]) => `<tr><th>${k}</th><td>${v}</td></tr>`).join('');
+  return `<div class="q-jhead">🚛 ${B.name}（第 ${QZ.ti + 1} / ${L.boxes.length} 櫃）</div>
+    <div class="q-jcols"><div><b>📋 裝箱單</b><small>文件上寫的</small><table>${rows(B.doc)}</table></div><div><b>🩻 X 光查驗</b><small>實際的貨</small><table>${rows(B.real)}</table></div></div>
+    <div class="q-chips q-jbtn"><button class="q-chip" data-q="judge" data-v="1">✅ 放行</button><button class="q-chip" data-q="judge" data-v="0">⛔ 扣下來</button></div>`;
+}
+function qJudgePick(v, btn) {
+  const L = Q_LEVELS[QZ.step], B = L.boxes[QZ.order[QZ.ti]];
+  if ((v === 1) !== B.ok) { qMiss(B.ok ? `再看一次：${B.name} 的每一項都和裝箱單一樣，扣下來會害貨趕不上船。` : `等一下！再對一次：${B.name} 有一項和裝箱單不一樣。`, btn); return; }
+  $('qDone').insertAdjacentHTML('beforeend', `<div class="q-slot fill"><i>${B.ok ? '✅' : '⛔'}</i><span>${B.name}：${B.why}</span></div>`);
+  QZ.ti++;
+  if (QZ.ti < L.boxes.length) { qFb('', ''); $('qJudge').innerHTML = qJudgeBox(); }
+  else { $('qJudge').remove(); qPass(); }
 }
 function qSpotClick(svg, e) {
   const L = Q_LEVELS[QZ.step];
@@ -4156,24 +4850,29 @@ function qLaptopSVG() {                        // 左：打開的筆電正面；
     <g id="qMarks"></g>
   </svg>`;
 }
-function questFinish() {                       // 成績、結業證書、排行榜預留位置
+const QMAX = () => Q_LEVELS.length * 100;      // 滿分（6 關 = 600 分）
+function qBest() { const b = qStore.get('nbQuestBest'); return b && b.max === QMAX() ? b : null; }   // 舊版（5 關、滿分 500）的紀錄不拿來比
+function questFinish() {                       // 成績、結業證書、排行榜預留位置；貨船載著放行的筆電開走
   QZ.done = true; QZ.t1 = performance.now();
-  const total = qTotal(), ms = QZ.t1 - QZ.t0, stars = total >= 450 ? 3 : total >= 330 ? 2 : 1;
-  const best = qStore.get('nbQuestBest');
+  const max = QMAX(), total = qTotal(), ms = QZ.t1 - QZ.t0, stars = total >= max * 0.9 ? 3 : total >= max * 2 / 3 ? 2 : 1;
+  const best = qBest();
   const isBest = !best || total > best.score || (total === best.score && ms < best.ms);
-  if (isBest) qStore.set('nbQuestBest', { score: total, ms, name: QZ.name });
+  if (isBest) qStore.set('nbQuestBest', { score: total, ms, name: QZ.name, max });
   const b = isBest ? { score: total, ms } : best;
+  const gold = stars === 3 ? chestGrant('gold', 'silent') : null;
   state.D = dAtClock(hm('17:45')); state.lastScene = sceneIdx(state.D); setPaused(false);   // 傍晚的暖色光線，當作結業典禮
-  flyTo(overviewPos(), OVERVIEW.tgt.clone(), 2);
+  CI.depart = performance.now() / 1000;                                                    // 貨船開走（往南駛向外海）
+  const v = qView(new THREE.Vector3(-114, 0, 26), new THREE.Vector3(-46, 20, 6)); flyTo(v.pos, v.tgt, 2.2);   // 從外海看：貨船往右（南）開出港口
   const cert = qCertificate(total, ms, stars);
   qRender(`<div class="q-title">闖關完成</div>`
-    + qSay(`太厲害了，${esc(QZ.name)}！你已經知道一台筆電是怎麼從電路板一路做到出貨，也知道產線上誰負責什麼。`)
-    + `<div class="q-result"><span class="q-big">${total}</span> / 500 分　<span class="q-stars">${'★'.repeat(stars)}${'☆'.repeat(3 - stars)}</span><br><small>用時 ${qTimeText(ms)}${isBest ? '・🎉 新的最佳紀錄' : ''}</small></div>`
+    + qSay(`太厲害了，${esc(QZ.name)}！你已經知道一台筆電怎麼從電路板一路做到出貨、通關出國，也知道產線上誰負責什麼。看，貨船正載著你放行的筆電出發了！`)
+    + `<div class="q-result"><span class="q-big">${total}</span> / ${max} 分　<span class="q-stars">${'★'.repeat(stars)}${'☆'.repeat(3 - stars)}</span><br><small>用時 ${qTimeText(ms)}${isBest ? '・🎉 新的最佳紀錄' : ''}</small></div>`
     + `<div class="q-slots">${Q_LEVELS.map((L, k) => `<div class="q-slot fill"><i>${k + 1}</i><span>${L.title}</span><b style="margin-left:auto">${QZ.scores[k]} 分</b></div>`).join('')}</div>`
+    + (gold ? `<div class="q-board">🏅 <b>三顆星！</b>寶箱多了傳說寶物「闖關金牌」。</div>` : '')
     + `<img class="q-cert" src="${cert}" alt="${esc(QZ.name)}的結業證書">`
     + `<div class="q-foot" style="justify-content:space-between"><span class="hint">手機可以長按證書圖片儲存</span><a class="btn" href="${cert}" download="筆電工廠結業證書.png">⬇ 下載證書</a></div>`
     + `<div class="q-board">🏆 <b>排行榜</b>：下一版開放，到時候大家的分數都會排在這裡。<br>你在這台裝置的最佳紀錄：<b>${b.score}</b> 分（${qTimeText(b.ms)}）</div>`
-    + `<div class="q-foot"><button class="btn" data-q="exit">離開闖關</button><button class="btn primary" data-q="again">↺ 再玩一次</button></div>`);
+    + `<div class="q-foot"><button class="btn" data-q="exit">離開闖關</button><button class="btn" data-q="chest">🎒 打開寶箱</button><button class="btn primary" data-q="again">↺ 再玩一次</button></div>`);
   qHud(); updateQuestHud(); setTimeout(fitView, 60);
 }
 function qCertificate(total, ms, stars) {      // 用 Canvas 畫一張結業證書（可以下載，手機也可以長按儲存）
@@ -4191,10 +4890,10 @@ function qCertificate(total, ms, stars) {      // 用 Canvas 畫一張結業證�
   g.fillStyle = '#282322'; g.font = `900 72px ${FONT}`; g.fillText(QZ.name, W / 2, 428);
   g.strokeStyle = '#DB6A41'; g.lineWidth = 3; g.beginPath(); g.moveTo(W / 2 - 280, 456); g.lineTo(W / 2 + 280, 456); g.stroke();
   g.fillStyle = '#4A423F'; g.font = `32px ${FONT}`;
-  g.fillText('完成 5 道關卡，認識了筆電從電路板到出貨的生產流程，', W / 2, 526);
+  g.fillText(`完成 ${Q_LEVELS.length} 道關卡，認識了筆電從電路板、組裝到通關出口的流程，`, W / 2, 526);
   g.fillText('也知道產線上的線長、技術員、品檢員各自負責什麼。', W / 2, 574);
   g.fillStyle = '#DB6A41'; g.font = `bold 56px ${FONT}`; g.fillText('★'.repeat(stars) + '☆'.repeat(3 - stars), W / 2, 654);
-  g.fillStyle = '#282322'; g.font = `bold 36px ${FONT}`; g.fillText(`總分 ${total} / 500　用時 ${qTimeText(ms)}`, W / 2, 716);
+  g.fillStyle = '#282322'; g.font = `bold 36px ${FONT}`; g.fillText(`總分 ${total} / ${QMAX()}　用時 ${qTimeText(ms)}`, W / 2, 716);
   const date = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   g.fillStyle = '#8A7F78'; g.font = `24px ${FONT}`; g.fillText(`${date}　筆電產線 3D 模擬器　yunotang.github.io/laptop-factory-simulator`, W / 2, 776);
   return c.toDataURL('image/png');
@@ -4203,6 +4902,7 @@ function questNext() { if (QZ.step < Q_LEVELS.length - 1) questLevel(QZ.step + 1
 function questExit() {
   if (QZ.t0 && !QZ.done && !confirm('確定要離開闖關嗎？這次的進度不會保存。')) return;
   Object.assign(QZ, { on: false, done: false, step: -1, t0: 0 });
+  CI.depart = 0;                               // 開走的貨船回到碼頭
   document.body.classList.remove('quest-on'); $('qHead').hidden = true; $('qCard').hidden = true;
   setPaused(false);
   setMode(QZ.prevMode);                        // 回到闖關前的模式
@@ -4215,20 +4915,233 @@ $('qCard').addEventListener('click', e => {    // 關卡卡片裡的所有按鈕
   const b = e.target.closest('[data-q]'), svg = e.target.closest('svg.q-spot');
   if (!b) { if (svg && !QZ.passed) qSpotClick(svg, e); return; }
   const act = b.dataset.q;
-  if (QZ.passed && ['chip', 'role', 'opt'].includes(act)) return;   // 這一關已經過了，不再計分
+  if (QZ.passed && ['chip', 'role', 'opt', 'judge'].includes(act)) return;   // 這一關已經過了，不再計分
   if (act === 'go') questStart();
   else if (act === 'chip') qOrderPick(+b.dataset.i, b);
   else if (act === 'role') qRolePick(b.dataset.r, b);
   else if (act === 'opt') qChoicePick(+b.dataset.i, b);
+  else if (act === 'judge') qJudgePick(+b.dataset.v, b);
+  else if (act === 'chest') openChest();
   else if (act === 'next') questNext();
   else if (act === 'again') questOpen();
   else if (act === 'exit') questExit();
 });
 $('qCard').addEventListener('keydown', e => { if (e.target.id === 'qName' && e.key === 'Enter') questStart(); });
 
+// ---- 寶物收集（像寶可夢圖鑑）：零件卡、文件卡、人物卡、闖關徽章、傳說寶物，一共 44 個 ----
+//   零件卡、文件卡：下場走走時，走到地上發光的寶石旁邊就撿得到；人物卡：第一次和某種角色聊天就拿到；徽章：闖關每過一關掉一個
+//   寶箱存在這台裝置的瀏覽器（localStorage），關掉再開都還在；但清除「Cookie 和其他網站資料」會一起被清掉，所以另外提供「寶箱代碼」備份
+const RARITY = [null, { name: '普通', color: '#8A7F78' }, { name: '稀有', color: '#3F73AE' }, { name: '傳說', color: '#C08A1E' }];
+const T_CATS = [
+  { id: 'part', name: '零件卡', note: '下場走走時，到各工站旁邊撿藍色寶石' },
+  { id: 'doc', name: '文件卡', note: '下場走走時，到出貨碼頭和報關島撿橘色寶石' },
+  { id: 'person', name: '人物卡', note: '第一次和某種角色聊天就拿得到' },
+  { id: 'badge', name: '闖關徽章', note: '新人闖關每過一關掉一個' },
+  { id: 'legend', name: '傳說寶物', note: '完成特別的挑戰' },
+];
+// 零件卡：[代號, 圖示, 名稱, 放在第幾站前面（0 起算）, 左右挪一點, 說明, 少了它會怎樣]
+const PART_LIST = [
+  ['fr4', '🟧', '銅箔基板', 0, 0, '玻璃纖維布加上環氧樹脂、兩面貼著銅箔的板子，是主機板的原料。', '做不出電路板，後面全部停擺。'],
+  ['paste', '🧴', '錫膏', 6, 0, '錫粉加上助焊劑的膏，印在焊墊上；零件靠它黏住，經過回焊爐就焊牢了。', '零件焊不上去，一碰就掉。'],
+  ['cpu', '🧠', 'CPU 晶片', 8, 0, '筆電的「大腦」，負責計算。底部有上千顆小錫球，由貼片機放到主機板上。', '筆電根本開不了機。'],
+  ['board', '🟩', '主機板', 11, 0, '焊好上千顆零件、通過功能測試的電路板，筆電所有零件都接在它上面。', '整台筆電都不能用，所以組裝前一定要先測。'],
+  ['dcase', '⬛', '底殼（D 件）', 12, 0, '筆電最底下的外殼，主機板、電池都裝在裡面。', '零件沒有地方固定。'],
+  ['thermal', '🌀', '散熱模組', 13, 0, '銅製的熱導管加上風扇，把 CPU 的熱帶走。', '筆電會變慢，甚至過熱當機。'],
+  ['battery', '🔋', '鋰電池', 14, -0.9, '讓筆電不插電也能用。鋰電池怕撞擊、怕高溫，運送時也有特別的規定。', '筆電只能插著電用。'],
+  ['ram', '💾', '記憶體與 SSD', 14, 0.9, '記憶體負責暫時記住正在用的資料；SSD 負責長期儲存檔案。', '系統裝不進去，也存不了檔案。'],
+  ['keyboard', '⌨️', '鍵盤（C 件）', 15, 0, '鍵盤和觸控板裝在上蓋（C 件）上，蓋好後由自動鎖螺絲機鎖緊。', '沒辦法打字，也沒辦法用觸控板。'],
+  ['display', '🖥️', '螢幕模組', 16, 0, '面板加上 A 件、B 件，用轉軸裝到機身上。', '看不到畫面。'],
+  ['adapter', '🔌', '變壓器', 20, 0, '把插座的交流電轉成筆電用的直流電，和電源線一起放在配件盒裡。', '整箱會輕大約 250 公克，被「秤重防呆」抓出來！'],
+  ['carton', '📦', '紙箱', 21, 0, '保護筆電的外箱：封箱、秤重、貼上出貨標籤之後，就可以出貨了。', '運送途中一撞就壞。'],
+];
+// 文件卡：[代號, 圖示, 名稱, 位置 [x, z], 說明, 去哪裡找]
+const DOC_LIST = [
+  ['invoice', '🧾', '商業發票', [-48.5, 9.4], '寫明賣給誰、賣什麼、一台多少錢、總共多少錢。海關和客戶都靠它知道這批貨的價值。', '在工廠西邊的出貨碼頭'],
+  ['packing', '📋', '裝箱單', [-36.6, 18.2], '寫明每一箱裝了什麼、幾台、多重。海關查驗時，就是拿它來核對實際的貨。', '在工廠西邊的出貨碼頭'],
+  ['exportDecl', '📄', '出口報單', [-75.5, 2.9], '報關行送給海關的正式申報書：貨名、數量、價格，還有稅則號別（筆電是 8471.30）。', '在報關島的報關行門口'],
+  ['release', '✅', '放行通知', [-94.5, 18.2], '海關審核沒問題後發出的通知，意思是「可以走了」。沒有放行，貨櫃不能上船。', '在報關島的通關柵欄出口'],
+  ['bl', '🚢', '提單（B/L）', [-100.6, 21.8], '貨上船之後，船公司開出的單據。它是收據，也是提貨憑證：客戶在目的地要拿它才能領貨。', '在報關島的出口吊車旁'],
+  ['importDecl', '📥', '進口報單', [-98.6, -11.4], '零件從國外進來時，送給海關的申報書。進口一樣會被分成 C1／C2／C3。', '在報關島的進口通關站'],
+  ['ledger', '📒', '保稅帳冊', [-90.2, -13.2], '記錄保稅零件「進了多少、用了多少、做成多少台出口」。帳要對得上，不然就要補稅。', '在報關島的保稅倉旁邊'],
+];
+const PERSON_ROLES = ['leader', 'operator', 'ipqc', 'tech', 'material', 'night', 'guard', 'cleaner', 'dock', 'visitor', 'sales', 'office', 'broker', 'customs', 'crane', 'bonded'];
+const PERSON_WHEN = { night: '19:40 交接班時才會出現', visitor: '09:00–17:00 在園區參觀', sales: '09:00–17:00 在園區參觀', cleaner: '07:40–18:00 在南側步道' };
+const BADGE_ICONS = ['⚡', '🗺️', '🤝', '🔍', '⚖️', '🛳️'];
+const TREASURES = [                            // 寶箱代碼依照這個順序記錄：以後新增寶物只能加在最後面，舊的代碼才不會亂掉
+  ...PART_LIST.map(([id, icon, name, k, dx, desc, lack]) => ({ id, cat: 'part', rar: 1, icon, name, k, dx, desc, lack, hint: `第 ${k + 1} 站「${STATIONS[k].name}」附近` })),
+  ...DOC_LIST.map(([id, icon, name, at, desc, hint]) => ({ id, cat: 'doc', rar: 1, icon, name, at, desc, hint })),
+  ...PERSON_ROLES.map(r => ({ id: 'p_' + r, cat: 'person', rar: 2, icon: ROLES[r].emoji, name: ROLES[r].title, desc: ROLES[r].duty, hint: `和「${ROLES[r].title}」聊聊天` + (PERSON_WHEN[r] ? `（${PERSON_WHEN[r]}）` : '') })),
+  ...Q_LEVELS.map((L, i) => ({ id: 'q' + (i + 1), cat: 'badge', rar: 2, icon: BADGE_ICONS[i], name: `${L.title}徽章`, desc: L.done, hint: `通過新人闖關第 ${i + 1} 關「${L.title}」` })),
+  { id: 'gold', cat: 'legend', rar: 3, icon: '🏅', name: '闖關金牌', desc: '新人闖關拿到三顆星的人才有：流程、分工、品質、通關，你都懂了！', hint: '新人闖關拿到三顆星（540 分以上）' },
+  { id: 'laptop', cat: 'legend', rar: 3, icon: '💻', name: '我的第一台筆電', desc: '集滿 12 張零件卡，親手「組」出一台筆電！從銅箔基板到紙箱，你已經認識一台筆電的所有零件。', hint: '集滿 12 張零件卡' },
+  { id: 'master', cat: 'legend', rar: 3, icon: '👑', name: '圖鑑大師', desc: '收集到其他所有寶物的人，才是真正的工廠通！', hint: '收集到其他所有的寶物' },
+];
+const T_BY_ID = Object.fromEntries(TREASURES.map(t => [t.id, t]));
+const CODE_ORDER = TREASURES.map(t => t.id);
+const CHEST_KEY = 'nbChest';
+const chest = (() => { const v = qStore.get(CHEST_KEY); return { v: 1, got: v && v.got && typeof v.got === 'object' ? v.got : {} }; })();
+for (const id of Object.keys(chest.got)) if (!T_BY_ID[id]) delete chest.got[id];   // 不認得的寶物（被改過的資料）就丟掉
+const chestCount = () => CODE_ORDER.filter(id => chest.got[id]).length;
+let persistAsked = false;
+function askPersist() {                        // 請瀏覽器把這個網站的資料當成「持續保存」，減少空間不夠時被自動清掉（擋不住使用者自己清除）
+  if (persistAsked) return; persistAsked = true;
+  try {
+    if (navigator.storage && navigator.storage.persist && !/firefox/i.test(navigator.userAgent))   // Firefox 會跳出詢問視窗，先不打擾
+      navigator.storage.persisted().then(p => { if (!p) return navigator.storage.persist(); }).catch(() => {});
+  } catch { /* 不支援就算了 */ }
+}
+function saveChest() {
+  qStore.set(CHEST_KEY, chest); askPersist(); updateChestBadge(); updateGemBar();
+  if (!$('chestModal').classList.contains('hidden')) renderChest();
+}
+function chestGrant(id, how = 'toast') {       // 放進寶箱；how：popup 跳出卡片、toast 下方通知、silent 不提示（闖關卡片自己顯示）
+  const T = T_BY_ID[id];
+  if (!T || chest.got[id]) return null;
+  chest.got[id] = Date.now(); saveChest();
+  if (how === 'popup') showGot(T);
+  else if (how === 'toast') toast(`🎁 寶箱多了一張${T.cat === 'person' ? '人物卡' : '卡片'}：${T.icon} ${T.name}`);
+  checkLegends();
+  return T;
+}
+function checkLegends() {                      // 集滿零件 → 我的第一台筆電；集滿其他全部 → 圖鑑大師
+  const add = (id, assemble) => { chest.got[id] = Date.now(); saveChest(); showGot(T_BY_ID[id], assemble); };
+  if (!chest.got.laptop && TREASURES.every(t => t.cat !== 'part' || chest.got[t.id])) add('laptop', true);
+  if (!chest.got.master && TREASURES.every(t => t.id === 'master' || chest.got[t.id])) add('master', false);
+}
+function updateChestBadge() { $('chestCnt').textContent = chestCount() || ''; }
+function updateGemBar() {                      // 下場走走時，左邊名單上方的撿寶進度
+  const el = $('gemBar'); if (!el) return;
+  const list = TREASURES.filter(t => t.cat === 'part' || t.cat === 'doc'), n = list.filter(t => chest.got[t.id]).length;
+  el.innerHTML = `🎒 撿到寶物 <b>${n}</b> / ${list.length}<div class="qbar"><i style="width:${n / list.length * 100}%"></i></div>`;
+}
+// 地上的寶石：藍色＝零件卡（工站前面）、橘色＝文件卡（碼頭和報關島），只有下場走走時才看得到
+const GEMS = [];
+{
+  const geo = new THREE.OctahedronGeometry(0.2, 0), ringGeo = new THREE.RingGeometry(0.24, 0.42, 28);
+  const col = { part: [0x6FB3F0, 0x2E7BC4], doc: [0xF6A57A, 0xDB6A41] };
+  for (const T of TREASURES) {
+    if (T.cat !== 'part' && T.cat !== 'doc') continue;
+    let [x, z] = T.cat === 'part' ? [STATIONS[T.k].x + T.dx, STATIONS[T.k].z + 2.3] : T.at;   // 零件：放在工站觀看側的走道上
+    const k = nearestOpen(x, z, 3);            // 對齊到走得到的格子
+    if (k >= 0) { x = NAVG.X0 + (k % NAVG.NX + 0.5) * NAVG.C; z = NAVG.Z0 + (((k / NAVG.NX) | 0) + 0.5) * NAVG.C; }
+    const g = new THREE.Group(); g.position.set(x, groundY(x, z), z); g.visible = false; scene.add(g);
+    const [c, e] = col[T.cat];
+    const gem = addMesh(g, geo, std(c, { emissive: e, emissiveIntensity: 0.6, roughness: 0.25, metalness: 0.3 }), 0, 0.8, 0, false);
+    const halo = new THREE.Mesh(ringGeo, new THREE.MeshBasicMaterial({ color: e, transparent: true, opacity: 0.5, depthWrite: false, toneMapped: false }));
+    halo.rotation.x = -Math.PI / 2; halo.position.y = 0.04; halo.renderOrder = 2; g.add(halo);
+    GEMS.push({ T, g, gem, halo, x, z, ph: GEMS.length * 0.37, burst: 0 });
+  }
+}
+function updateTreasures(rdt, time) {
+  const play = state.mode === 'day' && state.play;
+  for (const G of GEMS) {
+    if (G.burst > 0) {                         // 剛撿到：往上飄、變大、光圈散開，然後消失
+      G.burst += rdt * 2.2; const b = Math.min(1, G.burst);
+      G.gem.scale.setScalar(1 + b * 1.6); G.gem.position.y = 0.8 + b * 0.9; G.halo.scale.setScalar(1 + b * 2.5); G.halo.material.opacity = 0.5 * (1 - b);
+      if (b >= 1) { G.burst = 0; G.g.visible = false; G.gem.scale.setScalar(1); G.halo.scale.setScalar(1); }
+      continue;
+    }
+    G.g.visible = play && !chest.got[G.T.id];
+    if (!G.g.visible) continue;
+    G.gem.rotation.y = time * 1.8; G.gem.position.y = 0.8 + 0.09 * Math.sin(time * 2.4 + G.ph);
+    const pf = (time * 0.75 + G.ph) % 1; G.halo.scale.setScalar(0.8 + pf * 0.7); G.halo.material.opacity = 0.55 * (1 - pf);
+    if (!DLG.open && !GOT.open && Math.hypot(PLAYER.pos.x - G.x, PLAYER.pos.z - G.z) < 1.0 && Math.abs(PLAYER.pos.y - G.g.position.y) < 1) {
+      G.burst = 0.001; chestGrant(G.T.id, 'popup');
+    }
+  }
+}
+// 獲得寶物的卡片（一次一張，排隊顯示）
+const GOT = { open: false, q: [] };
+function showGot(T, assemble = false) { GOT.q.push({ T, assemble }); if (!GOT.open) nextGot(); }
+function nextGot() {
+  const it = GOT.q.shift();
+  if (!it) { GOT.open = false; $('gotCard').classList.add('hidden'); return; }
+  GOT.open = true; PLAYER.keys.clear();
+  const { T, assemble } = it, R = RARITY[T.rar], ic = $('gotIc');
+  $('gotTitle').textContent = T.rar === 3 ? '🌟 獲得傳說寶物 🌟' : '✨ 獲得寶物 ✨';
+  ic.className = ''; void ic.offsetWidth;      // 重新播放彈出動畫
+  if (assemble) ic.innerHTML = `<div class="assemble">${TREASURES.filter(t => t.cat === 'part').map((p, i) => `<span style="--a:${i * 30}deg;--d:${(i * 0.06).toFixed(2)}s">${p.icon}</span>`).join('')}<b>${T.icon}</b></div>`;
+  else { ic.textContent = T.icon; ic.className = 'got-ic'; }
+  $('gotName').innerHTML = `${esc(T.name)}<span class="rar" style="--rc:${R.color}">${R.name}</span>`;
+  $('gotDesc').textContent = T.desc + (T.lack ? `　少了它：${T.lack}` : '');
+  $('gotCard').classList.remove('hidden');
+}
+// 寶箱（圖鑑）視窗
+let chestSel = null;
+function renderChest() {
+  const n = chestCount(), N = CODE_ORDER.length;
+  $('chestProg').innerHTML = `已收集 <b>${n}</b> / ${N} 個寶物<div class="qbar"><i style="width:${n / N * 100}%"></i></div>`;
+  $('chestGrid').innerHTML = T_CATS.map(C => {
+    const list = TREASURES.filter(t => t.cat === C.id), got = list.filter(t => chest.got[t.id]).length;
+    return `<div class="tr-sec"><h3>${C.name}<small>${got} / ${list.length}・${C.note}</small></h3><div class="tr-grid">${list.map(t => {
+      const g = !!chest.got[t.id];
+      return `<button class="tr-tile ${g ? 'got' : 'lock'}${chestSel === t.id ? ' sel' : ''}" data-t="${t.id}" style="--rc:${RARITY[t.rar].color}" title="${g ? t.name : '還沒拿到'}"><span class="ic">${t.icon}</span><span class="nm">${g ? t.name : '？？？'}</span></button>`;
+    }).join('')}</div></div>`;
+  }).join('');
+  const T = chestSel && T_BY_ID[chestSel], el = $('chestDetail');
+  if (!T) el.innerHTML = '<p class="gem-note">點一張卡片看說明。灰色的「？？？」還沒拿到，點一下就知道去哪裡找。</p>';
+  else {
+    const g = chest.got[T.id], R = RARITY[T.rar];
+    el.innerHTML = `<div class="tr-detail" style="--rc:${R.color}"><div class="big"${g ? '' : ' style="filter:grayscale(1) brightness(0);opacity:.2"'}>${T.icon}</div><div>
+      <h3>${g ? T.name : '？？？'}<span class="rar">${R.name}</span></h3>
+      ${g ? `<p>${T.desc}</p>${T.lack ? `<p><b>少了它會怎樣：</b>${T.lack}</p>` : ''}<p class="gem-note">${new Date(g).toLocaleDateString('zh-TW')} 收集・${T.hint}</p>`
+        : `<p>還沒拿到。<b>去哪裡找：</b>${T.hint}</p>`}</div></div>`;
+  }
+  $('chestCode').textContent = chestCode();
+}
+function openChest() { chestSel = null; renderChest(); $('chestFb').textContent = ''; $('chestModal').classList.remove('hidden'); $('chestModal').querySelector('.card').scrollTop = 0; }
+function closeChest() { $('chestModal').classList.add('hidden'); }
+// 寶箱代碼：每個寶物 1 個位元（有／沒有），每 5 個位元換成一個字（Crockford Base32，沒有 I、L、O、U，避免抄錯），最後 2 個字是檢查碼
+const B32 = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
+const codeSum = vals => vals.reduce((a, v, i) => (a + v * (i + 3)) % 1024, 7);
+function chestCode() {
+  const bits = CODE_ORDER.map(id => chest.got[id] ? 1 : 0);
+  while (bits.length % 5) bits.push(0);
+  const vals = []; for (let i = 0; i < bits.length; i += 5) vals.push(bits.slice(i, i + 5).reduce((a, b) => a * 2 + b, 0));
+  const sum = codeSum(vals);
+  return 'NB1-' + (vals.map(v => B32[v]).join('') + B32[sum >> 5] + B32[sum & 31]).match(/.{1,4}/g).join('-');
+}
+function parseChestCode(s) {                   // 看得懂就回傳寶物代號的清單，看不懂（打錯、檢查碼不對）就回傳 null
+  s = String(s).toUpperCase().replace(/[^0-9A-Z]/g, '').replace(/O/g, '0').replace(/[IL]/g, '1');
+  if (!s.startsWith('NB1')) return null;
+  const vals = [...s.slice(3)].map(c => B32.indexOf(c)), nv = vals.length - 2;
+  if (nv < 1 || nv > Math.ceil(CODE_ORDER.length / 5) || vals.some(v => v < 0)) return null;
+  const data = vals.slice(0, nv), sum = codeSum(data);
+  if (vals[nv] !== sum >> 5 || vals[nv + 1] !== (sum & 31)) return null;
+  const bits = data.flatMap(v => [16, 8, 4, 2, 1].map(b => (v & b) ? 1 : 0));
+  return CODE_ORDER.filter((id, i) => bits[i]);
+}
+const chestFb = (m, c) => { const el = $('chestFb'); el.textContent = m; el.className = 'q-fb ' + (c || ''); };
+$('btnChest').onclick = openChest;
+$('chestClose').onclick = closeChest;
+$('chestModal').addEventListener('click', e => {
+  if (e.target.id === 'chestModal') { closeChest(); return; }
+  const b = e.target.closest('.tr-tile');
+  if (b) { chestSel = b.dataset.t; renderChest(); $('chestDetail').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+});
+$('chestCopy').onclick = async () => {
+  const code = chestCode();
+  try { await navigator.clipboard.writeText(code); chestFb('已複製寶箱代碼！記得貼到安全的地方（例如傳給自己的 LINE）。', 'ok'); }
+  catch { const r = document.createRange(); r.selectNodeContents($('chestCode')); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); chestFb('請長按（或按 Ctrl+C）複製選起來的代碼。', 'no'); }
+};
+$('chestLoad').onclick = () => {
+  const ids = parseChestCode($('chestIn').value);
+  if (!ids) { chestFb('代碼好像不對，請再檢查一次（大小寫沒關係）。', 'no'); return; }
+  const add = ids.filter(id => !chest.got[id]);
+  for (const id of add) chest.got[id] = Date.now();
+  saveChest(); checkLegends(); renderChest();
+  chestFb(add.length ? `還原成功！寶箱多了 ${add.length} 個寶物。` : '這個代碼裡的寶物，你都已經有了。', 'ok');
+};
+$('chestIn').addEventListener('keydown', e => { if (e.key === 'Enter') $('chestLoad').click(); });
+$('gotOk').onclick = nextGot;
+$('gotChest').onclick = () => { GOT.q.length = 0; nextGot(); openChest(); };
+$('gotCard').addEventListener('click', e => { if (e.target.id === 'gotCard') nextGot(); });
+updateChestBadge();
+
 $('btnTour').onclick = () => setMode('tour');
 $('btnFree').onclick = () => setMode('free');
 $('btnDay').onclick = () => setMode('day');
+$('btnCustoms').onclick = () => setMode('customs');
 $('btnOverview').onclick = () => {
   if (state.mode === 'tour') setMode('free');
   if (state.mode === 'day') { state.follow = null; if (state.play) state.camFree = true; } else state.selected = -1;   // 人員一日維持在同一個模式，只是鏡頭不再跟人（玩家一走動就會再跟上）
@@ -4283,6 +5196,7 @@ $('btnSpeed').onclick = () => setSpeed(SPEEDS[(SPEEDS.indexOf(state.speed) + 1) 
   const seek = e => {
     const r = tl.getBoundingClientRect(), f = clamp01((e.clientX - r.left) / r.width);
     if (state.mode === 'day') { state.D = f * DAY_TOTAL; state.lastScene = -1; return; }   // 人員一日：拖曳的是一天的時間
+    if (state.mode === 'customs') { const i = Math.min(CUSTOMS_STEPS.length - 1, Math.floor(f * CUSTOMS_STEPS.length)); if (i !== CZ.step) goCustoms(i); return; }   // 報關島：點哪一段就跳到哪一步
     state.T = state.heroN * SPAWN + f * SCHED.total; state.lastHeroK = -1;
     if (state.mode !== 'tour') setMode('tour');
   };
@@ -4293,6 +5207,8 @@ $('btnSpeed').onclick = () => setSpeed(SPEEDS[(SPEEDS.indexOf(state.speed) + 1) 
 const MOVE_KEYS = new Set(['KeyW', 'KeyA', 'KeyS', 'KeyD', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ShiftLeft', 'ShiftRight']);
 window.addEventListener('keydown', e => {
   if (e.target.tagName === 'INPUT') return;
+  if (GOT.open) { if (['Enter', 'Space', 'KeyE', 'Escape'].includes(e.code)) { e.preventDefault(); if (!e.repeat) nextGot(); } return; }   // 獲得寶物的卡片：按 Enter／空白鍵收下
+  if (!$('chestModal').classList.contains('hidden')) { if (e.code === 'Escape') closeChest(); return; }
   if (QZ.on) return;                           // 闖關時不用快捷鍵，避免誤按跳走
   if (DLG.open && e.code === 'Escape') { closeTalk(); return; }
   if (state.play && state.mode === 'day') {    // 下場走走：WASD／方向鍵走路，E、空白鍵、Enter 聊天
@@ -4379,7 +5295,9 @@ buildStationList();
 buildTimeline();
 window.__sim = { state, STATIONS, SCHED, SC, PEOPLE_BY_ID, renderer, camera, controls, fly, seekHeroToStation, setMode, setPaused, selectPerson, dAtClock, hm,
   PLAYER, NAVG, AMBIENT, DLG, setPlay, openTalk, closeTalk, advanceTalk, walkTo, walkToPerson, findPath, groundY, walkable,
-  QZ, Q_LEVELS, questOpen, questLevel, questNext, questExit };   // 方便除錯用
+  QZ, Q_LEVELS, questOpen, questLevel, questNext, questExit,
+  AMB, CI, TRUCKS, CUSTOMS_STEPS, CZ, goCustoms, chest, chestGrant, chestCode, parseChestCode, GEMS, TREASURES, openChest, showGot,
+  updateCustoms, evalAmbient, AMBIENT_BY_ID: Object.fromEntries(AMBIENT.map(p => [p.id, p])) };   // 方便除錯用
 if (isMobile()) setDrawer(false);              // 手機版：名單預設收起來
 fitView();
 camera.position.copy(overviewPos()); controls.target.copy(OVERVIEW.tgt);
@@ -4391,6 +5309,7 @@ camera.position.copy(overviewPos()); controls.target.copy(OVERVIEW.tgt);
 //   #day=14:05        人員一日模式，直接跳到 14:05（可加 &follow=tech 指定跟隨的人）
 //   &play             直接下場走走（可加 &at=34,-12 指定玩家位置、&talk=leader 開啟時就和某人對話）
 //   &pause            開啟時先暫停
+//   #quest            新人闖關；#customs=3 報關島第 3 步；#chest 打開寶箱
 const HASH = new URLSearchParams(location.hash.slice(1));
 if (HASH.has('day')) {
   setMode('day');
@@ -4419,6 +5338,8 @@ if (HASH.has('look') || HASH.get('view') === 'overview') {
 }
 if (HASH.has('pause')) setPaused(true);
 if (HASH.has('quest')) questOpen();            // #quest：一打開就進入新人闖關（分享給同事用）
+if (HASH.has('customs')) { CZ.step = clamp((+HASH.get('customs') || 1) - 1, 0, CUSTOMS_STEPS.length - 1); setMode('customs'); }   // #customs=3：報關島第 3 步
+if (HASH.has('chest')) openChest();            // #chest：一打開就看寶箱
 // ---- 日夜光線：人員一日模式時，天空、陽光、海面與路燈跟著工廠時鐘變化（其他模式固定在白天）----
 const SKY_KEYS = [
   { t: '07:00', top: '#B9C9D3', hor: '#F2DCC4', hs: '#FFE8D0', hg: '#6F7E7B', hi: 1.0, sc: '#FFD3A4', si: 1.5, az: 20, el: 18, sea: '#F1F2EC', lamp: 0.2, exp: 1.0, env: 0.38 },
@@ -4439,6 +5360,8 @@ function updateEnvironment(time) {
   scene.fog.color.copy(u.hor.value);
   hemi.color.lerpColors(a.hs, b.hs, f); hemi.groundColor.lerpColors(a.hg, b.hg, f); hemi.intensity = L(a.hi, b.hi);
   sun.color.lerpColors(a.sc, b.sc, f); sun.intensity = L(a.si, b.si);
+  const isle = controls.target.x < -50;          // 鏡頭看報關島時，陰影的範圍跟著移過去
+  sun.target.position.set(isle ? -86 : 6, 0, isle ? 7 : 0);
   const az = THREE.MathUtils.degToRad(L(a.az, b.az)), el = THREE.MathUtils.degToRad(L(a.el, b.el));
   sun.position.set(Math.cos(az) * Math.cos(el), Math.sin(el), Math.sin(az) * Math.cos(el)).multiplyScalar(100).add(sun.target.position);
   WORLD.seaMat.color.lerpColors(a.sea, b.sea, f);
@@ -4450,8 +5373,8 @@ function updateEnvironment(time) {
   // 背景小動畫：波紋飄移、風機轉動、小船繞島、浮標搖晃
   WORLD.ripple.material.map.offset.set(time * 0.004, time * 0.0025);
   for (const h of WORLD.blades) h.rotation.z = time * 1.2;
-  const ang = time * 0.035;
-  WORLD.boat.position.set(4 + Math.cos(ang) * 78, SEA_Y + 0.2, Math.sin(ang) * 62); WORLD.boat.rotation.y = -ang;
+  const ang = time * 0.025;                      // 小船繞著兩座島（橢圓）
+  WORLD.boat.position.set(-30 + Math.cos(ang) * 108, SEA_Y + 0.2, 4 + Math.sin(ang) * 66); WORLD.boat.rotation.y = Math.atan2(-108 * Math.sin(ang), 66 * Math.cos(ang));
   WORLD.buoys.forEach((bu, k) => { bu.rotation.z = 0.08 * Math.sin(time * 1.3 + k); bu.position.y = SEA_Y + 0.08 * Math.sin(time * 1.1 + k * 2); });
 }
 let last = performance.now(), firstFrame = true;
@@ -4485,7 +5408,9 @@ renderer.setAnimationLoop(now => {
   updateStations();
   updatePeople();
   updateAmbient(now / 1000);
+  updateCustoms(rdt, now / 1000);
   updatePlayer(rdt, now / 1000);
+  updateTreasures(rdt, now / 1000);
   updateMarkers(now / 1000);
   updateEnvironment(now / 1000);
   if (getHeroPos(heroPos)) { marker.visible = true; marker.position.copy(heroPos).add(tmpV.set(0, 0.6 + 0.04 * Math.sin(now / 250), 0)); marker.rotation.y = now / 600; }
