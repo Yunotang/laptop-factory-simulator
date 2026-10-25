@@ -324,6 +324,25 @@
     #dialog{left:auto;width:min(520px,70vw)}
   }
 
+  /* ---------- 首頁（園區全景）：一進來畫面乾淨，只留上方按鈕、右上的「我想去哪裡？」和左下的操作提示 ---------- */
+  #homeCard,#homeHint{display:none}
+  body.home-mode #homeCard{display:block}
+  body.home-mode #homeHint{display:flex}
+  body.home-mode #stationPanel,body.home-mode #infoCard,body.home-mode #controls,body.home-mode #pauseBadge{display:none !important}
+  #homeCard{position:fixed;right:12px;top:86px;width:340px;padding:14px 16px 16px;z-index:5}
+  .home-hi b{display:block;font-size:16px;font-weight:900}
+  .home-hi span{display:block;font-size:13px;color:var(--muted);margin-top:2px;line-height:1.6}
+  .home-q{display:block;font-size:13px;font-weight:800;color:var(--text-2);margin:12px 0 6px}
+  .home-row{display:flex;gap:8px}
+  .home-row select{flex:1;min-width:0;font:inherit;font-size:14px;padding:8px 10px;border-radius:12px;border:1.5px solid var(--line);background:#FFFDFA;color:var(--text);cursor:pointer}
+  .home-tip{display:none;margin:8px 0 0;font-size:12.5px;color:var(--muted)}
+  #homeHint{position:fixed;left:12px;bottom:12px;z-index:5;align-items:center;gap:8px;padding:10px 16px;font-size:14px;font-weight:800;color:var(--text-2)}
+  @media (max-width:820px),(max-height:520px){
+    #homeCard{left:8px;right:8px;top:auto;bottom:8px;width:auto;padding:12px 14px}
+    body.home-mode #homeHint{display:none}
+    .home-tip{display:block}
+  }
+
   /* ---------- 報關島導覽、寶箱（圖鑑）、獲得寶物 ---------- */
   .seg{position:relative}
   .seg .cnt{display:inline-block;min-width:18px;margin-left:5px;padding:0 5px;border-radius:999px;background:var(--coral);color:#FFFDFA;font-size:11px;line-height:17px;font-weight:900;vertical-align:1px;text-align:center}
@@ -387,7 +406,21 @@
   .q-jcols td{text-align:right;font-weight:800;padding:3px 0}
   .q-jbtn{margin-top:10px}
   .q-jbtn .q-chip{flex:1;justify-content:center}
-  .q-drop{font-weight:900;color:#2F7A45;font-size:14px}
+  .q-drop{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;background:#FFF4D6;border:1.5px solid #F0D99A;color:#8A5A12;font-weight:900;font-size:14px;animation:pop .5s cubic-bezier(.2,1.6,.4,1)}
+  .q-drop .bi{font-size:20px;line-height:1}
+  /* 闖關徽章一排：拿到的有顏色，還沒拿到的是灰色 */
+  .q-badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+  .q-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px 4px 7px;border-radius:999px;font-size:12.5px;font-weight:800;background:#F3EDE6;color:#B3A79F}
+  .q-badge .bi{font-size:16px;line-height:1;filter:grayscale(1);opacity:.45}
+  .q-badge.on{background:var(--sage-soft);color:#2F5238}
+  .q-badge.on .bi{filter:none;opacity:1}
+  /* 寶箱裡的「怎麼拿寶物」 */
+  .chest-how{margin:4px 0 10px;padding:10px 12px;border-radius:14px;background:var(--yellow-soft);border:1px solid #F0D99A}
+  .chest-how>b{font-size:14px;color:#8A5A12}
+  .how-row{display:flex;align-items:center;gap:10px;margin-top:8px;font-size:13.5px;line-height:1.55;color:var(--text-2)}
+  .how-row .how-ic{font-size:24px;line-height:1;flex:none}
+  .how-row>div{flex:1;min-width:0}
+  .how-row .btn{flex:none;padding:6px 12px;font-size:13px}
   @media (max-width:820px),(max-height:520px){
     .seg .cnt{position:absolute;top:1px;right:1px;margin:0;min-width:15px;line-height:14px;font-size:9.5px;padding:0 3px}
     .tr-grid{grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:6px}
@@ -437,13 +470,21 @@
 
 <!-- 說明卡：手機版平常收合在下方，點拉把或卡片展開 -->
 <section id="infoCard" class="card"><button id="sheetHandle" aria-label="展開或收合說明"></button><div id="infoBody"></div></section>
+<!-- 首頁小卡（一進來的園區全景）：選想去的地方，按「出發」 -->
+<section id="homeCard" class="card">
+  <div class="home-hi"><b>👋 歡迎來到筆電工廠</b><span>一片電路板怎麼變成筆電，再通關出國？</span></div>
+  <label class="home-q" for="homeGo">我想去哪裡？</label>
+  <div class="home-row"><select id="homeGo"></select><button class="btn primary" id="homeStart">出發</button></div>
+  <p class="home-tip">👆 單指拖曳旋轉、雙指縮放；點機台或人物看說明</p>
+</section>
+<div id="homeHint" class="card">🖱️ 拖曳旋轉・滾輪縮放・點機台或人物看說明</div>
 <div id="dayBar" class="card">
   <span class="clock" id="dayClock">07:40</span>
   <span class="scene" id="dayScene">上班報到</span>
   <span class="pill stop" id="dayLine">🟡 停線中</span>
   <span class="out" id="dayOut">今日產量 0 台</span>
   <span class="tl-note">縮時播放</span>
-  <button class="day-play" id="btnPlayMode" title="扮演參觀者走進工廠，和大家聊天">🎮 下場走走</button>
+  <button class="day-play" id="btnPlayMode" title="扮演參觀者走進工廠，和大家聊天、撿寶物">🎮 下場走走</button>
 </div>
 <div id="pauseBadge">⏸ 已暫停，按 ▶ 或空白鍵繼續</div>
 <!-- NPC 對話框（遊戲式）：點人物，或「下場走走」時靠近人按 E -->
@@ -495,15 +536,15 @@
     <h2>❓ 操作說明</h2>
     <p>這是一座「虛擬筆電工廠」。一片銅箔基板會依序經過 <b>6 大區、23 個站</b>，最後變成裝箱好、可以出貨的筆電；再開過大橋到<b>報關島</b>通關，吊上貨船出國。</p>
     <ul>
+      <li><b>🗺️ 首頁／全景</b>：一打開是乾淨的園區全景（工廠＋報關島）。在「我想去哪裡？」選一種體驗或一個地方，按「出發」；隨時按上方的「全景」回到這裡。</li>
       <li><b>🎬 導覽模式</b>：鏡頭自動跟著「示範機」（頭上有黃色箭頭）走完全程，右邊的卡片會解說每一站。</li>
       <li><b>🧭 自由參觀</b>：滑鼠<b>左鍵拖曳</b>旋轉、<b>右鍵拖曳</b>平移、<b>滾輪</b>縮放（手機：<b>單指拖曳</b>旋轉、<b>雙指</b>縮放與平移）；<b>點任一台機器</b>就會飛過去並顯示說明。</li>
       <li><b>🏆 新人闖關</b>：6 分鐘、6 個關卡，用遊戲認識筆電工廠：報到流程、6 大區的順序、出事要找誰、品檢找碴、出貨防呆，最後到報關島通關放行。每過一關會掉一個寶物，完成後可以下載結業證書（排行榜下一版開放）。</li>
       <li><b>🛃 報關島</b>：筆電做好之後怎麼合法出國？跟著 10 個步驟看出口通關（C1／C2／C3、X 光查驗、放行、吊上船），以及零件進口、保稅倉。島上貨櫃車的車頭顏色，就是它被分到的通道。</li>
-      <li><b>🎒 寶箱</b>：像寶可夢圖鑑一樣收集 44 個寶物：「下場走走」時到工站旁和報關島撿零件卡、文件卡（地上發光的寶石），和每種角色聊天拿人物卡，闖關拿徽章。寶箱記在這台裝置的瀏覽器裡，也可以用「寶箱代碼」備份。</li>
+      <li><b>🎒 寶箱</b>：像寶可夢圖鑑一樣收集 44 個寶物，有三種拿法：① <b>新人闖關</b>每過一關拿 1 個徽章；② <b>人員一日 → 🎮 下場走走</b>，走到工站旁和報關島，地上發光的寶石就是零件卡、文件卡；③ 和每一種角色<b>聊天</b>拿人物卡。打開寶箱可以看還缺哪些、去哪裡找。寶箱記在這台裝置的瀏覽器裡，也可以用「寶箱代碼」備份。</li>
       <li><b>📱 手機</b>：左上角 <b>☰ 清單</b>打開站點或人員名單；下方說明卡平常收合，<b>點一下</b>展開完整說明；速度按鈕點一下就切換 0.5×～4×。</li>
       <li><b>👷 人員一日</b>：用縮時方式看工廠人員的一天（兩班制日班 08:00–20:00）：打卡、換靜電衣、早會、生產、休息用餐、處理機台異常，一直到交接班下班。點左邊名單或畫面中的人物，會跳出<b>對話框</b>聽他說現在在做什麼，右邊也會顯示他的肖像和行程。頭上有「<b>！</b>」的人正在做重要的事。</li>
       <li><b>🎮 下場走走</b>（在人員一日的時間列上）：扮演一位參觀者走進工廠。<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> 或方向鍵走路，按住 <kbd>Shift</kbd> 跑步；靠近人按 <kbd>E</kbd> 聊天。滑鼠或手機：<b>點地板</b>自動走過去，<b>點人物</b>就走過去和他聊天。左邊的「聊天任務」會記錄你聊過誰。</li>
-      <li><b>🗺️ 全景</b>：從高處俯瞰整座工廠。</li>
       <li><b>下方進度條</b>可以點擊或拖曳，直接跳到任何階段。</li>
       <li>勾選<b>「每站自動暫停」</b>，示範機每到一站就會停下來，適合簡報時一站一站講解。</li>
       <li>快捷鍵：<kbd>空白鍵</kbd> 播放 / 暫停，<kbd>←</kbd> <kbd>→</kbd> 上一站 / 下一站。</li>
@@ -519,6 +560,12 @@
     <button class="mini close-x" id="chestClose" title="關閉（Esc）">✕</button>
     <h2>🎒 我的寶箱</h2>
     <div class="chest-prog" id="chestProg"></div>
+    <div class="chest-how">
+      <b>🗺️ 怎麼拿寶物？三種方法：</b>
+      <div class="how-row"><span class="how-ic">🏆</span><div><b>新人闖關</b>：每過一關，拿 1 個徽章（共 6 個）</div><button class="btn" data-go="quest">去闖關</button></div>
+      <div class="how-row"><span class="how-ic">💎</span><div><b>下場走走</b>：走到工站旁和報關島，地上發光的寶石就是零件卡、文件卡，走過去就撿到</div><button class="btn" data-go="play">去撿寶</button></div>
+      <div class="how-row"><span class="how-ic">💬</span><div><b>聊天</b>：和每一種角色聊一次，拿人物卡</div><button class="btn" data-go="talk">去找人</button></div>
+    </div>
     <div id="chestDetail"></div>
     <div id="chestGrid"></div>
     <div class="chest-code">
@@ -932,7 +979,7 @@ controls.enableDamping = true;
 controls.dampingFactor = 0.08;
 controls.maxPolarAngle = Math.PI * 0.485;
 controls.minDistance = 0.6;
-controls.maxDistance = 190;
+controls.maxDistance = 300;                    // 園區全景要拉得夠遠，才看得到工廠和報關島
 
 const hemi = new THREE.HemisphereLight(0xFFF5E4, 0x718D87, 1.45);
 scene.add(hemi);
@@ -4034,7 +4081,13 @@ const TOUR_OFFSET = new THREE.Vector3(1.55, 1.42, 2.63);
 const DAY_OFF_S = new THREE.Vector3(-2.4, 5.4, 4.3), DAY_OFF_N = new THREE.Vector3(-2.4, 5.4, -4.3);
 let dayOff = DAY_OFF_S, followKey = '';
 const PLAY_OFF = new THREE.Vector3(0, 7.8, 9.2);   // 下場走走：鏡頭在玩家後上方（可以拖曳轉動）
-const OVERVIEW = { pos: new THREE.Vector3(23.7, 64, 72.6), tgt: new THREE.Vector3(5, -1, 0) };
+const OVERVIEW = { pos: new THREE.Vector3(23.7, 64, 72.6), tgt: new THREE.Vector3(5, -1, 0) };   // 工廠全景（闖關第 2 關看 6 大區用）
+// 園區全景（全景按鈕、開場、闖關開頭）：工廠和報關島一起看
+//   橫的畫面：從南方斜上方看，兩座島左右排；直的手機：改從東方高處往西看，工廠在下、報關島在上
+const PARK = { tgt: new THREE.Vector3(-42, -1, 3), off: new THREE.Vector3(10, 112, 126), tgtM: new THREE.Vector3(-40, -1, 0), offM: new THREE.Vector3(150, 190, 30) };
+const parkView = () => camera.aspect >= 1
+  ? { tgt: PARK.tgt.clone(), pos: PARK.tgt.clone().add(PARK.off) }
+  : { tgt: PARK.tgtM.clone(), pos: PARK.tgtM.clone().add(PARK.offM) };
 // ---- 手機直式畫面：鏡頭自動拉遠、視角放寬，並把畫面中心移到「上方工具列」和「下方卡片、控制列」之間 ----
 const VIEW = { k: 1, oy: 0 };                  // k：鏡頭距離倍率（電腦版 = 1）；oy：畫面往上移幾個像素
 const offV = new THREE.Vector3();
@@ -4057,7 +4110,7 @@ function fitView() {
     const shown = el => getComputedStyle(el).display !== 'none' && el.getClientRects().length > 0;
     let top = 0, bottom = H;
     for (const id of ['topbar', 'dayBar', 'qHead']) { const el = $(id); if (shown(el)) top = Math.max(top, el.getBoundingClientRect().bottom); }
-    for (const id of ['controls', 'infoCard', 'dialog', 'qCard']) { const el = $(id); if (shown(el)) bottom = Math.min(bottom, el.getBoundingClientRect().top); }
+    for (const id of ['controls', 'infoCard', 'dialog', 'qCard', 'homeCard']) { const el = $(id); if (shown(el)) bottom = Math.min(bottom, el.getBoundingClientRect().top); }
     oy = Math.max(0, Math.round(((H - bottom) - top) / 2));    // 下方被擋住比較多，就把畫面往上移
   }
   VIEW.oy = oy;
@@ -4204,7 +4257,7 @@ function sceneHTML(s) {
     <div class="status" id="infoStatus"></div>
     <p style="margin-top:10px">${s.desc}</p>
     <h3>👀 現在大家在做什麼？</h3><ul class="who" id="whoList"></ul>
-    <p class="hint">點左邊名單或畫面中的人物，可以聽他說現在在做什麼，鏡頭也會跟著他走。想親自走進工廠，按上方的「🎮 下場走走」。</p>`;
+    <p class="hint">點左邊名單或畫面中的人物，可以聽他說現在在做什麼，鏡頭也會跟著他走。想親自走進工廠、撿寶物，按上方的「🎮 下場走走」。</p>`;
 }
 function playHTML() {                          // 下場走走：還沒選人時，右邊顯示玩法說明
   const how = TOUCH
@@ -4404,6 +4457,7 @@ function updateUI(rdt) {
   boardClock += rdt; if (boardClock > 0.5) { boardClock = 0; drawBoard(); if (isMobile()) fitView(); }   // 手機版：介面高度會變（卡片內容、對話框），定期重算畫面中心
   uiClock += rdt; if (uiClock < 0.1) return; uiClock = 0;
   updateQuestHud();
+  if (state.mode === 'home') return;           // 首頁沒有說明卡和時間軸要更新
   if (state.mode === 'day') { updateDayUI(); return; }
   if (state.mode === 'customs') { updateCustomsUI(); return; }
   const tau = heroTau(), total = SCHED.total, items = stItems();
@@ -4466,8 +4520,9 @@ function setMode(m) {
   $('btnFree').classList.toggle('active', m === 'free');
   $('btnDay').classList.toggle('active', m === 'day');
   $('btnCustoms').classList.toggle('active', m === 'customs');
-  $('btnOverview').classList.remove('active');
+  $('btnOverview').classList.toggle('active', m === 'home');
   controls.enablePan = m !== 'tour';
+  document.body.classList.toggle('home-mode', m === 'home');   // 首頁：藏起名單、說明卡、控制列，畫面乾淨
   document.body.classList.toggle('day-mode', m === 'day');
   document.body.classList.toggle('customs-mode', m === 'customs');
   const unit = m === 'day' ? '段' : m === 'customs' ? '步' : '站';   // 人員一日一段一段、報關島一步一步、產線一站一站
@@ -4502,6 +4557,7 @@ function pickStation(k) {
   const v = stationView(STATIONS[k]); flyTo(v.pos, v.tgt, 1.3);
 }
 function stepStation(dir) {
+  if (state.mode === 'home') return;           // 首頁沒有上一站／下一站
   if (state.mode === 'customs') goCustoms(CZ.step + dir);
   else if (state.mode === 'day') stepScene(dir);
   else if (state.mode === 'tour') {
@@ -4703,14 +4759,16 @@ function questOpen() {                         // 開始畫面：輸入暱稱
   if (!QZ.on) QZ.prevMode = state.mode;
   Object.assign(QZ, { on: true, done: false, step: -1, scores: [], t0: 0, t1: 0 });
   CI.depart = 0;                               // 上一輪開走的貨船回到碼頭
+  toastQ.length = 0;                           // 之前還沒顯示的通知就不要了，闖關的通知才不會被擋住
   document.body.classList.add('quest-on'); $('qHead').hidden = false; $('qCard').hidden = false;
   if (isMobile()) setDrawer(false);
   setMode('day'); state.follow = null; state.selPerson = null;
   state.D = dAtClock(hm('07:43')); state.lastScene = sceneIdx(state.D); setPaused(false);
-  flyTo(overviewPos(), OVERVIEW.tgt.clone(), 1.6);
+  { const v = parkView(); flyTo(v.pos, v.tgt, 1.6); }   // 開頭先看整個園區（第 6 關會到報關島）
   const best = qBest();
   qRender(`<div class="q-title">新人報到闖關</div>`
-    + qSay('嗨，新同事！6 分鐘、6 個關卡，帶你認識筆電工廠：一台筆電怎麼做出來、產線上誰負責什麼，最後怎麼通關出國。每過一關，寶箱還會多一個徽章喔！先告訴我你的暱稱吧！')
+    + qSay('嗨，新同事！6 分鐘、6 個關卡，帶你認識筆電工廠：一台筆電怎麼做出來、產線上誰負責什麼，最後怎麼通關出國。先告訴我你的暱稱吧！')
+    + `<p class="hint" style="margin-top:10px">🎁 每過一關，拿 1 個徽章放進 🎒 寶箱（灰色是還沒拿到的）：</p><div class="q-badges">${qBadgeRow()}</div>`
     + `<input class="q-input" id="qName" maxlength="12" autocomplete="nickname" placeholder="你的暱稱（最多 12 個字）" value="${esc(qStore.get('nbQuestName') || '')}">`
     + `<div class="q-fb no" id="qFb"></div>`
     + (best ? `<p class="hint">你在這台裝置的最佳紀錄：<b>${best.score}</b> 分（${qTimeText(best.ms)}）</p>` : '')
@@ -4762,8 +4820,10 @@ function qPass() {                             // 過關：依錯誤次數給分
   const L = Q_LEVELS[QZ.step], s = QZ.miss === 0 ? 100 : QZ.miss <= L.slack ? 60 : 30;
   QZ.passed = true; QZ.scores.push(s); qHud();
   qFb('✓ ' + L.done, 'ok');
-  const last = QZ.step === Q_LEVELS.length - 1, T = chestGrant('q' + (QZ.step + 1), 'silent');   // 過關掉寶物：這一關的徽章
-  $('qFoot').innerHTML = `<span class="q-gain">+${s} 分</span>${T ? `<span class="q-drop">🎁 寶箱多了 ${T.icon} ${T.name}</span>` : ''}<button class="btn primary" data-q="next">${last ? '看成績 🎉' : '下一關 ▶'}</button>`;
+  // 過關掉寶物：這一關的徽章（已經有的不會重複拿，但一樣顯示出來）
+  const last = QZ.step === Q_LEVELS.length - 1, id = 'q' + (QZ.step + 1), B = T_BY_ID[id], isNew = !!chestGrant(id, 'silent');
+  if (isNew) toast(`🎁 ${B.icon} ${B.name}放進寶箱了！`);
+  $('qFoot').innerHTML = `<span class="q-gain">+${s} 分</span><span class="q-drop"><span class="bi">${B.icon}</span>${isNew ? `獲得 ${B.name}！` : `${B.name}（寶箱裡已經有了）`}</span><button class="btn primary" data-q="next">${last ? '看成績 🎉' : '下一關 ▶'}</button>`;
   $('qFoot').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
 }
 function qOrderPick(k, btn) {
@@ -4868,11 +4928,13 @@ function questFinish() {                       // 成績、結業證書、排行
     + qSay(`太厲害了，${esc(QZ.name)}！你已經知道一台筆電怎麼從電路板一路做到出貨、通關出國，也知道產線上誰負責什麼。看，貨船正載著你放行的筆電出發了！`)
     + `<div class="q-result"><span class="q-big">${total}</span> / ${max} 分　<span class="q-stars">${'★'.repeat(stars)}${'☆'.repeat(3 - stars)}</span><br><small>用時 ${qTimeText(ms)}${isBest ? '・🎉 新的最佳紀錄' : ''}</small></div>`
     + `<div class="q-slots">${Q_LEVELS.map((L, k) => `<div class="q-slot fill"><i>${k + 1}</i><span>${L.title}</span><b style="margin-left:auto">${QZ.scores[k]} 分</b></div>`).join('')}</div>`
-    + (gold ? `<div class="q-board">🏅 <b>三顆星！</b>寶箱多了傳說寶物「闖關金牌」。</div>` : '')
+    + `<div class="q-board">🎒 <b>你的闖關徽章</b>（亮起來的已經放進寶箱）<div class="q-badges">${qBadgeRow()}</div>`
+    + (gold ? `<p style="margin:8px 0 0">🏅 <b>三顆星！</b>還多了傳說寶物「闖關金牌」。</p>` : '')
+    + `<p class="hint" style="margin-top:8px">寶箱裡還有零件卡、文件卡、人物卡：按「🎮 下場走走去撿寶」，到工站旁和報關島撿地上發光的寶石，順便和大家聊天。</p></div>`
     + `<img class="q-cert" src="${cert}" alt="${esc(QZ.name)}的結業證書">`
     + `<div class="q-foot" style="justify-content:space-between"><span class="hint">手機可以長按證書圖片儲存</span><a class="btn" href="${cert}" download="筆電工廠結業證書.png">⬇ 下載證書</a></div>`
     + `<div class="q-board">🏆 <b>排行榜</b>：下一版開放，到時候大家的分數都會排在這裡。<br>你在這台裝置的最佳紀錄：<b>${b.score}</b> 分（${qTimeText(b.ms)}）</div>`
-    + `<div class="q-foot"><button class="btn" data-q="exit">離開闖關</button><button class="btn" data-q="chest">🎒 打開寶箱</button><button class="btn primary" data-q="again">↺ 再玩一次</button></div>`);
+    + `<div class="q-foot"><button class="btn" data-q="exit">離開闖關</button><button class="btn" data-q="chest">🎒 打開寶箱</button><button class="btn" data-q="play">🎮 下場走走去撿寶</button><button class="btn primary" data-q="again">↺ 再玩一次</button></div>`);
   qHud(); updateQuestHud(); setTimeout(fitView, 60);
 }
 function qCertificate(total, ms, stars) {      // 用 Canvas 畫一張結業證書（可以下載，手機也可以長按儲存）
@@ -4906,7 +4968,7 @@ function questExit() {
   document.body.classList.remove('quest-on'); $('qHead').hidden = true; $('qCard').hidden = true;
   setPaused(false);
   setMode(QZ.prevMode);                        // 回到闖關前的模式
-  if (QZ.prevMode === 'free') flyTo(overviewPos(), OVERVIEW.tgt.clone(), 1.6);
+  if (QZ.prevMode === 'free' || QZ.prevMode === 'home') { const v = parkView(); flyTo(v.pos, v.tgt, 1.6); }
   setTimeout(fitView, 60);
 }
 $('btnQuest').onclick = questOpen;
@@ -4922,6 +4984,7 @@ $('qCard').addEventListener('click', e => {    // 關卡卡片裡的所有按鈕
   else if (act === 'opt') qChoicePick(+b.dataset.i, b);
   else if (act === 'judge') qJudgePick(+b.dataset.v, b);
   else if (act === 'chest') openChest();
+  else if (act === 'play') goTreasure('play');
   else if (act === 'next') questNext();
   else if (act === 'again') questOpen();
   else if (act === 'exit') questExit();
@@ -5089,6 +5152,15 @@ function renderChest() {
   }
   $('chestCode').textContent = chestCode();
 }
+function goTreasure(how) {                     // 去拿寶物：quest 闖關、play 下場走走撿寶、talk 打開人員名單找人聊天
+  if (QZ.on && how !== 'quest') { QZ.t0 = 0; questExit(); }   // 從闖關結束畫面過來：先離開闖關（已經完成，不用再確認）
+  if (how === 'quest') questOpen();
+  else if (how === 'play') setPlay(true);
+  else { setMode('day'); if (isMobile()) setDrawer(true); toast('點名單上的人，就可以和他聊天、拿人物卡'); }
+}
+function qBadgeRow() {                         // 6 個闖關徽章排一排：已經拿到的有顏色
+  return Q_LEVELS.map((L, i) => { const T = T_BY_ID['q' + (i + 1)]; return `<span class="q-badge${chest.got[T.id] ? ' on' : ''}" title="${T.name}"><span class="bi">${T.icon}</span>${L.title}</span>`; }).join('');
+}
 function openChest() { chestSel = null; renderChest(); $('chestFb').textContent = ''; $('chestModal').classList.remove('hidden'); $('chestModal').querySelector('.card').scrollTop = 0; }
 function closeChest() { $('chestModal').classList.add('hidden'); }
 // 寶箱代碼：每個寶物 1 個位元（有／沒有），每 5 個位元換成一個字（Crockford Base32，沒有 I、L、O、U，避免抄錯），最後 2 個字是檢查碼
@@ -5116,6 +5188,8 @@ $('btnChest').onclick = openChest;
 $('chestClose').onclick = closeChest;
 $('chestModal').addEventListener('click', e => {
   if (e.target.id === 'chestModal') { closeChest(); return; }
+  const go = e.target.closest('[data-go]');    // 「怎麼拿寶物」的捷徑按鈕
+  if (go) { closeChest(); goTreasure(go.dataset.go); return; }
   const b = e.target.closest('.tr-tile');
   if (b) { chestSel = b.dataset.t; renderChest(); $('chestDetail').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
 });
@@ -5143,10 +5217,37 @@ $('btnFree').onclick = () => setMode('free');
 $('btnDay').onclick = () => setMode('day');
 $('btnCustoms').onclick = () => setMode('customs');
 $('btnOverview').onclick = () => {
-  if (state.mode === 'tour') setMode('free');
-  if (state.mode === 'day') { state.follow = null; if (state.play) state.camFree = true; } else state.selected = -1;   // 人員一日維持在同一個模式，只是鏡頭不再跟人（玩家一走動就會再跟上）
-  infoKey = ''; flyTo(overviewPos(), OVERVIEW.tgt, 1.8); $('btnOverview').classList.add('active');
+  if (state.mode === 'day') { state.follow = null; if (state.play) state.camFree = true; }   // 人員一日維持在同一個模式，只是鏡頭不再跟人（玩家一走動就會再跟上）
+  else { state.selected = -1; setMode('home'); }   // 其他模式：回到乾淨的首頁
+  infoKey = ''; const v = parkView(); flyTo(v.pos, v.tgt, 1.8); $('btnOverview').classList.add('active');   // 工廠和報關島一起看
 };
+// ---- 首頁「我想去哪裡？」：開始一種體驗，或直接飛到某個地方看（留在乾淨的首頁）----
+const HOME_PLACES = [                          // [名稱, 鏡頭看的位置, 鏡頭的相對位置]
+  ...ZONES.map((z, zi) => {
+    const sts = STATIONS.filter(s => s.zone === z.id), x = sts.reduce((a, s) => a + s.x, 0) / sts.length;
+    return [`${zi + 1}. ${z.name}區`, new THREE.Vector3(x, 0.5, sts[0].z), new THREE.Vector3(4, 13, 16)];
+  }),
+  ['員工區（打卡、換靜電衣）', new THREE.Vector3(29.6, 0.6, -9.2), new THREE.Vector3(-8, 10, 12)],
+  ['出貨碼頭（成品裝上貨櫃車）', new THREE.Vector3(-40, 0, 12.5), new THREE.Vector3(3, 18, 22)],
+  ['報關島（通關出國）', new THREE.Vector3(-87, 0, 7), new THREE.Vector3(10, 50, 44)],
+];
+$('homeGo').innerHTML = `<optgroup label="開始體驗">
+    <option value="tour">🎬 產線導覽：跟著一台筆電走完 23 站</option>
+    <option value="day">👷 人員一日：看工廠的人怎麼過一天</option>
+    <option value="customs">🛃 報關島：筆電怎麼通關出國</option>
+    <option value="quest">🏆 新人闖關：6 分鐘、6 個關卡</option>
+    <option value="play">🎮 下場走走：自己逛工廠、撿寶物</option>
+    <option value="chest">🎒 看我的寶箱</option>
+  </optgroup>
+  <optgroup label="飛過去看看">${HOME_PLACES.map((p, i) => `<option value="p${i}">📍 ${p[0]}</option>`).join('')}</optgroup>`;
+function homeGo(v) {
+  if (v === 'tour' || v === 'day' || v === 'customs') setMode(v);
+  else if (v === 'quest') questOpen();
+  else if (v === 'play') setPlay(true);
+  else if (v === 'chest') openChest();
+  else if (v[0] === 'p') { const P = HOME_PLACES[+v.slice(1)], w = qView(P[1].clone(), P[2]); flyTo(w.pos, w.tgt, 1.8); }
+}
+$('homeStart').onclick = () => homeGo($('homeGo').value);
 // 說明卡裡的按鈕（內容會重畫，所以用事件委派）
 $('infoBody').addEventListener('click', e => {
   const id = e.target.closest('button')?.id;
@@ -5170,7 +5271,7 @@ function setDrawer(open) {
   document.body.classList.toggle('drawer-open', open && isMobile());
 }
 $('btnPanel').onclick = () => setDrawer($('stationPanel').classList.contains('collapsed'));
-$('btnMenu').onclick = () => setDrawer(true);
+$('btnMenu').onclick = () => { if (state.mode === 'home') setMode('free'); setDrawer(true); };   // 首頁沒有名單：先切到自由參觀
 $('drawerMask').onclick = () => setDrawer(false);
 // 說明卡（手機版）：平常收合，點拉把或卡片就展開；展開後點拉把或 3D 畫面就收合
 function setSheet(open) {
@@ -5297,20 +5398,21 @@ window.__sim = { state, STATIONS, SCHED, SC, PEOPLE_BY_ID, renderer, camera, con
   PLAYER, NAVG, AMBIENT, DLG, setPlay, openTalk, closeTalk, advanceTalk, walkTo, walkToPerson, findPath, groundY, walkable,
   QZ, Q_LEVELS, questOpen, questLevel, questNext, questExit,
   AMB, CI, TRUCKS, CUSTOMS_STEPS, CZ, goCustoms, chest, chestGrant, chestCode, parseChestCode, GEMS, TREASURES, openChest, showGot,
-  updateCustoms, evalAmbient, AMBIENT_BY_ID: Object.fromEntries(AMBIENT.map(p => [p.id, p])) };   // 方便除錯用
+  updateCustoms, evalAmbient, AMBIENT_BY_ID: Object.fromEntries(AMBIENT.map(p => [p.id, p])), PARK, parkView, scene };   // 方便除錯用
 if (isMobile()) setDrawer(false);              // 手機版：名單預設收起來
 fitView();
-camera.position.copy(overviewPos()); controls.target.copy(OVERVIEW.tgt);
+{ const v = parkView(); camera.position.copy(v.pos); controls.target.copy(v.tgt); }   // 一打開先看整個園區
 
 // 網址參數（簡報或測試用）：
 //   #station=9        示範機直接跳到第 9 站（可加 &p=0.5 指定加工進度）
 //   #look=9           自由參觀模式，鏡頭直接看第 9 站
-//   #view=overview    自由參觀模式的全景視角
+//   （不加參數）      首頁：乾淨的園區全景，選「我想去哪裡」開始
 //   #day=14:05        人員一日模式，直接跳到 14:05（可加 &follow=tech 指定跟隨的人）
 //   &play             直接下場走走（可加 &at=34,-12 指定玩家位置、&talk=leader 開啟時就和某人對話）
 //   &pause            開啟時先暫停
 //   #quest            新人闖關；#customs=3 報關島第 3 步；#chest 打開寶箱
 const HASH = new URLSearchParams(location.hash.slice(1));
+setMode(HASH.has('station') ? 'tour' : 'home');   // 一打開是乾淨的首頁；#station 才直接進導覽
 if (HASH.has('day')) {
   setMode('day');
   state.D = dAtClock(hm(HASH.get('day') || '07:40'));
@@ -5329,12 +5431,10 @@ if (HASH.has('station')) {
   const k = clamp((+HASH.get('station') || 1) - 1, 0, STATIONS.length - 1), p = clamp01(+(HASH.get('p') || 0));
   state.T = state.heroN * SPAWN + (p > 0 ? STATIONS[k].tStart + p * STATIONS[k].dwell : Math.max(0, STATIONS[k].tStart - 0.8));
 }
-if (HASH.has('look') || HASH.get('view') === 'overview') {
+if (HASH.has('look')) {
   setMode('free');
-  if (HASH.has('look')) {
-    state.selected = clamp((+HASH.get('look') || 1) - 1, 0, STATIONS.length - 1);
-    const v = stationView(STATIONS[state.selected]); camera.position.copy(v.pos); controls.target.copy(v.tgt);
-  }
+  state.selected = clamp((+HASH.get('look') || 1) - 1, 0, STATIONS.length - 1);
+  const v = stationView(STATIONS[state.selected]); camera.position.copy(v.pos); controls.target.copy(v.tgt);
 }
 if (HASH.has('pause')) setPaused(true);
 if (HASH.has('quest')) questOpen();            // #quest：一打開就進入新人闖關（分享給同事用）
@@ -5350,6 +5450,7 @@ const SKY_KEYS = [
   { t: '20:00', top: '#27314F', hor: '#4A587C', hs: '#6E7BA8', hg: '#2F3543', hi: 0.75, sc: '#B8C7F0', si: 0.55, az: 110, el: 40, sea: '#6E7F96', lamp: 1, exp: 1.05, env: 0.08 },
 ].map(k => ({ ...k, t: hm(k.t), top: new THREE.Color(k.top), hor: new THREE.Color(k.hor), hs: new THREE.Color(k.hs), hg: new THREE.Color(k.hg), sc: new THREE.Color(k.sc), sea: new THREE.Color(k.sea) }));
 const BULB_DAY = new THREE.Color(0xE9E0CF), BULB_NIGHT = new THREE.Color(0xFFD27A);
+let shadowWide = null;                           // 目前的陰影範圍是不是「園區全景」的大範圍
 function updateEnvironment(time) {
   const clock = state.mode === 'day' ? clockAt(state.D) : hm('11:00');
   let i = 0;
@@ -5360,10 +5461,18 @@ function updateEnvironment(time) {
   scene.fog.color.copy(u.hor.value);
   hemi.color.lerpColors(a.hs, b.hs, f); hemi.groundColor.lerpColors(a.hg, b.hg, f); hemi.intensity = L(a.hi, b.hi);
   sun.color.lerpColors(a.sc, b.sc, f); sun.intensity = L(a.si, b.si);
-  const isle = controls.target.x < -50;          // 鏡頭看報關島時，陰影的範圍跟著移過去
-  sun.target.position.set(isle ? -86 : 6, 0, isle ? 7 : 0);
+  // 陰影範圍跟著鏡頭：看工廠或報關島時範圍小、陰影比較清楚；拉遠看整個園區時放大到兩座島
+  const camD = camera.position.distanceTo(controls.target), wide = camD > 125, isle = controls.target.x < -50;
+  if (wide !== shadowWide) {
+    shadowWide = wide;
+    const sc = sun.shadow.camera, r = wide ? 110 : 50, t = wide ? 110 : 42;
+    sc.left = -r; sc.right = r; sc.top = t; sc.bottom = -t; sc.far = wide ? 420 : 220; sc.updateProjectionMatrix();
+  }
+  sun.target.position.set(wide ? -34 : isle ? -86 : 6, 0, wide ? 2 : isle ? 7 : 0);
+  const fogX = Math.max(0, camD - 110);          // 霧：鏡頭拉遠時往後推，遠處的報關島才不會霧茫茫
+  scene.fog.near = 140 + fogX; scene.fog.far = 380 + fogX * 1.2;
   const az = THREE.MathUtils.degToRad(L(a.az, b.az)), el = THREE.MathUtils.degToRad(L(a.el, b.el));
-  sun.position.set(Math.cos(az) * Math.cos(el), Math.sin(el), Math.sin(az) * Math.cos(el)).multiplyScalar(100).add(sun.target.position);
+  sun.position.set(Math.cos(az) * Math.cos(el), Math.sin(el), Math.sin(az) * Math.cos(el)).multiplyScalar(wide ? 200 : 100).add(sun.target.position);
   WORLD.seaMat.color.lerpColors(a.sea, b.sea, f);
   const lamp = L(a.lamp, b.lamp);
   WORLD.bulb.color.lerpColors(BULB_DAY, BULB_NIGHT, lamp);
