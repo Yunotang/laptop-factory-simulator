@@ -245,9 +245,15 @@
   }
 
   /* ---------- 響應式：中小螢幕 ---------- */
+  @media (max-width:1500px){                   /* 模式按鈕變多了：筆電螢幕上收掉副標題、按鈕留白小一點，維持一排 */
+    .brand p{display:none}
+    .seg{padding:9px 10px}
+  }
   @media (max-width:1180px){
     #infoCard{width:320px}
     #stationPanel{width:210px}
+    .brand>div{display:none}                   /* 再窄一點：只留 NB 標誌 */
+    .brand{padding:10px}
   }
   /* 手機版才用到的元件：電腦版先藏起來 */
   #btnMenu,#btnSpeed,#sheetHandle,#drawerMask,.seg .sh{display:none}
@@ -267,6 +273,7 @@
     .seg .lg{display:none}
     .seg .sh{display:block}
     #btnMenu{display:flex}
+    #btnFree{display:none}                     /* 手機版按鈕太擠：自由參觀改從「☰ 清單」進去 */
     /* 站點／人員名單：從左邊滑出的抽屜 */
     #stationPanel,#stationPanel.collapsed{top:0;left:0;bottom:0;width:min(84vw,320px);max-height:none;border-radius:0 20px 20px 0;z-index:16;transition:transform .25s ease}
     #stationPanel.collapsed{transform:translateX(-105%)}
@@ -347,7 +354,15 @@
   .seg{position:relative}
   .seg .cnt{display:inline-block;min-width:18px;margin-left:5px;padding:0 5px;border-radius:999px;background:var(--coral);color:#FFFDFA;font-size:11px;line-height:17px;font-weight:900;vertical-align:1px;text-align:center}
   .seg .cnt:empty{display:none}
-  .customs-mode .chk{display:none}
+  .customs-mode .chk,.npi-mode .chk{display:none}
+  /* NPI 島導覽：說明卡下方「看看他們的一天」人物按鈕 */
+  .npi-who{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .npi-chip{display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:#FFFDFA;border-radius:12px;padding:5px 11px 5px 5px;text-align:left;color:var(--text);cursor:pointer}
+  .npi-chip:hover{background:var(--panel-tint)}
+  .npi-chip .av{width:32px;height:32px;border-radius:50%;flex:none;font-size:16px}
+  .npi-chip .gi{width:32px;height:32px;display:grid;place-items:center;font-size:18px;flex:none}
+  .npi-chip b{display:block;font-size:13.5px;line-height:1.25}
+  .npi-chip small{display:block;font-size:11.5px;color:var(--muted);line-height:1.25}
   .chest{max-width:720px !important;position:relative}
   .chest h2{padding-right:36px}
   .chest-prog{font-size:14px;font-weight:800;color:var(--text-2);margin:2px 0 8px}
@@ -452,6 +467,7 @@
     <button class="seg" id="btnFree"><span class="ic">🧭</span><span class="lg">自由參觀</span><span class="sh">參觀</span></button>
     <button class="seg" id="btnDay"><span class="ic">👷</span><span class="lg">人員一日</span><span class="sh">人員</span></button>
     <button class="seg" id="btnCustoms"><span class="ic">🛃</span><span class="lg">報關島</span><span class="sh">報關</span></button>
+    <button class="seg" id="btnNpi"><span class="ic">🧪</span><span class="lg">NPI 島</span><span class="sh">NPI</span></button>
     <button class="seg" id="btnOverview"><span class="ic">🗺️</span><span class="lg">全景</span><span class="sh">全景</span></button>
     <button class="seg seg-quest" id="btnQuest"><span class="ic">🏆</span><span class="lg">新人闖關</span><span class="sh">闖關</span></button>
     <button class="seg" id="btnChest" title="我的寶箱（寶物圖鑑）"><span class="ic">🎒</span><span class="lg">寶箱</span><span class="sh">寶箱</span><span class="cnt" id="chestCnt"></span></button>
@@ -534,14 +550,15 @@
 <div id="helpModal" class="modal hidden">
   <div class="card">
     <h2>❓ 操作說明</h2>
-    <p>這是一座「虛擬筆電工廠」。一片銅箔基板會依序經過 <b>6 大區、23 個站</b>，最後變成裝箱好、可以出貨的筆電；再開過大橋到<b>報關島</b>通關，吊上貨船出國。</p>
+    <p>這是一座「虛擬筆電工廠」。一片銅箔基板會依序經過 <b>6 大區、23 個站</b>，最後變成裝箱好、可以出貨的筆電；再開過大橋到<b>報關島</b>通關，吊上貨船出國。工廠東邊的 <b>NPI 研發島</b>，則是新筆電從設計到量產的地方。</p>
     <ul>
-      <li><b>🗺️ 首頁／全景</b>：一打開是乾淨的園區全景（工廠＋報關島）。在「我想去哪裡？」選一種體驗或一個地方，按「出發」；隨時按上方的「全景」回到這裡。</li>
+      <li><b>🗺️ 首頁／全景</b>：一打開是乾淨的園區全景（報關島＋工廠＋NPI 研發島）。在「我想去哪裡？」選一種體驗或一個地方，按「出發」；隨時按上方的「全景」回到這裡。</li>
       <li><b>🎬 導覽模式</b>：鏡頭自動跟著「示範機」（頭上有黃色箭頭）走完全程，右邊的卡片會解說每一站。</li>
       <li><b>🧭 自由參觀</b>：滑鼠<b>左鍵拖曳</b>旋轉、<b>右鍵拖曳</b>平移、<b>滾輪</b>縮放（手機：<b>單指拖曳</b>旋轉、<b>雙指</b>縮放與平移）；<b>點任一台機器</b>就會飛過去並顯示說明。</li>
       <li><b>🏆 新人闖關</b>：6 分鐘、6 個關卡，用遊戲認識筆電工廠：報到流程、6 大區的順序、出事要找誰、品檢找碴、出貨防呆，最後到報關島通關放行。每過一關會掉一個寶物，完成後可以下載結業證書（排行榜下一版開放）。</li>
       <li><b>🛃 報關島</b>：筆電做好之後怎麼合法出國？跟著 10 個步驟看出口通關（C1／C2／C3、X 光查驗、放行、吊上船），以及零件進口、保稅倉。島上貨櫃車的車頭顏色，就是它被分到的通道。</li>
-      <li><b>🎒 寶箱</b>：像寶可夢圖鑑一樣收集 44 個寶物，有三種拿法：① <b>新人闖關</b>每過一關拿 1 個徽章；② <b>人員一日 → 🎮 下場走走</b>，走到工站旁和報關島，地上發光的寶石就是零件卡、文件卡；③ 和每一種角色<b>聊天</b>拿人物卡。打開寶箱可以看還缺哪些、去哪裡找。寶箱記在這台裝置的瀏覽器裡，也可以用「寶箱代碼」備份。</li>
+      <li><b>🧪 NPI 島</b>：一台新筆電在量產之前，要經過開案、設計、三次試產（EVT／DVT／PVT）才能量產。跟著 9 個步驟看外觀、機構、電路、佈線、天線、散熱、韌體、軟體、測試、認證、PM、試產工程師這 12 種研發人員在做什麼；點說明卡下方的人物，就能跳到「人員一日」看他一整天的行程。</li>
+      <li><b>🎒 寶箱</b>：像寶可夢圖鑑一樣收集 63 個寶物，有三種拿法：① <b>新人闖關</b>每過一關拿 1 個徽章；② <b>人員一日 → 🎮 下場走走</b>，走到工站旁、報關島和 NPI 研發島，地上發光的寶石就是零件卡、文件卡；③ 和每一種角色<b>聊天</b>拿人物卡。打開寶箱可以看還缺哪些、去哪裡找。寶箱記在這台裝置的瀏覽器裡，也可以用「寶箱代碼」備份。</li>
       <li><b>📱 手機</b>：左上角 <b>☰ 清單</b>打開站點或人員名單；下方說明卡平常收合，<b>點一下</b>展開完整說明；速度按鈕點一下就切換 0.5×～4×。</li>
       <li><b>👷 人員一日</b>：用縮時方式看工廠人員的一天（兩班制日班 08:00–20:00）：打卡、換靜電衣、早會、生產、休息用餐、處理機台異常，一直到交接班下班。點左邊名單或畫面中的人物，會跳出<b>對話框</b>聽他說現在在做什麼，右邊也會顯示他的肖像和行程。頭上有「<b>！</b>」的人正在做重要的事。</li>
       <li><b>🎮 下場走走</b>（在人員一日的時間列上）：扮演一位參觀者走進工廠。<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> 或方向鍵走路，按住 <kbd>Shift</kbd> 跑步；靠近人按 <kbd>E</kbd> 聊天。滑鼠或手機：<b>點地板</b>自動走過去，<b>點人物</b>就走過去和他聊天。左邊的「聊天任務」會記錄你聊過誰。</li>
@@ -563,7 +580,7 @@
     <div class="chest-how">
       <b>🗺️ 怎麼拿寶物？三種方法：</b>
       <div class="how-row"><span class="how-ic">🏆</span><div><b>新人闖關</b>：每過一關，拿 1 個徽章（共 6 個）</div><button class="btn" data-go="quest">去闖關</button></div>
-      <div class="how-row"><span class="how-ic">💎</span><div><b>下場走走</b>：走到工站旁和報關島，地上發光的寶石就是零件卡、文件卡，走過去就撿到</div><button class="btn" data-go="play">去撿寶</button></div>
+      <div class="how-row"><span class="how-ic">💎</span><div><b>下場走走</b>：走到工站旁、報關島和 NPI 研發島，地上發光的寶石就是零件卡、文件卡，走過去就撿到</div><button class="btn" data-go="play">去撿寶</button></div>
       <div class="how-row"><span class="how-ic">💬</span><div><b>聊天</b>：和每一種角色聊一次，拿人物卡</div><button class="btn" data-go="talk">去找人</button></div>
     </div>
     <div id="chestDetail"></div>
@@ -572,7 +589,7 @@
       <h3>🔑 寶箱代碼（備份用）</h3>
       <p>寶箱存在<b>這台裝置的這個瀏覽器</b>裡，關掉再打開都還在。但清除「Cookie 和其他網站資料」、用無痕視窗、換手機或換瀏覽器（從 LINE 點開和用 Safari 開也算不同的瀏覽器），就看不到了。先把代碼截圖或抄下來，就能在別的地方還原。</p>
       <div class="code-row"><code id="chestCode"></code><button class="btn" id="chestCopy">📋 複製</button></div>
-      <div class="code-row"><input class="q-input" id="chestIn" maxlength="24" autocomplete="off" spellcheck="false" placeholder="輸入寶箱代碼還原"><button class="btn primary" id="chestLoad">還原</button></div>
+      <div class="code-row"><input class="q-input" id="chestIn" maxlength="32" autocomplete="off" spellcheck="false" placeholder="輸入寶箱代碼還原"><button class="btn primary" id="chestLoad">還原</button></div>
       <div class="q-fb" id="chestFb"></div>
     </div>
   </div>
@@ -979,7 +996,7 @@ controls.enableDamping = true;
 controls.dampingFactor = 0.08;
 controls.maxPolarAngle = Math.PI * 0.485;
 controls.minDistance = 0.6;
-controls.maxDistance = 300;                    // 園區全景要拉得夠遠，才看得到工廠和報關島
+controls.maxDistance = 380;                    // 園區全景要拉得夠遠，才看得到三座島（報關島、工廠、NPI 研發島）
 
 const hemi = new THREE.HemisphereLight(0xFFF5E4, 0x718D87, 1.45);
 scene.add(hemi);
@@ -1290,6 +1307,7 @@ function addMesh(parent, geo, mat, x = 0, y = 0, z = 0, shadow = true) {
   const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z);
   m.castShadow = shadow; m.receiveShadow = true; parent.add(m); return m;
 }
+const F = { N: Math.PI, S: 0, E: Math.PI / 2, W: -Math.PI / 2 };   // 人物面向：-z／+z／+x／-x（建模和人員一日都會用到）
 const box = (p, w, h, d, mat, x, y, z, sh = true) => addMesh(p, boxGeo(w, h, d), mat, x, y, z, sh);
 const cyl = (p, rt, rb, h, mat, x, y, z, s = 20, sh = true) => addMesh(p, cylGeo(rt, rb, h, s), mat, x, y, z, sh);
 function plane(p, w, h, mat, x, y, z, faceSign = 1) {   // 直立的平面；faceSign=1 面向 +z，-1 面向 -z
@@ -1622,7 +1640,7 @@ const CONT_MATS = ['#D96B45', '#6F9B78', '#5B8DB8', '#D19A35', '#8074A7', '#4D9C
       WORLD.blades.push(hub);
     }
   };
-  islet(-112, -66, 14, 9, 0); islet(112, -62, 10, 4, 2); islet(102, 78, 12, 7, 0); islet(-88, 82, 9, 3, 2); islet(26, -125, 20, 14, 3);
+  islet(-118, -74, 14, 9, 0); islet(112, -62, 10, 4, 2); islet(102, 78, 12, 7, 0); islet(-88, 82, 9, 3, 2); islet(26, -125, 20, 14, 3);
   // 北方遠山（被霧淡化，增加縱深）
   const hill = std(0x8FA676, { roughness: 1 });
   for (const [x, z, r] of [[-150, -280, 90], [-20, -310, 110], [130, -290, 95], [260, -240, 80]]) addMesh(scene, sphereGeo(1), hill, x, SEA_Y - 4, z, false).scale.set(r, r * 0.32, r * 0.6);
@@ -1837,6 +1855,293 @@ const CI = {};                                  // 報關島上要做動畫的�
     for (const z of [0.3, 6.5]) cyl(scene, 0.08, 0.08, 3.1, M.bodyDark, -64.95, Y + 1.55, z, 8);
     const lb = zoneLabel('7', '報關島', 'Customs Island', '#2F6F8F'); lb.position.set(-87, 10, 7); scene.add(lb);
   }
+}
+
+/* =====================================================================
+ * 10-3. NPI 研發島：新筆電從「設計」到「可以量產」的地方
+ *       研發大樓（ID 設計室、辦公區、EE 實驗台、會議室、PM 時程看板）＋天線電波暗室、可靠度實驗室、認證實驗室
+ *       在工廠東邊，用步行橋接到員工出入口；研發人員下午會走過橋，到產線看新機種試產
+ * =================================================================== */
+const ISLE3 = { x0: 60, z0: -34, x1: 102, z1: 4, r: 7 };       // NPI 研發島（島面高度 -0.35）
+const BRIDGE3 = { x0: 41, x1: 60, z0: -18, z1: -14 };           // 步行橋：工廠東側 → 研發島
+const NPI_SPOTS = {};                                           // 研發人員會去的位置：{ x, z, face（面向）}
+const NPI_ANIM = {};                                            // 會動的實驗設備：轉軸開闔機、落摔機、天線轉台、3D 列印機、溫箱燈號
+const NAV_BLOCKS = [];                                          // 額外的障礙區 [x0, z0, x1, z1]（量不到外框的東西，例如一次畫完的吸波錐）
+const npiSpot = (id, x, z, face) => (NPI_SPOTS[id] = { id, x, z, face });
+{
+  const Y = -0.35;
+  const top = std(0xD6CFC0, { roughness: 0.95 }), side = std(0xA9A08F, { roughness: 0.95 });
+  const wetTop = std(0x8C8475, { roughness: 0.95 }), wet = std(0x756F63, { roughness: 0.95 });
+  slab(roundRect(ISLE3.x0, ISLE3.z0, ISLE3.x1, ISLE3.z1, ISLE3.r), Y, 1.5, top, side, 0.25);
+  slab(roundRect(ISLE3.x0 - 0.6, ISLE3.z0 - 0.6, ISLE3.x1 + 0.6, ISLE3.z1 + 0.6, ISLE3.r + 0.6), -1.75, 1.4, wetTop, wet);
+  const flatAt = (x0, z0, x1, z1, mat, dy = 0.012) => { const m = flat(scene, x1 - x0, z1 - z0, mat, (x0 + x1) / 2, Y + dy, (z0 + z1) / 2); m.receiveShadow = true; return m; };
+  const pave = std(0xBFB6A6, { roughness: 0.9 });
+  // 步行橋（木頭橋面＋欄杆＋路燈）
+  {
+    const L = BRIDGE3.x1 - BRIDGE3.x0, cx = (BRIDGE3.x0 + BRIDGE3.x1) / 2, cz = (BRIDGE3.z0 + BRIDGE3.z1) / 2;
+    box(scene, L, 0.3, BRIDGE3.z1 - BRIDGE3.z0, M.wood, cx, Y - 0.15, cz);
+    for (const z of [BRIDGE3.z0 + 0.1, BRIDGE3.z1 - 0.1]) {
+      box(scene, L, 0.07, 0.07, M.steel, cx, Y + 0.95, z, false);
+      for (let x = BRIDGE3.x0 + 0.5; x <= BRIDGE3.x1 - 0.3; x += 1.5) box(scene, 0.07, 0.95, 0.07, M.steel, x, Y + 0.48, z, false);
+    }
+    for (const x of [45, 50, 55]) for (const z of [BRIDGE3.z0 + 0.6, BRIDGE3.z1 - 0.6]) cyl(scene, 0.25, 0.3, 2.2, M.bodyDark, x, Y - 1.4, z, 10);
+    for (const x of [44, 52.5]) for (const z of [BRIDGE3.z0 + 0.1, BRIDGE3.z1 - 0.1]) { cyl(scene, 0.06, 0.08, 3.4, M.bodyDark, x, Y + 1.7, z, 8); addMesh(scene, sphereGeo(0.2), WORLD.bulb, x, Y + 3.5, z, false); }
+    const sp = textSprite('研發步道', 'To NPI R&D Center：通往 NPI 研發島', '#8074A7', 1.0); sp.position.set(50.5, 3.2, BRIDGE3.z0 - 0.5); scene.add(sp);
+  }
+  flatAt(60.4, -18, 100.4, -12, pave);           // 中央步道
+  flatAt(60.4, -24, 66, -8, pave, 0.011);         // 入口廣場
+  // ---- 研發大樓（矮牆、沒有屋頂，從上面看得到裡面）：西邊 ID 設計室、中間辦公區、東邊會議室 ----
+  const OF = { x0: 66, x1: 97, z0: -32, z1: -19 };
+  flatAt(OF.x0, OF.z0, OF.x1, OF.z1, std(0xE6DCCB, { roughness: 0.8 }), 0.02);
+  const wallM = std(0xF3EEE4, { roughness: 0.9 }), capM = std(0x8074A7, { roughness: 0.8 });
+  const wall = (x0, z0, x1, z1, h = 1.1) => {
+    const w = Math.max(Math.abs(x1 - x0), 0.2), d = Math.max(Math.abs(z1 - z0), 0.2), cx = (x0 + x1) / 2, cz = (z0 + z1) / 2;
+    box(scene, w, h, d, wallM, cx, Y + h / 2, cz);
+    box(scene, w + 0.04, 0.07, d + 0.04, capM, cx, Y + h + 0.035, cz, false);
+  };
+  wall(OF.x0, OF.z0, OF.x1, OF.z0); wall(OF.x1, OF.z0, OF.x1, OF.z1);
+  wall(OF.x0, OF.z0, OF.x0, -26.6); wall(OF.x0, -24.6, OF.x0, OF.z1);                                   // 西牆（門在 z -26.6～-24.6）
+  wall(OF.x0, OF.z1, 70.4, OF.z1); wall(72.4, OF.z1, 79.4, OF.z1); wall(82.4, OF.z1, 89.6, OF.z1); wall(91.6, OF.z1, OF.x1, OF.z1);   // 南牆（三個門）
+  wall(74.8, OF.z0, 74.8, -23.2, 1.0);            // 隔間：ID 設計室｜辦公區
+  wall(89.2, OF.z0, 89.2, -21.0, 1.0);            // 隔間：辦公區｜會議室
+  const deskTop = std(0xFFFDFA, { roughness: 0.7 }), chairM = std(0x4C5554, { roughness: 0.7 }), seatM = std(0x8074A7, { roughness: 0.7 });
+  const desk = (id, x, z, face, title, lines, color) => {   // 座位：人坐在 (x, z)，面向 face；桌子和螢幕在他前面
+    const g = new THREE.Group(); g.position.set(x, Y, z); g.rotation.y = face; scene.add(g);
+    box(g, 1.3, 0.05, 0.62, deskTop, 0, 0.74, 0.78);
+    for (const sx of [-0.6, 0.6]) box(g, 0.05, 0.72, 0.56, M.steel, sx, 0.36, 0.78, false);
+    box(g, 0.06, 0.22, 0.06, M.bodyDark, 0, 0.87, 0.98, false);
+    monitor(g, 0, 1.12, 0.98, -1, basic({ map: screenTex(title, lines, color) }), 0.56, 0.34, false);
+    cyl(g, 0.2, 0.2, 0.45, seatM, 0, 0.225, 0, 14);
+    box(g, 0.38, 0.42, 0.06, chairM, 0, 0.76, -0.2, false);
+    npiSpot(id, x, z, face);
+  };
+  // 辦公區：兩排面對面的座位
+  const XS = [76.4, 78.6, 80.8, 83.0, 85.2];
+  [['dME', '3D 機構圖', ['零件堆疊檢查', '轉軸公差 ±0.05', '卡勾加厚 0.2mm'], '#5B8DB8'],
+   ['dTH', '熱模擬', ['CPU 92°C → 85°C', '風扇 4200 rpm', '外殼表面 44°C'], '#ef4444'],
+   ['dEE', '線路圖', ['電源 1.1V 量測', '電容 22µF → 47µF', 'BOM 更新 v0.8'], '#22c55e'],
+   ['dLY', 'PCB Layout', ['10 層電路板', '高速訊號等長', 'DFM 檢查 OK'], '#a855f7'],
+   ['dBI', 'BIOS 韌體', ['版本 v0.9.3', '修正：睡眠喚醒', 'EC：充電設定'], '#facc15']].forEach(([id, t, l, c], i) => desk(id, XS[i], -27.6, F.N, t, l, c));
+  [['dSW', '出廠映像檔', ['Windows＋驅動', 'Wi-Fi 驅動 v2.1', '開機 14.2 秒'], '#38bdf8'],
+   ['dTE', '問題清單', ['#132 落摔轉軸鬆', '#133 睡眠叫不醒', '#134 喇叭破音'], '#f97316'],
+   ['dCE', '認證進度', ['BSMI 安規 送測中', 'NCC 無線 準備中', 'FCC／CE 排程'], '#14b8a6'],
+   ['dPE', '試產計畫', ['DVT 試產 200 台', '治具 12 組 OK', 'SOP v1.2'], '#D96B45'],
+   ['dRF', '天線量測', ['2.4G 效率 52%', '5G 效率 48%', '6G 效率 41%'], '#0ea5e9']].forEach(([id, t, l, c], i) => desk(id, XS[i], -23.4, F.S, t, l, c));
+  desk('dID', 71.6, -22.4, F.S, '外觀設計', ['草圖 → 3D 圖', '霧面珊瑚橘', '天線窗 2mm'], '#DB6A41');
+  desk('dPM', 87.9, -22.8, F.S, '專案進度', ['DVT 第 2 週', '問題 12 項／已解 8', '15:00 產線試產'], '#B84F2D');
+  // ID 設計室：外觀模型桌、CMF 色板、3D 列印機
+  {
+    box(scene, 2.6, 0.06, 0.9, deskTop, 70.4, Y + 0.8, -27.6);
+    for (const sx of [-1.2, 1.2]) box(scene, 0.06, 0.78, 0.8, M.steel, 70.4 + sx, Y + 0.39, -27.6, false);
+    [['#DB6A41', -0.9], ['#5B8DB8', -0.3], ['#C9CED6', 0.3], ['#6F9B78', 0.9]].forEach(([c, dx]) => {   // 四種顏色的外觀模型
+      const m = std(new THREE.Color(c), { roughness: 0.45, metalness: 0.2 });
+      box(scene, 0.42, 0.03, 0.3, m, 70.4 + dx, Y + 0.845, -27.45, false);
+      box(scene, 0.42, 0.28, 0.02, m, 70.4 + dx, Y + 0.99, -27.62, false).rotation.x = -0.25;
+    });
+    const cmf = makeTex(512, 256, (g, W) => {
+      g.fillStyle = '#FFFDFA'; g.fillRect(0, 0, W, 256);
+      g.fillStyle = '#282322'; g.font = `900 30px ${FONT}`; g.fillText('CMF 色板', 18, 40);
+      g.fillStyle = '#7A706A'; g.font = `bold 18px ${FONT}`; g.fillText('Color・Material・Finish', 168, 38);
+      ['#DB6A41', '#E8956B', '#5B8DB8', '#C9CED6', '#4C5554', '#6F9B78', '#D19A35', '#8074A7'].forEach((c, i) => {
+        const x = 22 + (i % 4) * 122, y = 60 + Math.floor(i / 4) * 96;
+        g.fillStyle = c; rrect(g, x, y, 100, 60, 10); g.fill();
+        g.fillStyle = '#4A423F'; g.font = `bold 16px ${FONT}`; g.fillText(['霧面', '亮面', '陽極', '噴砂'][i % 4], x + 4, y + 80);
+      });
+    });
+    for (const dx of [-1.2, 1.2]) box(scene, 0.06, 2.3, 0.06, M.bodyDark, 70.4 + dx, Y + 1.15, OF.z0 + 0.32, false);
+    box(scene, 2.5, 1.3, 0.05, M.bodyDark, 70.4, Y + 1.6, OF.z0 + 0.32, false);
+    const board = new THREE.Mesh(planeGeo(2.4, 1.2), basic({ map: cmf })); board.position.set(70.4, Y + 1.6, OF.z0 + 0.35); scene.add(board);
+    const pr = new THREE.Group(); pr.position.set(73.4, Y, -30.4); scene.add(pr);
+    box(pr, 0.8, 0.75, 0.6, M.bench, 0, 0.375, 0);
+    for (const sx of [-0.35, 0.35]) for (const sz of [-0.25, 0.25]) box(pr, 0.04, 0.6, 0.04, M.bodyDark, sx, 1.05, sz, false);
+    for (const sz of [-0.25, 0.25]) box(pr, 0.74, 0.04, 0.04, M.bodyDark, 0, 1.33, sz, false);
+    box(pr, 0.3, 0.12, 0.2, std(0xDB6A41), 0, 0.81, 0, false);
+    NPI_ANIM.printHead = box(pr, 0.12, 0.08, 0.12, M.robot, 0, 1.25, 0, false);
+    npiSpot('idTable', 70.4, -26.5, F.N); npiSpot('idBoard', 70.4, -30.6, F.N);
+    const sp = textSprite('ID 設計室', 'Industrial Design：外觀與 CMF', '#DB6A41', 0.9); sp.position.set(70.4, 3.0, -25.4); scene.add(sp);
+  }
+  // EE 實驗台：示波器＋正在除錯的主機板
+  {
+    const g = new THREE.Group(); g.position.set(87.7, Y, -29.4); scene.add(g);
+    box(g, 1.9, 0.05, 0.8, std(0x2563eb, { roughness: 0.8 }), 0, 0.9, 0);
+    for (const sx of [-0.88, 0.88]) box(g, 0.06, 0.88, 0.72, M.steel, sx, 0.44, 0, false);
+    box(g, 0.42, 0.3, 0.32, M.bodyDark, -0.55, 1.08, -0.15);
+    const scope = new THREE.Mesh(planeGeo(0.3, 0.2), basic({ map: makeTex(128, 96, (c, W, H) => {
+      c.fillStyle = '#04120a'; c.fillRect(0, 0, W, H); c.strokeStyle = '#22c55e'; c.lineWidth = 3; c.beginPath();
+      for (let x = 0; x <= W; x += 4) { const y = H / 2 - 22 * Math.sin(x / 9) * (x > 60 ? 1 : 0.4); x ? c.lineTo(x, y) : c.moveTo(x, y); } c.stroke();
+    }) }));
+    scope.position.set(-0.55, 1.1, 0.012); g.add(scope);
+    box(g, 0.32, 0.012, 0.2, M.pcbGreen, 0.15, 0.93, 0.05, false);
+    box(g, 0.2, 0.08, 0.14, M.bodyDark, 0.62, 0.97, -0.1, false);
+    npiSpot('eeBench', 87.2, -28.3, F.N); npiSpot('eeBench2', 88.3, -28.3, F.N);
+    const sp = textSprite('EE 實驗台', 'Hardware Debug Bench', '#3E9B5A', 0.8); sp.position.set(87.7, 2.7, -29.6); scene.add(sp);
+  }
+  // 會議室：長桌、11 個座位、投影幕；PM 站在投影幕前
+  {
+    box(scene, 1.8, 0.06, 6.2, deskTop, 93.1, Y + 0.74, -25.8);
+    for (const dz of [-2.8, 2.8]) box(scene, 1.6, 0.72, 0.08, M.steel, 93.1, Y + 0.36, -25.8 + dz, false);
+    const ZS = [-28.2, -27.0, -25.8, -24.6, -23.4];
+    ZS.forEach((z, i) => { npiSpot('meet' + i, 91.6, z, F.E); npiSpot('meet' + (i + 5), 94.6, z, F.W); });
+    npiSpot('meet10', 93.1, -21.9, F.N);
+    for (let i = 0; i <= 10; i++) { const s = NPI_SPOTS['meet' + i]; cyl(scene, 0.19, 0.19, 0.45, seatM, s.x, Y + 0.225, s.z, 14); }
+    const slide = makeTex(512, 288, (g, W, H) => {
+      g.fillStyle = '#1e293b'; g.fillRect(0, 0, W, H);
+      g.fillStyle = '#FFE8B8'; g.font = `900 30px ${FONT}`; g.fillText('新機種「珊瑚」DVT 進度', 24, 52);
+      g.fillStyle = '#e2e8f0'; g.font = `24px ${FONT}`;
+      ['今天 15:00 產線試產 200 台', '問題清單：12 項，已解決 8 項', '安規 BSMI 送測中', '下一步：PVT（下個月）'].forEach((t, i) => g.fillText('・' + t, 30, 106 + i * 44));
+    });
+    for (const dx of [-1.35, 1.35]) box(scene, 0.06, 2.4, 0.06, M.bodyDark, 93.1 + dx, Y + 1.2, OF.z0 + 0.32, false);
+    const sc = new THREE.Mesh(planeGeo(2.6, 1.46), basic({ map: slide })); sc.position.set(93.1, Y + 1.65, OF.z0 + 0.36); scene.add(sc);
+    npiSpot('mtgPM', 93.1, -30.6, F.S);
+    const sp = textSprite('會議室', 'Meeting Room：早會・設計審查', '#B84F2D', 0.9); sp.position.set(93.1, 2.9, -26); scene.add(sp);
+  }
+  // PM 時程看板（甘特圖：紅線是「今天」，在 DVT 階段）
+  {
+    const gantt = makeTex(640, 320, (g, W, H) => {
+      g.fillStyle = '#FFFDFA'; g.fillRect(0, 0, W, H);
+      g.fillStyle = '#282322'; g.font = `900 30px ${FONT}`; g.fillText('新機種「珊瑚」專案時程', 20, 42);
+      const x0 = 110, w = 500 / 9;
+      [['開案', '#8074A7', 0, 1], ['設計', '#5B8DB8', 0.6, 3], ['EVT', '#3E9B5A', 2.6, 4.2], ['DVT', '#D19A35', 4.0, 6.0], ['PVT', '#DB6A41', 5.8, 7.2], ['MP', '#4D9C97', 7.0, 9]].forEach(([t, c, a, b], i) => {
+        const y = 66 + i * 40; g.fillStyle = '#4A423F'; g.font = `bold 20px ${FONT}`; g.fillText(t, 22, y + 22);
+        g.fillStyle = c; rrect(g, x0 + a * w, y + 6, (b - a) * w, 22, 8); g.fill();
+      });
+      const today = x0 + 5 * w; g.strokeStyle = '#C8463A'; g.lineWidth = 4; g.beginPath(); g.moveTo(today, 58); g.lineTo(today, 306); g.stroke();
+      g.fillStyle = '#C8463A'; g.font = `900 18px ${FONT}`; g.fillText('今天', today + 6, 312);
+    });
+    for (const dx of [-1.3, 1.3]) box(scene, 0.06, 2.3, 0.06, M.bodyDark, 85.5 + dx, Y + 1.15, -19.7, false);
+    box(scene, 2.7, 1.4, 0.05, M.bodyDark, 85.5, Y + 1.5, -19.68, false);
+    const gb = new THREE.Mesh(planeGeo(2.6, 1.3), basic({ map: gantt })); gb.rotation.y = Math.PI; gb.position.set(85.5, Y + 1.5, -19.71); scene.add(gb);
+    npiSpot('warBoard', 85.5, -20.9, F.S);
+  }
+  { const sp = textSprite('研發辦公區', 'R&D Office：機構・電路・韌體・軟體…', '#8074A7', 1.0); sp.position.set(81, 3.0, -25.6); scene.add(sp); }
+  // ---- 天線電波暗室：牆上貼滿吸波錐，轉台上放著筆電，旁邊是量測天線 ----
+  {
+    const RF = { x0: 63.6, x1: 72, z0: -11.8, z1: -3.4 }, H = 2.1, shell = std(0xC9CDD2, { roughness: 0.8 });
+    const wl = (x0, z0, x1, z1) => box(scene, Math.max(Math.abs(x1 - x0), 0.25), H, Math.max(Math.abs(z1 - z0), 0.25), shell, (x0 + x1) / 2, Y + H / 2, (z0 + z1) / 2);
+    wl(RF.x0, RF.z1, RF.x1, RF.z1); wl(RF.x0, RF.z0, RF.x0, RF.z1); wl(RF.x1, RF.z0, RF.x1, RF.z1);
+    wl(RF.x0, RF.z0, 69.4, RF.z0); wl(70.8, RF.z0, RF.x1, RF.z0);                       // 北牆留門
+    flatAt(RF.x0 + 0.15, RF.z0 + 0.15, RF.x1 - 0.15, RF.z1 - 0.15, std(0x3B4A62, { roughness: 1 }), 0.03);
+    const cones = [], q = new THREE.Quaternion(), e = new THREE.Euler();
+    const addRow = (n, pos, rot) => { for (let i = 0; i < n; i++) for (const hy of [0.32, 0.76, 1.2, 1.64]) cones.push([...pos(i), hy, rot]); };
+    const n = Math.floor((RF.z1 - RF.z0 - 0.4) / 0.42);
+    addRow(n, i => [RF.x0 + 0.42, RF.z0 + 0.4 + i * 0.42], [0, 0, -Math.PI / 2]);       // 西牆：錐尖朝東
+    addRow(n, i => [RF.x1 - 0.42, RF.z0 + 0.4 + i * 0.42], [0, 0, Math.PI / 2]);        // 東牆：錐尖朝西
+    addRow(n, i => [RF.x0 + 0.4 + i * 0.42, RF.z1 - 0.42], [-Math.PI / 2, 0, 0]);       // 南牆：錐尖朝北
+    for (let i = 0; i < n; i++) { const x = RF.x0 + 0.4 + i * 0.42; if (x > 69.1 && x < 71.1) continue; for (const hy of [0.32, 0.76, 1.2, 1.64]) cones.push([x, RF.z0 + 0.42, hy, [Math.PI / 2, 0, 0]]); }   // 北牆（門口不放）
+    const im = new THREE.InstancedMesh(new THREE.ConeGeometry(0.2, 0.55, 4), new THREE.MeshStandardMaterial({ color: 0x5B6E8C, roughness: 0.9, flatShading: true }), cones.length);
+    const m4 = new THREE.Matrix4(), s1 = new THREE.Vector3(1, 1, 1), v = new THREE.Vector3();
+    cones.forEach(([x, z, hy, r], i) => { q.setFromEuler(e.set(...r)); m4.compose(v.set(x, Y + hy, z), q, s1); im.setMatrixAt(i, m4); });
+    im.castShadow = true; scene.add(im);
+    // 吸波錐是一次畫完的（InstancedMesh），可行走地圖量不到，另外登記成障礙區，人才不會走進錐子裡
+    NAV_BLOCKS.push([RF.x0, RF.z0, RF.x0 + 0.75, RF.z1], [RF.x1 - 0.75, RF.z0, RF.x1, RF.z1], [RF.x0, RF.z1 - 0.75, RF.x1, RF.z1], [RF.x0, RF.z0, 69.2, RF.z0 + 0.75], [71, RF.z0, RF.x1, RF.z0 + 0.75]);
+    const turn = new THREE.Group(); turn.position.set(67.6, Y + 0.03, -7.6); scene.add(turn);
+    cyl(turn, 0.7, 0.72, 0.14, M.bodyDark, 0, 0.07, 0, 28);
+    box(turn, 0.34, 0.9, 0.34, M.white, 0, 0.59, 0);
+    box(turn, 0.42, 0.03, 0.3, M.alu, 0, 1.06, 0.02, false);
+    box(turn, 0.42, 0.28, 0.02, M.lidSide, 0, 1.2, -0.13, false).rotation.x = -0.2;
+    NPI_ANIM.turn = turn;
+    const ant = new THREE.Group(); ant.position.set(64.9, Y, -7.6); scene.add(ant);
+    for (let k = 0; k < 3; k++) { const a = k * Math.PI * 2 / 3, l = cyl(ant, 0.025, 0.025, 1.3, M.bodyDark, Math.cos(a) * 0.22, 0.6, Math.sin(a) * 0.22, 6, false); l.rotation.set(Math.sin(a) * 0.3, 0, -Math.cos(a) * 0.3); }
+    const horn = addMesh(ant, cachedGeo('horn', () => new THREE.ConeGeometry(0.26, 0.5, 4, 1, true)), std(0xD19A35, { side: THREE.DoubleSide }), 0.15, 1.35, 0); horn.rotation.z = Math.PI / 2;
+    // 暗室外的控制桌（天線工程師在這裡看量測數據）
+    const cd = new THREE.Group(); cd.position.set(66.6, Y, -13.0); scene.add(cd);
+    box(cd, 1.6, 0.05, 0.62, deskTop, 0, 0.74, 0.25);
+    for (const sx of [-0.75, 0.75]) box(cd, 0.05, 0.72, 0.56, M.steel, sx, 0.36, 0.25, false);
+    monitor(cd, -0.35, 1.1, 0.42, -1, basic({ map: screenTex('OTA 量測', ['TRP 18.2 dBm', 'TIS -91 dBm', '6G 效率 41%'], '#0ea5e9') }), 0.5, 0.3, false);
+    monitor(cd, 0.35, 1.1, 0.42, -1, basic({ map: screenTex('天線場型', ['水平 ✔', '垂直 ✔', 'MIMO 相關性 0.3'], '#22c55e') }), 0.5, 0.3, false);
+    npiSpot('rfIn', 68.9, -9.7, Math.atan2(67.6 - 68.9, -7.6 + 9.7)); npiSpot('rfDesk', 66.25, -13.5, F.S); npiSpot('rfDesk2', 67.6, -13.6, F.W);
+    const sp = textSprite('天線電波暗室', 'RF Anechoic Chamber：量 Wi-Fi・藍牙', '#0EA5E9', 1.0); sp.position.set(67.8, 3.5, -7.6); scene.add(sp);
+  }
+  // ---- 可靠度實驗室：落摔機、轉軸開闔機、溫箱、相容性測試桌 ----
+  {
+    const LR = { x0: 73.6, x1: 88, z0: -11.8, z1: -3.4 };
+    wall(LR.x0, LR.z1, LR.x1, LR.z1); wall(LR.x0, LR.z0, LR.x0, LR.z1); wall(LR.x1, LR.z0, LR.x1, LR.z1);
+    wall(LR.x0, LR.z0, 79.2, LR.z0); wall(81, LR.z0, LR.x1, LR.z0);
+    flatAt(LR.x0, LR.z0, LR.x1, LR.z1, std(0xE2E5E8, { roughness: 0.8 }), 0.02);
+    const dt = new THREE.Group(); dt.position.set(85.2, Y, -6.6); scene.add(dt);          // 落摔機
+    box(dt, 1.3, 0.08, 1.3, M.bodyDark, 0, 0.04, 0);
+    for (const sx of [-0.55, 0.55]) box(dt, 0.08, 2.5, 0.08, M.steel, sx, 1.25, 0, false);
+    box(dt, 1.2, 0.08, 0.1, M.steel, 0, 2.5, 0, false);
+    const dg = new THREE.Group(); dt.add(dg);
+    box(dg, 1.12, 0.05, 0.08, M.robot, 0, 0.06, 0, false);
+    box(dg, 0.42, 0.04, 0.3, M.lidSide, 0, 0, 0, false);
+    NPI_ANIM.drop = dg;
+    const hb = new THREE.Group(); hb.position.set(80.4, Y, -7.4); scene.add(hb);          // 轉軸開闔機
+    box(hb, 1.6, 0.82, 0.7, M.bench, 0, 0.41, 0);
+    box(hb, 0.42, 0.03, 0.3, M.alu, 0, 0.84, 0, false);
+    const hinge = new THREE.Group(); hinge.position.set(0, 0.86, 0.15); hb.add(hinge);
+    box(hinge, 0.42, 0.015, 0.3, M.lidSide, 0, 0.01, -0.15, false);
+    box(hb, 0.2, 0.3, 0.2, M.bodyDark, 0.55, 0.97, 0.1, false);
+    NPI_ANIM.hinge = hinge;
+    const tc = new THREE.Group(); tc.position.set(76.2, Y, -6.3); scene.add(tc);          // 溫箱（靠近電波暗室：天線和散熱在同一個畫面）
+    box(tc, 1.5, 1.9, 1.2, M.white, 0, 0.95, 0);
+    plane(tc, 0.6, 0.5, std(0x2F3B48, { roughness: 0.2, metalness: 0.4 }), -0.2, 1.25, -0.61, -1);
+    NPI_ANIM.tlamp = std(0x7f1d1d, { emissive: 0xef4444, emissiveIntensity: 1 });
+    addMesh(tc, sphereGeo(0.07), NPI_ANIM.tlamp, 0.5, 1.55, -0.62, false);
+    plane(tc, 0.3, 0.2, basic({ color: 0x0f172a }), 0.48, 1.25, -0.61, -1);
+    const ct = new THREE.Group(); ct.position.set(79.6, Y, -4.2); scene.add(ct);          // 相容性測試桌
+    box(ct, 2.6, 0.05, 0.7, deskTop, 0, 0.74, 0);
+    for (const sx of [-1.2, 1.2]) box(ct, 0.05, 0.72, 0.64, M.steel, sx, 0.36, 0, false);
+    for (const dx of [-0.85, 0, 0.85]) { box(ct, 0.42, 0.03, 0.3, M.alu, dx, 0.78, 0.05, false); box(ct, 0.42, 0.28, 0.02, M.lidSide, dx, 0.93, 0.21, false).rotation.x = 0.2; }
+    npiSpot('drop', 85.2, -8.4, F.S); npiSpot('hinge', 80.4, -8.6, F.S); npiSpot('hingeB', 79.4, -8.6, F.S);
+    npiSpot('thermalCh', 76.2, -8.0, F.S); npiSpot('compat', 79.6, -5.3, F.S); npiSpot('compat2', 78.6, -5.3, F.S);
+    npiSpot('pmLab', 83.6, -9.6, F.S);           // PM 來實驗室了解問題時站的位置
+    const sp = textSprite('可靠度實驗室', 'Reliability Lab：落摔・轉軸・高低溫', '#F97316', 1.0); sp.position.set(80.8, 3.0, -7.6); scene.add(sp);
+  }
+  // ---- 認證實驗室：EMC 電磁相容測試室、安規測試台 ----
+  {
+    const LC = { x0: 89.6, x1: 100, z0: -11.8, z1: -3.4 };
+    wall(LC.x0, LC.z1, LC.x1, LC.z1); wall(LC.x0, LC.z0, LC.x0, LC.z1); wall(LC.x1, LC.z0, LC.x1, LC.z1);
+    wall(LC.x0, LC.z0, 91, LC.z0); wall(93, LC.z0, LC.x1, LC.z0);
+    flatAt(LC.x0, LC.z0, LC.x1, LC.z1, std(0xE2E5E8, { roughness: 0.8 }), 0.02);
+    const emc = std(0x9AA3AD, { roughness: 0.5, metalness: 0.5 });
+    box(scene, 5.2, 2.6, 5.4, emc, 96.6, Y + 1.3, -7.2);
+    plane(scene, 1.0, 2.0, std(0x6B7280, { roughness: 0.6 }), 93.99, Y + 1.0, -7.2, 1).rotation.y = -Math.PI / 2;
+    addMesh(scene, sphereGeo(0.1), std(0x14532d, { emissive: 0x22c55e, emissiveIntensity: 1.6 }), 93.9, Y + 2.25, -6.4, false);
+    const sb = new THREE.Group(); sb.position.set(91.6, Y, -6.0); scene.add(sb);          // 安規測試台（耐壓、漏電）
+    box(sb, 1.4, 0.05, 0.75, std(0x2563eb, { roughness: 0.8 }), 0, 0.85, 0);
+    for (const sx of [-0.65, 0.65]) box(sb, 0.05, 0.83, 0.68, M.steel, sx, 0.42, 0, false);
+    box(sb, 0.45, 0.24, 0.34, M.bodyDark, -0.35, 1.0, 0);
+    plane(sb, 0.26, 0.1, basic({ color: 0xef4444 }), -0.35, 1.04, -0.172, -1);
+    box(sb, 0.42, 0.03, 0.3, M.alu, 0.3, 0.89, 0, false);
+    for (let i = 0; i < 3; i++) box(scene, 0.5, 0.36, 0.4, M.kraftPlain, 90.6, Y + 0.18 + i * 0.37, -4.2, i === 2);   // 送測樣品的箱子
+    npiSpot('safety', 91.6, -7.1, F.S); npiSpot('emcDoor', 93.2, -7.2, F.E);
+    const sp = textSprite('認證實驗室', 'Certification Lab：安規・EMC', '#14B8A6', 1.0); sp.position.set(94.8, 3.6, -7.2); scene.add(sp);
+  }
+  // ---- 南邊：草地、樹、交通車站（研發人員搭交通車上下班）----
+  slab(roundRect(61.2, -2.6, 100.8, 3.4, 1.4), Y + 0.07, 0.07, std(0x91A77A, { roughness: 0.95 }), std(0x7E9468, { roughness: 0.95 }));
+  const pine = new THREE.MeshStandardMaterial({ color: 0x5F7D58, roughness: 0.9, flatShading: true });
+  for (const [x, z, h] of [[70, 0.6, 3.6], [74.5, 2.2, 4.4], [84, 0.4, 3.2], [89.5, 2.1, 4.0], [95.5, 0.6, 3.8], [99, 1.8, 3.0], [61.8, -28, 3.4], [63.6, -31, 4.2], [99.4, -27, 3.6]])
+    addMesh(scene, cachedGeo('pine', () => new THREE.ConeGeometry(1, 1, 7)), pine, x, Y + 0.07 + h / 2, z).scale.set(h * 0.3, h, h * 0.3);
+  flatAt(61.8, -2.2, 67.2, 3.0, pave, 0.08);
+  for (const dx of [-1.2, 1.2]) box(scene, 0.08, 2.4, 0.08, M.bodyDark, 64.5 + dx, Y + 1.2, 2.6, false);
+  box(scene, 3.0, 0.1, 1.4, ZMAT.mbt, 64.5, Y + 2.45, 2.2);
+  box(scene, 2.0, 0.08, 0.45, M.wood, 64.5, Y + 0.45, 2.55); box(scene, 1.9, 0.4, 0.08, M.bodyDark, 64.5, Y + 0.22, 2.55, false);
+  { const sp = textSprite('交通車站', 'Shuttle Bus：研發人員上下班', '#8074A7', 0.9); sp.position.set(64.5, 3.4, 2.2); scene.add(sp); }
+  for (let i = 0; i < 12; i++) npiSpot('bus' + i, 62.6 + (i % 4) * 0.8, -1.4 + Math.floor(i / 4) * 0.9, F.N);
+  for (const x of [64, 72, 80, 88, 96]) { cyl(scene, 0.06, 0.08, 3.4, M.bodyDark, x, Y + 1.7, -18.4, 8); addMesh(scene, sphereGeo(0.2), WORLD.bulb, x, Y + 3.5, -18.4, false); }
+  // 島名：靠步行橋的大看板（面向工廠）＋全景也看得到的懸浮標籤
+  {
+    const b = banner('NPI 研發島', 'R&D Center・新筆電從這裡誕生', '#8074A7', 7.4, 1.45);
+    b.rotation.y = -Math.PI / 2; b.position.set(60.6, Y + 3.1, -27.6); scene.add(b);
+    for (const z of [-24.4, -30.8]) cyl(scene, 0.08, 0.08, 3.1, M.bodyDark, 60.6, Y + 1.55, z, 8);
+    const lb = zoneLabel('8', 'NPI 研發島', 'R&D Center', '#8074A7'); lb.position.set(81, 10, -15); scene.add(lb);
+  }
+  // 到工廠看試產時站的位置：在工站的觀看側（南邊走道），不會擋到作業員
+  for (const k of [11, 12, 13, 14, 15, 16, 17, 18]) {
+    const S = STATIONS[k];
+    npiSpot('f' + k, S.x + 0.7, S.z + 3.0, F.N); npiSpot('f' + k + 'b', S.x - 0.7, S.z + 3.0, F.N);
+  }
+}
+function updateNpiIsland() {                     // 實驗設備的動畫（跟著園區時鐘，暫停時一起停）
+  const t = AMB.t;
+  NPI_ANIM.turn.rotation.y = t * 0.35;           // 天線轉台慢慢轉，量每個方向的訊號
+  NPI_ANIM.hinge.rotation.x = 0.95 - 0.95 * Math.cos(t * Math.PI * 2 / 3);   // 轉軸開闔機：3 秒開關一次
+  const u = (t % 4) / 4;                          // 落摔機：慢慢升高，再一下子掉下來
+  NPI_ANIM.drop.position.y = u < 0.75 ? 0.2 + 1.9 * (u / 0.75) : 2.1 - 1.9 * Math.min(1, ((u - 0.75) / 0.06) ** 2);
+  NPI_ANIM.printHead.position.x = 0.25 * Math.sin(t * 3);
+  NPI_ANIM.printHead.position.z = 0.15 * Math.sin(t * 2.3);
+  NPI_ANIM.tlamp.emissiveIntensity = Math.sin(t * 4) > 0 ? 1.8 : 0.3;
 }
 
 /* =====================================================================
@@ -2715,6 +3020,55 @@ const ROLES = {
   bonded: { title: '保稅倉管理員', en: 'Bonded Warehouse Keeper', color: '#5E7F4E', smock: '#64748b', vest: '#22c55e', cap: '#e2e8f0', pants: '#334155', shoes: '#3f3f46', hat: 'cap', emoji: '🔐',
     duty: '管理保稅倉：記錄每一批保稅零件什麼時候進來、領了多少去生產、做成多少成品出口，帳要隨時對得上。',
     tip: '保稅的零件還沒繳稅，所以進出都要記帳；海關會定期來盤點、核對帳冊。' },
+  // NPI 研發島的人（新機種從設計到量產）：穿便服，試產工程師常進產線，所以穿靜電衣
+  pm: { title: 'PM 專案經理', en: 'Program Manager', color: '#B84F2D', smock: '#334155', pants: '#1f2937', shoes: '#1f2937', hat: 'none', emoji: '🗓️',
+    intro: '我是新機種的專案經理，負責讓整個團隊照時程把產品做出來。',
+    duty: '新機種從開案到量產，大約要 9～12 個月。PM 要排出整個專案的時程、追蹤每個部門的進度；每天主持早會、設計審查和問題檢討會，問題卡住了就找對的人一起解決；也是客戶、研發和工廠之間的窗口。',
+    tip: 'NPI 是 New Product Introduction（新產品導入）的縮寫：把一個新產品從「設計圖」一路帶到「可以穩定量產」的整個過程。' },
+  idd: { title: 'ID 外觀設計師', en: 'Industrial Designer', color: '#DB6A41', smock: '#2A2522', pants: '#57534e', shoes: '#f5f5f4', hat: 'none', emoji: '🎨',
+    intro: '我負責筆電的「長相」：造型、顏色、材質和手感。',
+    duty: '設計筆電的外觀造型：從手繪草圖、3D 模型到實體的外觀模型；決定 CMF（顏色、材質、表面處理）；還要和機構工程師一起確認設計做得出來，例如轉軸位置、散熱孔、天線窗。',
+    tip: 'CMF 是 Color（顏色）、Material（材質）、Finish（表面處理）的縮寫。同樣是銀色，霧面、亮面、噴砂的感覺完全不一樣。' },
+  me: { title: 'ME 機構工程師', en: 'Mechanical Engineer', color: '#5B8DB8', smock: '#5B8DB8', pants: '#1f2937', shoes: '#3f3f46', hat: 'none', emoji: '🔩',
+    intro: '我負責把外觀設計變成「做得出來」的零件：外殼、轉軸、螺絲、卡勾。',
+    duty: '把 ID 的外觀設計拆成一個個可以生產的零件：上蓋、底殼、轉軸、螺絲柱、卡勾。要把主機板、電池、散熱模組、喇叭全部「堆疊」進薄薄的機身，還要通過落摔、轉軸開闔等可靠度測試。',
+    tip: '筆電轉軸通常要能開闔 2 萬次以上。外殼零件大多用「模具」生產，一套模具要花幾十天、上百萬元，所以設計要確認沒問題才能開模。' },
+  thermal: { title: '散熱工程師', en: 'Thermal Engineer', color: '#C8463A', smock: '#b45309', pants: '#334155', shoes: '#3f3f46', hat: 'none', emoji: '🌡️',
+    intro: '我負責讓筆電「不過熱」：CPU 再忙，溫度都要控制住。',
+    duty: '用電腦模擬熱流，設計散熱模組：導熱管、散熱鰭片和風扇；在溫箱裡做高溫測試，量 CPU 溫度和外殼表面溫度；調整風扇轉速，在「涼」和「安靜」之間取得平衡。',
+    tip: 'CPU 太熱會自動降速保護自己（叫做「降頻」），筆電就會變慢；外殼表面溫度也有上限，免得放在腿上會燙。' },
+  ee: { title: 'EE 電子工程師', en: 'Electrical Engineer', color: '#3E9B5A', smock: '#2563eb', pants: '#1f2937', shoes: '#eef2f5', hat: 'none', emoji: '⚡',
+    intro: '我負責設計主機板的電路，也就是「線路圖」。',
+    duty: '選擇 CPU、記憶體、電源晶片等零件，畫出主機板的線路圖，列出 BOM 表（零件清單）；拿到樣機後，在實驗台用示波器量測電源和訊號，找出電路的問題（這叫「除錯」）。',
+    tip: 'BOM 是 Bill of Materials（物料清單）的縮寫。一片筆電主機板上有一兩千顆零件，每一顆都要列在 BOM 表上。' },
+  layout: { title: 'Layout 佈線工程師', en: 'PCB Layout Engineer', color: '#8E5BB5', smock: '#a855f7', pants: '#334155', shoes: '#eef2f5', hat: 'none', emoji: '🧩',
+    intro: '我負責把線路圖「畫」成真正的電路板。',
+    duty: '依照 EE 的線路圖，決定每一顆零件放在電路板的哪裡，再把上千條線一條條連起來；高速訊號要等長、要避開干擾。完成後做 DFM 檢查（確認好生產），再輸出 Gerber 檔給板廠製作。',
+    tip: '板廠做出來的，就是產線第 1 站「開料裁板」的那種電路板！筆電主機板通常有 8～12 層線路，Layout 工程師要安排每一層的走線。' },
+  rf: { title: 'RF 天線工程師', en: 'RF / Antenna Engineer', color: '#0E87C4', smock: '#0ea5e9', pants: '#1f2937', shoes: '#3f3f46', hat: 'none', emoji: '📶',
+    intro: '我負責筆電的天線，讓 Wi-Fi 和藍牙收得好。',
+    duty: '設計天線的形狀和擺放位置（通常藏在螢幕上緣或轉軸附近），在電波暗室量測天線效率和訊號強度。外殼如果是金屬，還要和 ID、機構討論開「天線窗」，讓電波出得去。',
+    tip: '金屬會擋住電波，所以金屬機身的筆電上，常看得到一小條塑膠飾條，那就是天線窗。' },
+  bios: { title: 'BIOS 韌體工程師', en: 'BIOS / Firmware Engineer', color: '#B8860B', smock: '#ca8a04', pants: '#1f2937', shoes: '#eef2f5', hat: 'none', emoji: '💾',
+    intro: '我負責 BIOS：筆電按下電源鍵後，第一個執行的程式。',
+    duty: '撰寫與修改 BIOS 和 EC（嵌入式控制器）韌體：開機時檢查硬體，再把電腦交給 Windows；也負責電源管理，例如睡眠、喚醒、充電和風扇控制。硬體改版時，韌體也要跟著改。',
+    tip: 'BIOS 存在主機板上的一顆快閃記憶體晶片裡，就算硬碟是空的也能執行。現在的新版本叫 UEFI。' },
+  sw: { title: '軟體工程師', en: 'Software Engineer', color: '#0F766E', smock: '#0f766e', pants: '#334155', shoes: '#eef2f5', hat: 'none', emoji: '💻',
+    intro: '我負責出廠時裝在筆電裡的軟體：作業系統、驅動程式和工具程式。',
+    duty: '準備出廠的「映像檔」：Windows 加上每個硬體的驅動程式、品牌的工具程式；確認開機速度、睡眠喚醒都正常。也寫產線用的測試程式，讓第 18 站燒機測試自動檢查每一台筆電。',
+    tip: '驅動程式（Driver）是硬體和作業系統之間的「翻譯」。沒有它，Windows 就不知道怎麼使用 Wi-Fi 卡或觸控板。' },
+  tester: { title: '測試工程師', en: 'Test & Reliability Engineer', color: '#EA580C', smock: '#ea580c', pants: '#1f2937', shoes: '#3f3f46', hat: 'none', emoji: '🧪',
+    intro: '我的工作是「想辦法把筆電弄壞」，在出貨前就把問題找出來。',
+    duty: '依照測試計畫做可靠度測試：落摔、轉軸開闔、高低溫、按鍵敲擊；也做相容性測試，接各種螢幕、隨身碟、耳機，看看是不是都正常。發現問題就開進「問題清單」，追蹤到研發修好為止。',
+    tip: '常見的測試標準像是美國軍規 MIL-STD-810，裡面有落摔、震動、高低溫等等的測試方法。' },
+  cert: { title: '認證安規工程師', en: 'Certification Engineer', color: '#14B8A6', smock: '#f1f5f9', pants: '#334155', shoes: '#eef2f5', hat: 'none', emoji: '📜',
+    intro: '我負責讓筆電通過各國的認證，拿到「可以賣」的通行證。',
+    duty: '確認筆電符合各國法規：安規（不會觸電、起火）、EMC 電磁相容（不干擾其他電器）、無線電（Wi-Fi、藍牙的頻率和功率）。把樣機送去測試、準備文件，拿到認證後產品才能上市。',
+    tip: '台灣的安規標準是 CNS 15598-1（對應國際的 IEC 62368-1），由標準檢驗局（BSMI）把關；無線電歸 NCC 管。賣到美國要 FCC，賣到歐洲要 CE。' },
+  pe: { title: 'NPI 試產工程師', en: 'NPI Process Engineer', color: '#8074A7', smock: '#60a5fa', cap: '#c4b5fd', pants: '#1f2937', hat: 'esd', emoji: '🏭',
+    intro: '我是研發和工廠之間的橋樑，負責新機種在產線上的「試產」。',
+    duty: '新機種要在產線上試做好幾次（EVT、DVT、PVT）。我負責安排試產：準備治具、寫 SOP 作業指導書、教作業員怎麼組裝；試產時記錄每一站的問題，帶回去請研發改善，讓量產時又快又穩。',
+    tip: '試產的問題常用「4M」來分析：人（Man）、機（Machine）、料（Material）、法（Method）。' },
   // 玩家：下場走走時扮演的參觀者
   // 玩家：黃色小熊耳帽＋珊瑚橘參觀服＋綠色小背包，工廠裡沒有其他人穿這個顏色，一眼就認得出來
   player: { title: '參觀者', en: 'You', color: '#DB6A41', smock: '#F26B4A', cap: '#FFC93C', pants: '#3f3f46', hat: 'bear', pack: '#3BA99C', emoji: '🙂', duty: '', tip: '' },
@@ -2733,6 +3087,22 @@ const PEOPLE_DEF = [
   skin: ['#f1c7a3', '#e3b28c', '#f5d0b3', '#d9a47e', '#ecc09c', '#e6b896'][i], hairC: ['#1f1a17', '#2a2018', '#1a1512', '#3a2a1e', '#161616', '#2b2119'][i] }));
 PEOPLE_DEF.push({ id: 'night', idx: 11, name: '夜班線長', generic: true, role: 'night', hair: 'short', skin: '#e4b58f', hairC: '#1c1c1c' });
 const MAIN_ORDER = ['leader', 'operator', 'ipqc', 'tech', 'material'];
+// NPI 研發島的 12 位研發人員（姓名皆為虛構）：desk 座位、seat 開會的位子、home 其他模式時待的地方與動作
+const NPI_DEF = [
+  { role: 'pm', name: '周子涵', hair: 'long', skin: '#f3cfb0', hairC: '#2b1d16', desk: 'dPM', seat: 'mtgPM', home: ['warBoard', 'point'] },
+  { role: 'idd', name: '蔡佩珊', hair: 'bun', skin: '#f2c9a5', hairC: '#3a2a1e', glasses: true, desk: 'dID', seat: 'meet0', home: ['idTable', 'inspect'] },
+  { role: 'me', name: '吳俊宏', hair: 'short', skin: '#d6a37c', hairC: '#151515', desk: 'dME', seat: 'meet1', home: ['dME', 'type'] },
+  { role: 'thermal', name: '劉建廷', hair: 'short', skin: '#e0b089', hairC: '#1a1a1a', glasses: true, desk: 'dTH', seat: 'meet2', home: ['thermalCh', 'inspect'] },
+  { role: 'ee', name: '許志偉', hair: 'short', skin: '#e4b58f', hairC: '#1c1c1c', glasses: true, desk: 'dEE', seat: 'meet3', home: ['eeBench', 'bench'] },
+  { role: 'layout', name: '郭怡君', hair: 'long', skin: '#f5d0b3', hairC: '#231a15', desk: 'dLY', seat: 'meet4', home: ['dLY', 'type'] },
+  { role: 'rf', name: '謝宗翰', hair: 'short', skin: '#c98e65', hairC: '#151515', desk: 'dRF', seat: 'meet5', home: ['rfIn', 'inspect'] },
+  { role: 'bios', name: '楊凱文', hair: 'short', skin: '#ecc09c', hairC: '#2a2018', glasses: true, beard: true, desk: 'dBI', seat: 'meet6', home: ['dBI', 'type'] },
+  { role: 'sw', name: '曾雅雯', hair: 'bun', skin: '#f1c7a3', hairC: '#1f1a17', desk: 'dSW', seat: 'meet7', home: ['dSW', 'type'] },
+  { role: 'tester', name: '鄭宇軒', hair: 'short', skin: '#d9a47e', hairC: '#161616', desk: 'dTE', seat: 'meet8', home: ['drop', 'inspect'] },
+  { role: 'cert', name: '何欣怡', hair: 'long', skin: '#e8b994', hairC: '#2b211b', glasses: true, desk: 'dCE', seat: 'meet9', home: ['safety', 'bench'] },
+  { role: 'pe', name: '賴明哲', hair: 'short', skin: '#e3b28c', hairC: '#1a1512', desk: 'dPE', seat: 'meet10', home: ['dPE', 'type'] },
+];
+NPI_DEF.forEach((d, i) => PEOPLE_DEF.push({ ...d, id: 'npi_' + d.role, idx: 20 + i, npi: true, ni: i }));   // ni：研發島上的編號（交通車站的排隊位置）
 
 // ---- 一天的場景：兩班制的日班 08:00–20:00，用縮時播放（dur = 1 倍速時播幾秒）----
 const DAY_SCENES = [
@@ -2793,7 +3163,6 @@ function outputAt(D) {                       // 依「產線實際運轉的分�
 
 // ---- 地點（POI）：每個地點掛在一條走道上，走路時先走到走道、沿走道移動、再走進目的地 ----
 const POI = {};
-const F = { N: Math.PI, S: 0, E: Math.PI / 2, W: -Math.PI / 2 };   // 面向 -z／+z／+x／-x
 function addPoi(id, x, z, face, line, opt = {}) { return (POI[id] = { id, x, z, face, line, ...opt }); }
 function stW(st, lx, lz) { const c = Math.cos(st.yaw), s = Math.sin(st.yaw); return { x: st.x + lx * c + lz * s, z: st.z - lx * s + lz * c }; }
 function stFace(st) { const s = Math.sin(st.yaw), c = Math.cos(st.yaw); return Math.atan2(-st.back * s, -st.back * c); }   // 面向輸送帶
@@ -2893,13 +3262,16 @@ function route(a, b) {
     }
     pts.push(new THREE.Vector3(b.x, 0, b.z));
   }
+  const r = polyRoute(pts);
+  routeCache.set(key, r);
+  return r;
+}
+function polyRoute(pts) {                    // 一串點 → 路線：去掉重複的點，算好每一點的累計距離
   const P = [pts[0]];
   for (const p of pts) if (p.distanceTo(P[P.length - 1]) > 1e-3) P.push(p);
   const cum = [0];
   for (let i = 1; i < P.length; i++) cum.push(cum[i - 1] + P[i].distanceTo(P[i - 1]));
-  const r = { pts: P, cum, len: cum[cum.length - 1] };
-  routeCache.set(key, r);
-  return r;
+  return { pts: P, cum, len: cum[cum.length - 1] };
 }
 function routeAt(r, d, out) {
   d = clamp(d, 0, r.len);
@@ -3241,7 +3613,7 @@ function buildFigure(def) {
     part(body, CHG.pack, solid(R.pack), 0, 0.62, -0.19, true).scale.set(1, 1, 0.6);
     part(body, boxGeo(0.13, 0.07, 0.02), solid(shade(R.pack, 0.8)), 0, 0.56, -0.255);   // 前面的小口袋
   }
-  if (def.name) root.add(nameTag(def, R));
+  if (def.name) { fig.tag = nameTag(def, R); root.add(fig.tag); }
   fig.markY = def.name ? 2.0 : 1.74;           // 頭上提示的高度（有名牌的人放在名牌上面）
   fig.mark = new THREE.Sprite(MARK_MAT.alert); fig.chat = new THREE.Sprite(MARK_MAT.chat);
   for (const s of [fig.mark, fig.chat]) { s.scale.set(0.036, 0.036, 1); s.position.y = fig.markY; s.renderOrder = 7; s.visible = false; root.add(s); }
@@ -3398,9 +3770,11 @@ const alarmSign = textSprite('⚠ 貼片機拋料警報', 'Machine Alarm', '#C84
 { const st = STATIONS[8]; alarmSign.position.set(st.x, 3.1, st.z); scene.add(alarmSign); alarmSign.visible = false; }
 
 // ---- 建立人物、排好一天的行程 ----
-const PEOPLE = PEOPLE_DEF.map(def => ({ ...def, o: { pos: new THREE.Vector3(), visible: false }, fig: buildFigure(def) }));
+const PEOPLE = PEOPLE_DEF.map(def => ({ ...def, tasks: [], o: { pos: new THREE.Vector3(), visible: false }, fig: buildFigure(def) }));
 const PEOPLE_BY_ID = Object.fromEntries(PEOPLE.map(p => [p.id, p]));
+const NPI_PEOPLE = PEOPLE.filter(p => p.npi);   // 研發人員的行程要等可行走地圖建好才能排（見 planNpiDay）
 for (const p of PEOPLE) {
+  if (p.npi) continue;
   if (p.id === 'leader') planLeader(p);
   else if (p.id === 'tech') planTech(p);
   else if (p.id === 'material') planMaterial(p);
@@ -3428,7 +3802,7 @@ function evalPerson(p, D, o) {               // 算出某人在第 D 秒的位�
   const t = T[i];
   o.task = t; o.i = i; o.visible = true;
   if (t.r && t.r.len > 0 && D < t.arrive) {
-    const d = (D - t.d0) * WALK_V;
+    const d = (D - t.d0) * (t.v || WALK_V);    // t.v：這段路的步行速度（研發人員走得比較遠，走快一點）
     routeAt(t.r, d, o.pos); routeAt(t.r, d + 0.35, _pa); routeAt(t.r, d - 0.35, _pb);
     o.yaw = Math.atan2(_pa.x - _pb.x, _pa.z - _pb.z);
     o.walking = true; o.phase = d * 4.2; o.act = t.cart ? 'push' : t.carry ? 'carry' : 'walk';
@@ -3436,9 +3810,10 @@ function evalPerson(p, D, o) {               // 算出某人在第 D 秒的位�
     o.pos.set(t.poi.x, 0, t.poi.z); o.yaw = t.keepYaw ?? t.poi.face; o.walking = false; o.act = t.act;
     if (t.act === 'gone') o.visible = false;
   }
+  if (p.npi) o.pos.y = groundY(o.pos.x, o.pos.z);   // 研發人員會走過步行橋、在島上和工廠地坪之間移動，高度跟著地面
   return o;
 }
-const SIT_ACTS = new Set(['eat', 'rest', 'phone']);   // 坐著的動作
+const SIT_ACTS = new Set(['eat', 'rest', 'phone', 'type', 'meet', 'nap']);   // 坐著的動作
 function poseFigure(f, o, time, armsWork, ph) {
   let legL = 0, legR = 0, armL = 0, armR = 0, armLz = 0, armRz = 0, bodyY = 0, headX = 0, headY = 0;
   switch (o.act) {
@@ -3470,6 +3845,10 @@ function poseFigure(f, o, time, armsWork, ph) {
     case 'clean': armL = -0.9; armLz = 0.25; armR = -0.6 + 0.35 * Math.sin(time * 4); headX = 0.3; break;
     case 'guard': armL = armR = 0.25; armLz = -0.12; armRz = 0.12; break;            // 雙手放背後站崗
     case 'look': headX = -0.12; headY = 0.25 * Math.sin(time * 0.6); armR = -0.3; break;   // 東張西望
+    case 'type': armL = -1.2 - 0.1 * Math.sin(time * 10); armR = -1.2 - 0.1 * Math.sin(time * 10 + 1.7); headX = 0.1; break;   // 坐著打電腦
+    case 'meet': armL = armR = -1.0; armLz = -0.15; armRz = 0.15; headX = 0.05 + 0.06 * Math.sin(time * 1.1); break;   // 坐著開會、聽人報告
+    case 'nap': armL = armR = -1.45; armLz = -0.5; armRz = 0.5; headX = 0.75; break;   // 午休：趴在桌上睡
+    case 'point': armR = -2.0 - 0.15 * Math.sin(time * 1.6); armL = -0.25; headX = -0.12; break;   // 指著看板說明
   }
   if (SIT_ACTS.has(o.act)) { legL = legR = -Math.PI / 2; bodyY = o.sitY ?? f.sitY; }   // 坐下：雙腿往前伸
   f.legL.rotation.x = legL; f.legR.rotation.x = legR;
@@ -3483,16 +3862,22 @@ function faceTalker(o) {                       // 下場走走和玩家聊天時
 }
 function updatePeople() {
   const day = state.mode === 'day', D = state.D, run = !day || lineRunningAt(D), time = performance.now() / 1000;
+  const nD = state.mode === 'npi' ? npiStepD() : -1;   // NPI 島導覽：研發人員停在這一步的時刻
   for (const p of PEOPLE) {
     const o = p.o, f = p.fig;
     if (day) evalPerson(p, D, o);
-    else if (p.home) { const h = POI[p.home[0]]; o.visible = true; o.walking = false; o.task = null; o.pos.set(h.x, 0, h.z); o.yaw = h.face; o.act = p.home[1]; }
+    else if (p.npi && nD >= 0) evalPerson(p, nD, o);
+    else if (p.home) {
+      const h = p.npi ? NPI_SPOTS[p.home[0]] : POI[p.home[0]];
+      o.visible = true; o.walking = false; o.task = null; o.pos.set(h.x, p.npi ? -0.35 : 0, h.z); o.yaw = h.face; o.act = p.home[1];
+    }
     else o.visible = false;
     o.baseYaw = o.yaw;                         // 推車要用原本的方向，不受「轉身聊天」影響
     if (day && o.visible && state.play && DLG.open && DLG.who === p.id) faceTalker(o);
     f.root.visible = o.visible;
     if (!o.visible) continue;
     f.root.position.copy(o.pos); f.root.rotation.y = o.yaw;
+    if (f.tag) f.tag.visible = camera.position.distanceToSquared(o.pos) < 90 * 90;   // 名牌：鏡頭拉很遠（園區全景）時先收起來，畫面才不會一堆名字
     const st = p.station != null ? STATIONS[p.station] : null;
     const armsWork = !!st && o.act === 'work' && run && st.active && st.q > st.opSpot.win[0] && st.q < st.opSpot.win[1];
     poseFigure(f, o, time, armsWork, st ? st.opSpot.phase : 0);
@@ -3628,7 +4013,7 @@ function groundY(x, z) {
 // ---- 可行走地圖（給玩家用）：把整座島切成 0.25 公尺的小格子 ----
 //   0 = 不能走（海、牆、機台、輸送帶、樹……）、1 = 可以走、2 = 天橋（高度另外算）
 const NAVG = (() => {
-  const C = 0.25, X0 = -112, Z0 = -31, NX = Math.round((52 - X0) / C), NZ = Math.round((34 - Z0) / C), RAD = 0.25;   // RAD：人的半徑
+  const C = 0.25, X0 = -112, Z0 = -35, NX = Math.round((104 - X0) / C), NZ = Math.round((34 - Z0) / C), RAD = 0.25;   // RAD：人的半徑（範圍涵蓋三座島）
   const grid = new Uint8Array(NX * NZ);
   const ci = x => Math.floor((x - X0) / C), cj = z => Math.floor((z - Z0) / C);
   const inRR = (x, z, x0, z0, x1, z1, r) => {   // 點在不在圓角矩形裡
@@ -3636,13 +4021,15 @@ const NAVG = (() => {
     const qx = Math.max(x0 + r - x, 0, x - (x1 - r)), qz = Math.max(z0 + r - z, 0, z - (z1 - r));
     return qx * qx + qz * qz <= r * r;
   };
-  const E = 0.6;                                // 1) 兩座島、碼頭、跨海大橋都可以走（離岸邊留一點距離）
+  const E = 0.6;                                // 1) 三座島、碼頭、跨海大橋、步行橋都可以走（離岸邊留一點距離）
   for (let j = 0; j < NZ; j++) for (let i = 0; i < NX; i++) {
     const x = X0 + (i + 0.5) * C, z = Z0 + (j + 0.5) * C;
     if (inRR(x, z, -34 + E, -29 + E, 41 - E, 28 - E, 8 - E) || inRR(x, z, 37 + E, -9 + E, 50 - E, 9 - E, 5 - E)
       || (x > PIER.x0 + 0.4 && x < -33 && z > PIER.z0 + 0.4 && z < PIER.z1 - 0.4)
       || (x > BRIDGE2.x0 - 1 && x < BRIDGE2.x1 + 0.5 && z > BRIDGE2.z0 + 0.5 && z < BRIDGE2.z1 - 0.5)   // 往島上多延伸一點，接上島的可走範圍
-      || inRR(x, z, ISLE2.x0 + E, ISLE2.z0 + E, ISLE2.x1 - E, ISLE2.z1 - E, ISLE2.r - E)) grid[j * NX + i] = 1;
+      || inRR(x, z, ISLE2.x0 + E, ISLE2.z0 + E, ISLE2.x1 - E, ISLE2.z1 - E, ISLE2.r - E)
+      || (x > BRIDGE3.x0 - 1 && x < BRIDGE3.x1 + 1 && z > BRIDGE3.z0 + 0.2 && z < BRIDGE3.z1 - 0.2)
+      || inRR(x, z, ISLE3.x0 + E, ISLE3.z0 + E, ISLE3.x1 - E, ISLE3.z1 - E, ISLE3.r - E)) grid[j * NX + i] = 1;
   }
   const block = (x0, z0, x1, z1) => {
     const i0 = Math.max(0, ci(x0)), i1 = Math.min(NX - 1, ci(x1)), j0 = Math.max(0, cj(z0)), j1 = Math.min(NZ - 1, cj(z1));
@@ -3675,6 +4062,7 @@ const NAVG = (() => {
   const pp = {};                                // 3) 輸送帶（滾輪是一次畫完的，要另外算）、樹幹
   for (let s = 0; s <= PATH_LEN; s += 0.1) { pathAt(s, pp); disc(pp.x, pp.z, 0.42 + RAD); }
   for (const t of WORLD.trees) disc(t.x, t.z, 0.2 * t.s + RAD);
+  for (const [x0, z0, x1, z1] of NAV_BLOCKS) block(x0 - RAD, z0 - RAD, x1 + RAD, z1 + RAD);
   for (const br of BRIDGES) {                   // 4) 天橋：中間這一條可以走；樓梯口的扶手柱不能穿過
     for (const sx of [-1, 1]) for (const sz of [-1, 1]) disc(br.x + sx * 0.4, br.r + sz * 1.9, 0.05 + RAD);
     for (let z = br.r - 2.15; z <= br.r + 2.15; z += C / 2) for (const dx of [-0.125, 0.125]) grid[cj(z) * NX + ci(br.x + dx)] = 2;
@@ -3761,6 +4149,169 @@ function findPath(sx, sz, tx, tz) {            // A* 找最短路線，再把路
   }
   return out;
 }
+// ---- NPI 研發島的一天：DVT 第 2 週，新機種「珊瑚」下午 3 點在產線試產 ----
+//   研發人員不走產線的走道路網，而是用可行走地圖找路（A*），所以可以走過步行橋、穿過研發大樓的門
+const NPI_WALK_V = 10;                         // 縮時播放下的步行速度（公尺／秒）：研發島離產線比較遠，走快一點
+const npiRouteCache = new Map();
+function npiRoute(a, b) {                      // 兩個地點之間的路線（同一段路只算一次）
+  const key = a.id + '>' + b.id;
+  if (!npiRouteCache.has(key)) {
+    const pts = [new THREE.Vector3(a.x, 0, a.z)];
+    for (const q of findPath(a.x, a.z, b.x, b.z) || []) pts.push(new THREE.Vector3(q.x, 0, q.z));
+    pts.push(new THREE.Vector3(b.x, 0, b.z));
+    npiRouteCache.set(key, polyRoute(pts));
+  }
+  return npiRouteCache.get(key);
+}
+function npiPlanner(p) {                       // 和產線人員的 planner 一樣：在 at 秒出發走到 id，抵達後做 act
+  const tasks = (p.tasks = []);
+  let cur = null, free = 0;
+  const P = {
+    go(id, act, at, label, opt = {}) {         // opt.by：要在 at 之前「抵達」（開會不遲到）；opt.hold：至少停留幾秒
+      const spot = NPI_SPOTS[id], r = cur && cur !== spot ? npiRoute(cur, spot) : null, walk = r ? r.len / NPI_WALK_V : 0;
+      at = Math.max(opt.by ? at - walk : at, free);
+      tasks.push({ d0: at, poi: spot, act, label, r, walk, arrive: at + walk, v: NPI_WALK_V, ...opt });
+      cur = spot; free = at + walk + (opt.hold || 0);
+      return P;
+    },
+    get free() { return free; },
+  };
+  return P;
+}
+// 每個人的一天：first 進辦公室先做的事；mtg 早會報告；am 上午；pm 下午（設計審查、到產線看試產）；review 問題檢討會；after 會後；leave 下班時間
+//   am／pm 每一項：[幾點, 地點, 動作, 在做什麼, 說的話, 選項]
+const NPI_PLAN = {
+  pm: { first: ['到座位：看客戶的信、整理今天的會議', ['美國客戶昨晚寄來好幾封信，我先整理出今天要回覆的問題。', '台灣和美國差了 12 個小時以上，PM 常常一早看信、晚上開會。']],
+    mtg: ['大家早！今天是 DVT 第 2 週，下午 3 點產線要試產 200 台新機種「珊瑚」。', '問題清單還有 4 項沒解決，負責的同事今天要給我改善的時間喔！', '早會很短：每個人說昨天做了什麼、今天要做什麼、有沒有卡住。'],
+    am: [['09:25', 'warBoard', 'point', '更新專案時程看板', ['這是專案時程表（甘特圖），紅線是「今天」：我們在 DVT 階段。', 'NPI 有幾個大關卡：EVT 驗證設計、DVT 驗證規格、PVT 驗證量產。每一關都要開會審查，通過了才能往下走。']],
+      ['10:20', 'dPM', 'type', '和工廠、供應商開視訊會議', ['我在和工廠、零件供應商開視訊會議，確認下午試產的零件都到齊了。', '少一顆零件，整條線就不能試產，所以 PM 要一直追物料。']],
+      ['11:15', 'pmLab', 'talk', '到可靠度實驗室，了解落摔測試的問題', ['昨天落摔測試有一台的轉軸鬆了，我來聽聽測試工程師找到什麼原因。', '問題要「關閉」，一定要找到根本原因、改好設計，再測一次通過才算數。']]],
+    pm: [['13:30', 'mtgPM', 'talk', '主持設計審查：外觀、機構、散熱、天線一起看', ['設計審查會：外觀、機構、散熱、天線、電子的工程師一起看最新的設計，有衝突當場解決。', '例如 ID 想把機身再做薄 1 公釐，散熱就會變差、天線的空間也變小，大家要一起取捨。'], { by: true, key: true }],
+      ['14:40', 'dPM', 'type', '寫設計審查的會議紀錄', ['會議的結論要馬上寫成會議紀錄寄給大家：誰、在什麼時候、要做什麼，寫得清清楚楚。']],
+      ['15:05', 'f14', 'inspect', '到產線看試產：追進度、確認問題', ['試產開始了！我在產線上看每一站順不順，有問題就找對的工程師處理。', '這 200 台試產機，一部分送去做可靠度測試，一部分寄給客戶驗證。']]],
+    review: ['今天試產發現 3 個新問題，我們一項一項看：原因是什麼、誰負責、什麼時候改好。', '每個問題都有編號、放進問題清單，一直追蹤到「關閉」為止。'],
+    after: ['寫試產結果報告，準備晚上和美國客戶開會', ['晚上 9 點要和美國客戶開視訊會議，我先把今天試產的結果整理成報告。']], leave: '19:40' },
+  idd: { first: ['到座位：看客戶對外觀的回饋', ['早安！客戶昨天看了外觀模型，說顏色想要再亮一點。']],
+    mtg: ['我報告：新的「珊瑚橘」色板今天做好，下午設計審查給大家看。'],
+    am: [['09:25', 'idTable', 'inspect', '在模型桌檢查外觀模型', ['這些是外觀模型（Mock-up），用 3D 列印加上噴漆做的，看起來和真的筆電一模一樣，但裡面是空的。', '拿在手上才知道厚不厚、好不好開蓋，這是看電腦螢幕感覺不到的。']],
+      ['10:30', 'idBoard', 'point', '比對 CMF 色板', ['這是 CMF 色板：Color 顏色、Material 材質、Finish 表面處理。', '同樣是橘色，霧面看起來比較高級，亮面比較容易留指紋。我們要挑出最適合的組合。']],
+      ['11:15', 'dID', 'type', '修改 3D 外觀曲面', ['我在電腦上修改 3D 外觀：把轉軸附近的曲線修得更順。', 'ID 的圖會交給機構工程師，他們要把它拆成一個個做得出來的零件。']]],
+    pm: [['13:30', 'meet0', 'meet', '設計審查：外觀、機構、散熱、天線一起看', ['我想把天線窗做細一點比較好看；但天線工程師說太細訊號會變差，我們正在找平衡點。'], { by: true }],
+      ['14:40', 'dID', 'type', '依照設計審查的結論修改設計', ['審查會決定天線窗維持 2 公釐，我把 3D 圖改好，再交給機構工程師。']],
+      ['15:35', 'f18', 'inspect', '到第 19 站看試產機的外觀', ['外觀品檢這一站會檢查刮傷和色差。我來確認量產外殼的顏色，和我們的色板一不一樣。', '外殼由供應商用模具生產、噴漆，每一批顏色都可能有一點點差異，所以要訂出「可以接受的範圍」。']]],
+    review: ['我報告：試產機有 2 台的外殼顏色偏暗，我會和供應商一起確認噴漆的條件。'],
+    after: ['整理外觀的問題，寄給外殼供應商', ['我把外殼顏色的問題拍照寄給供應商，請他們明天回覆改善的方法。']] },
+  me: { first: ['到座位：看昨天的測試結果', ['早安！昨天落摔測試有一台轉軸鬆了，我今天要找出原因。']],
+    mtg: ['我報告：轉軸鬆脫的問題，今天會和測試工程師一起分析。'],
+    am: [['09:25', 'dME', 'type', '畫 3D 機構圖：檢查零件堆疊', ['這是 3D 機構圖。筆電裡要塞進主機板、電池、散熱模組、喇叭，零件之間只差零點幾公釐。', '我們把這叫做「堆疊」（Stack-up）：所有零件都要剛好放得下，還不能互相碰到。']],
+      ['10:30', 'hingeB', 'inspect', '看轉軸開闔測試', ['轉軸開闔機會一直幫筆電開蓋、闔蓋，要開闔 2 萬次以上才算過關。', '昨天鬆掉的那台，可能是轉軸旁邊的螺絲柱太薄，我在想要怎麼補強。']],
+      ['11:15', 'dME', 'type', '修改設計：把螺絲柱加厚', ['我把螺絲柱加厚了 0.2 公釐。改模具要花時間和錢，所以改之前要很確定。']]],
+    pm: [['13:30', 'meet1', 'meet', '設計審查：外觀、機構、散熱、天線一起看', ['散熱工程師想把風扇加大，我要看看底殼裡還有沒有空間。機構設計就像在玩很精密的拼圖。'], { by: true }],
+      ['14:40', 'dME', 'type', '更新 3D 機構圖', ['審查會的結論要改進 3D 圖裡，再通知模具廠修改模具。']],
+      ['15:10', 'f15', 'inspect', '到第 16 站看鍵盤上蓋（C 件）的組裝', ['我來看作業員組裝鍵盤上蓋（C 件）：卡勾好不好扣、螺絲好不好鎖。', '工程師在實驗室自己裝很順，不代表作業員一天裝幾百台也很順。試產就是要找出這種問題。']]],
+    review: ['今天試產，第 16 站有幾台的卡勾不好扣。我回去把卡勾的角度修一點點。'],
+    after: ['修改卡勾的設計', ['卡勾要好扣，又不能太鬆。我改好之後，下次試產再確認一次。']] },
+  thermal: { first: ['到座位：看昨晚的溫箱測試數據', ['早安！我先看昨晚溫箱跑完的高溫測試數據。']],
+    mtg: ['我報告：高溫測試時 CPU 到了 92°C，我想調整風扇轉速，目標是 85°C 以下。'],
+    am: [['09:25', 'dTH', 'type', '跑散熱模擬', ['我在用電腦跑「熱流模擬」：看熱從 CPU 傳到導熱管、散熱鰭片，再被風扇吹出去的過程。', '先模擬，可以少做很多次實驗，省時間又省錢。']],
+      ['10:30', 'thermalCh', 'inspect', '看溫箱的高溫測試', ['這是溫箱，可以把溫度調得很冷或很熱，模擬筆電在冬天、夏天或很熱的地方使用。', '我在看 CPU 全速運轉時，溫度會不會太高、外殼會不會燙手。']],
+      ['11:15', 'dTH', 'type', '調整風扇轉速的設定', ['風扇轉快一點比較涼，但也比較吵。我要和 BIOS 工程師一起找出最好的「風扇曲線」。']]],
+    pm: [['13:30', 'meet2', 'meet', '設計審查：外觀、機構、散熱、天線一起看', ['ID 想把機身做薄，散熱的空間就變小了。我建議把散熱孔加大一點，大家正在討論。'], { by: true }],
+      ['14:40', 'dTH', 'type', '把新的風扇曲線交給 BIOS 工程師', ['新的風扇曲線整理好了：溫度越高，風扇轉越快。我把它交給 BIOS 工程師寫進韌體。']],
+      ['15:00', 'f13', 'inspect', '到第 14 站看散熱模組安裝', ['我來看散熱模組安裝：導熱膏塗太少，熱傳不出去；塗太多，又會溢出來。', '散熱片的螺絲也要照順序鎖（通常是對角線），才會平均地貼緊 CPU。']]],
+    review: ['試產機的 CPU 溫度都在 85°C 以下，散熱這一關通過了！'],
+    after: ['寫散熱測試報告', ['我把今天的溫度數據整理成報告，DVT 審查的時候要用。']] },
+  ee: { first: ['到座位：查樣機睡眠叫不醒的問題', ['早安！昨天樣機睡眠後叫不醒，可能是電路的問題，也可能是 BIOS 的問題，我先查查看。']],
+    mtg: ['我報告：今天在實驗台量電源訊號，和 BIOS 工程師一起找睡眠叫不醒的原因。'],
+    am: [['09:25', 'eeBench', 'bench', '在 EE 實驗台用示波器量電源訊號', ['這是示波器，可以看到電壓隨時間的變化，就像電路的「心電圖」。', '筆電睡眠和喚醒時，好幾組電源要照順序開關，順序錯了就叫不醒。']],
+      ['11:00', 'dEE', 'type', '修改線路圖、更新 BOM 表', ['找到了！有一顆電容太小，電壓上升得太慢。我把 22µF 改成 47µF，BOM 表也要跟著更新。', 'BOM 表就是零件清單：一片主機板上有一兩千顆零件，採購和工廠都照著它備料。']]],
+    pm: [['13:30', 'meet3', 'meet', '設計審查：外觀、機構、散熱、天線一起看', ['電容換成大顆的，板子上的位置也要改，我會請 Layout 工程師一起看。'], { by: true }],
+      ['14:40', 'dEE', 'type', '回覆認證工程師的 EMC 問題', ['認證工程師說 EMC 有一個頻率稍微超標，我要在電路上加一點「濾波」，把雜訊擋下來。']],
+      ['15:00', 'f11', 'inspect', '到第 12 站看主機板功能測試', ['我來看第 12 站的功能測試（ICT／FCT）。試產的主機板如果測出不良，我要當場找原因。', '研發做的樣機只有幾十台，試產一次做幾百台，比較少見的問題這時候才會跑出來。']]],
+    review: ['今天 200 片主機板，功能測試有 3 片不良，原因都找到了：其中 2 片是焊接問題，交給工廠改善。'],
+    after: ['整理電路的修改清單', ['電容和濾波的修改，要等下一版電路板才會改進去，我先把清單整理好。']] },
+  layout: { first: ['到座位：看 EE 要修改的電路', ['早安！EE 說有一顆電容要換大一點，我先看看板子上還有沒有空間。']],
+    mtg: ['我報告：主機板第 3 版的佈線預計週五完成，再送板廠做下一批樣品。'],
+    am: [['09:25', 'dLY', 'type', '在電腦上佈線（PCB Layout）', ['我在決定每一顆零件放在電路板的哪裡，再把上千條線一條一條連起來。', '筆電主機板通常有 8～12 層，就像一棟很多樓層的大樓，每一層都有走線。']],
+      ['10:30', 'eeBench2', 'inspect', '到 EE 實驗台，和電子工程師討論訊號', ['高速訊號（像記憶體、USB）的線要「等長」，不然訊號會一前一後打架。', '我來和 EE 確認：換大顆電容之後，旁邊的走線要怎麼改。']],
+      ['11:00', 'dLY', 'type', '修改佈線、做 DFM 檢查', ['佈線完成後要做 DFM 檢查（為製造而設計）：確認板廠做得出來、SMT 貼得上去。', '最後輸出「Gerber 檔」給板廠，板廠就照著它做出電路板：就是產線第 1 站裁切的那種板子！']]],
+    pm: [['13:30', 'dLY', 'type', '修改佈線，準備出新版 Gerber 檔', ['下午專心改佈線。改一顆零件的位置，周圍幾十條線都可能要重拉。']]],
+    review: ['新版電路板的佈線週五會完成，會加上 EE 今天要改的電容和濾波。'],
+    after: ['檢查新版佈線', ['送板廠之前，我會再檢查一次每一層的走線。電路板一做出來就改不了了！']] },
+  rf: { first: ['到座位：準備量測新版天線', ['早安！今天要在電波暗室量新版的天線。']],
+    mtg: ['我報告：6GHz 的天線效率只有 41%，今天量新版天線，希望能提高到 45% 以上。'],
+    am: [['09:25', 'rfIn', 'inspect', '在電波暗室擺放樣機', ['這是電波暗室：牆上的吸波錐會吸掉反射的電波，量到的才準。', '筆電放在轉台上慢慢轉，旁邊的量測天線收訊號，就能畫出天線往每個方向的強度。']],
+      ['10:00', 'rfDesk', 'desk', '在控制桌看天線量測數據', ['螢幕上是量測結果：TRP 是天線發射的總功率，TIS 是接收的靈敏度。', '新版天線的 6GHz 效率到了 46%，過關了！']],
+      ['11:15', 'dRF', 'type', '整理天線量測報告', ['我把量測結果整理成報告，下午設計審查要用。']]],
+    pm: [['13:30', 'meet5', 'meet', '設計審查：外觀、機構、散熱、天線一起看', ['ID 想把天線窗做細一點，但天線窗太細，電波就出不去。我們要一起找平衡點。'], { by: true }],
+      ['14:40', 'dRF', 'type', '準備 NCC 無線認證的資料', ['無線電認證要附上天線的規格和量測資料，我整理好交給認證工程師。']],
+      ['15:10', 'f16', 'inspect', '到第 17 站看螢幕模組組裝', ['筆電的天線大多藏在螢幕上方，天線線會穿過轉軸，接到主機板上的 Wi-Fi 卡。', '我來看作業員組裝螢幕時，天線線有沒有被夾到、拉太緊，那會讓訊號變差。']]],
+    review: ['試產機抽 5 台量天線，都在規格內。天線線的走法，我會請 NPI 試產工程師寫進 SOP。'],
+    after: ['寫天線量測報告', ['天線報告寫好就寄給客戶，客戶也很在意 Wi-Fi 收得好不好。']] },
+  bios: { first: ['到座位：準備新版 BIOS', ['早安！昨天晚上我改了 BIOS，今天要燒到樣機上測試。']],
+    mtg: ['我報告：睡眠叫不醒的問題，我和 EE 一起在查，可能兩邊都要改。'],
+    am: [['09:25', 'dBI', 'type', '改 BIOS 程式：修正睡眠喚醒的問題', ['BIOS 是按下電源鍵後第一個執行的程式：它會檢查記憶體、硬碟這些硬體，再把電腦交給 Windows。', '睡眠、喚醒、充電、風扇轉速，也都歸 BIOS 和 EC 韌體管。']],
+      ['10:30', 'compat2', 'inspect', '把新版 BIOS 燒錄到樣機上測試', ['我把新版 BIOS「燒錄」到樣機的晶片裡，再讓它睡眠、喚醒 100 次，看看會不會出問題。']],
+      ['11:15', 'dBI', 'type', '寫 BIOS 版本說明', ['每一版 BIOS 改了什麼都要寫清楚，產線和客戶才知道要用哪一版。']]],
+    pm: [['13:30', 'dBI', 'type', '把新的風扇曲線寫進 EC 韌體', ['散熱工程師給了新的風扇曲線，我把它寫進 EC 韌體：溫度越高，風扇轉越快。']],
+      ['15:00', 'f11b', 'inspect', '到第 12 站確認試產用的 BIOS 版本', ['產線第 12 站的功能測試，會把 BIOS 燒進每一片主機板。', '我來確認試產用的是正確的版本：版本錯了，整批都要重燒。']]],
+    review: ['今天試產有 2 台開機比較慢，我回去查是不是 BIOS 的設定問題。'],
+    after: ['加班修 BIOS：明天試產要用新版', ['明天早上的試產就要用新版 BIOS，我今天會晚一點下班。']], leave: '19:00' },
+  sw: { first: ['到座位：看昨晚自動測試的結果', ['早安！我先看看昨晚自動測試跑出來的結果。']],
+    mtg: ['我報告：出廠映像檔第 5 版做好了，今天試產就用這一版。'],
+    am: [['09:25', 'dSW', 'type', '製作出廠映像檔：Windows＋驅動程式', ['我在做「出廠映像檔」：Windows 作業系統，加上每個硬體的驅動程式和工具程式，包成一個檔案。', '產線會把它裝進每一台筆電。你買回家第一次開機看到的畫面，就是這個映像檔。']],
+      ['11:15', 'compat2', 'desk', '在樣機上測試驅動程式', ['驅動程式就像硬體和 Windows 之間的「翻譯」。沒有它，Windows 就不知道怎麼使用 Wi-Fi 卡或觸控板。', '我在測試新版的 Wi-Fi 驅動程式，看連線穩不穩。']]],
+    pm: [['13:30', 'dSW', 'type', '寫產線用的自動測試程式', ['我也寫產線用的測試程式：第 18 站燒機測試時，程式會自動檢查螢幕、喇叭、Wi-Fi、鍵盤，全部通過才能往下走。']],
+      ['15:30', 'f17', 'inspect', '到第 18 站看燒機測試', ['燒機測試（Run-in）會讓筆電全速跑好幾個小時，把容易壞的機器先找出來。', '我來看測試程式在產線上跑得順不順，有沒有誤判。']]],
+    review: ['燒機測試程式有 1 台誤判，是喇叭測試的音量設得太小，我明天改好。'],
+    after: ['修改燒機測試程式', ['測試程式誤判的話，好的機器會被當成壞的，浪費產線的時間。']] },
+  tester: { first: ['到座位：看整晚的轉軸測試結果', ['早安！轉軸測試跑了一整夜，我先看看結果。']],
+    mtg: ['我報告：昨天落摔測試有 1 台轉軸鬆脫，問題編號 #132，已經交給機構工程師分析。'],
+    am: [['09:25', 'drop', 'inspect', '做落摔測試', ['這台是落摔機：把筆電升到大約桌子的高度，再讓它自由落下。', '每一面、每一個角都要摔，摔完還要能正常開機，才算通過。']],
+      ['10:30', 'hinge', 'inspect', '記錄轉軸開闔測試', ['轉軸開闔機會一直開蓋、闔蓋。我每隔一段時間記錄一次：有沒有鬆、有沒有怪聲音。']],
+      ['11:15', 'compat', 'desk', '相容性測試：接各種周邊設備', ['相容性測試：接各種螢幕、隨身碟、耳機、滑鼠，看看是不是都能正常使用。', '市面上的周邊設備有上千種，我們會挑最常見的來測。']]],
+    pm: [['13:30', 'drop', 'inspect', '落摔測試第二輪', ['機構工程師把螺絲柱加厚了，我用新零件再摔一次，看問題有沒有解決。']],
+      ['15:20', 'f18b', 'inspect', '到第 19 站，從試產機裡抽樣', ['試產的 200 台裡，我會抽 30 台帶回實驗室，做落摔、高低溫這些可靠度測試。', '只測研發做的樣機不夠，量產線做出來的機器也要通過測試。']]],
+    review: ['我報告今天的測試結果：新問題 #134 喇叭破音，已經開單給 EE 和機構一起看。'],
+    after: ['更新問題清單', ['問題清單上每一項都有編號、負責人和預計完成日，PM 每天都會追。']] },
+  cert: { first: ['到座位：準備送測的樣機', ['早安！今天要把樣機送進 EMC 測試室。']],
+    mtg: ['我報告：台灣的 BSMI 安規已經送測，NCC 無線電認證下週送件。'],
+    am: [['09:25', 'safety', 'bench', '安規測試：耐壓、漏電', ['這是安規測試台：用很高的電壓測試變壓器和機身，確認不會漏電、不會讓人觸電。', '台灣的安規標準是 CNS 15598-1（對應國際的 IEC 62368-1），由標準檢驗局（BSMI）把關。']],
+      ['10:40', 'emcDoor', 'inspect', '把樣機送進 EMC 電磁相容測試室', ['所有電器都會發出一點電磁波，太強就會干擾別的電器，例如讓收音機出現雜音。', 'EMC 是「電磁相容」：要測兩件事，不干擾別人，也不被別人干擾。']],
+      ['11:20', 'dCE', 'type', '準備各國的認證文件', ['每個國家都有自己的認證：台灣是 BSMI 和 NCC、美國是 FCC、歐洲是 CE。', '沒有拿到認證的產品不能上市，所以認證的時程，PM 都盯得很緊。']]],
+    pm: [['13:30', 'dCE', 'type', '寫認證申請文件', ['申請認證要附很多文件：線路圖、零件清單、使用說明書、標籤的樣子……一樣都不能少。']],
+      ['14:30', 'emcDoor', 'inspect', '看 EMC 測試結果', ['測試結果出來了：有一個頻率的電磁波稍微超標。我要請 EE 在電路上加一點濾波。']]],
+    review: ['EMC 超標的問題，EE 已經有改法了，改好之後我再送測一次。'],
+    after: ['更新認證進度表', ['我把每個國家的認證進度更新好：哪些送測了、哪些拿到證書了。']] },
+  pe: { first: ['到座位：最後檢查一次試產計畫', ['早安！今天下午 3 點試產，我早上要把所有東西再檢查一遍。']],
+    mtg: ['我報告：試產用的治具 12 組都準備好了，SOP 第 1.2 版已經發給產線。'],
+    am: [['09:25', 'dPE', 'type', '準備試產：SOP、治具清單', ['SOP 是作業指導書：每一站用什麼工具、照什麼順序、螺絲鎖多緊，都寫得清清楚楚。', '新機種的 SOP 是我寫的，作業員照著做，品質才會穩定。']],
+      ['11:15', 'warBoard', 'point', '看時程看板，確認試產時程', ['試產通常分三次：EVT 數量少、DVT 幾百台、PVT 用量產的速度做，一次比一次接近真正的量產。']]],
+    pm: [['13:30', 'f12b', 'inspect', '到產線準備試產：確認治具和物料', ['我先到產線確認：治具、螺絲、新機種的零件都到了，作業員也都上過課了。', '進產線前一樣要穿靜電衣、通過靜電測試，研發的人也不例外。']],
+      ['15:00', 'f12b', 'talk', '試產開始：記錄每一站的問題', ['試產開始！我在記錄每一站的問題，用「4M」分類：人、機、料、法。', '例如卡勾不好扣，是零件的問題（料），還是組裝方法的問題（法）？分清楚才知道要找誰改。'], { key: true }],
+      ['16:00', 'f14b', 'inspect', '到第 15 站看電池和記憶體的組裝', ['電池和記憶體的組裝順序，我在 SOP 裡寫得很清楚，現在確認作業員都照著做。']]],
+    review: ['我報告試產結果：200 台中有 196 台一次就通過測試，直通率 98%。', '還有 3 個問題要改善，改好之後下個月進 PVT。'],
+    after: ['寫試產報告', ['我在寫「試產報告」：做了幾台、良率多少、有哪些問題、誰負責改。這份報告決定能不能進入下一個階段。']] },
+};
+function planNpiDay() {
+  const T = s => dAtClock(hm(s));
+  for (const p of NPI_PEOPLE) {
+    const P = npiPlanner(p), R = NPI_PLAN[p.role], i = p.ni, host = p.role === 'pm';
+    const step = ([clock, id, act, label, say, opt = {}]) => P.go(id, act, T(clock), label, { say, ...opt });
+    P.go('bus' + i, 'stand', T('08:20') + i * 0.25, '搭交通車到研發島', { hold: 0.6, say: ['早安！研發島和工廠之間隔著一座步行橋，研發的同事每天搭交通車來上班。'] });
+    P.go(p.desk, 'type', P.free, R.first[0], { say: R.first[1] });
+    P.go(p.seat, host ? 'talk' : 'meet', T('09:00'), host ? '主持早會：確認大家的進度' : '早會：每個人報告進度', { by: true, key: host, say: R.mtg });
+    R.am.forEach(step);
+    P.go(p.desk, 'eat', T('12:00'), '在座位上吃午餐', { say: ['研發的同事常常在座位上吃便當，邊吃邊看信、邊聊工作。'] });
+    P.go(p.desk, 'nap', T('12:30'), '午休', { say: ['（小聲）午休時間，燈會關掉，大家趴在桌上睡一下，下午比較有精神……'] });
+    R.pm.forEach(step);
+    P.go(p.seat, host ? 'talk' : 'meet', T('17:00'), host ? '主持問題檢討會：今天試產發現的問題' : '問題檢討會：今天試產發現的問題', { by: true, key: host, say: R.review });
+    P.go(p.desk, 'type', T('17:40'), R.after[0], { say: R.after[1] });
+    P.go('bus' + i, 'stand', T(R.leave || '18:00') + i * 0.15, '走到交通車站', { hold: 0.6, say: ['今天辛苦了！搭交通車下班囉。'] });
+    P.go('bus' + i, 'gone', P.free, '搭交通車下班');
+  }
+}
+planNpiDay();
 function walkTo(x, z, quiet = false) {         // 點地板：規劃路線走過去
   const path = findPath(PLAYER.pos.x, PLAYER.pos.z, x, z);
   state.camFree = false;
@@ -4082,12 +4633,14 @@ const DAY_OFF_S = new THREE.Vector3(-2.4, 5.4, 4.3), DAY_OFF_N = new THREE.Vecto
 let dayOff = DAY_OFF_S, followKey = '';
 const PLAY_OFF = new THREE.Vector3(0, 7.8, 9.2);   // 下場走走：鏡頭在玩家後上方（可以拖曳轉動）
 const OVERVIEW = { pos: new THREE.Vector3(23.7, 64, 72.6), tgt: new THREE.Vector3(5, -1, 0) };   // 工廠全景（闖關第 2 關看 6 大區用）
-// 園區全景（全景按鈕、開場、闖關開頭）：工廠和報關島一起看
-//   橫的畫面：從南方斜上方看，兩座島左右排；直的手機：改從東方高處往西看，工廠在下、報關島在上
-const PARK = { tgt: new THREE.Vector3(-42, -1, 3), off: new THREE.Vector3(10, 112, 126), tgtM: new THREE.Vector3(-40, -1, 0), offM: new THREE.Vector3(150, 190, 30) };
-const parkView = () => camera.aspect >= 1
-  ? { tgt: PARK.tgt.clone(), pos: PARK.tgt.clone().add(PARK.off) }
-  : { tgt: PARK.tgtM.clone(), pos: PARK.tgtM.clone().add(PARK.offM) };
+// 園區全景（全景按鈕、開場、闖關開頭）：報關島、工廠、NPI 研發島三座島一起看
+//   橫的畫面：從南方斜上方看，三座島左右排（鏡頭中心偏右一點，留位置給右邊的首頁小卡）；直的手機：改從東方高處往西看，由下到上是 NPI 島、工廠、報關島
+const PARK = { tgt: new THREE.Vector3(9, -1, -2), off: new THREE.Vector3(0, 172, 186), tgtM: new THREE.Vector3(-8, -1, 0), offM: new THREE.Vector3(205, 262, 26) };
+function parkView() {
+  if (camera.aspect < 1) return { tgt: PARK.tgtM.clone(), pos: PARK.tgtM.clone().add(PARK.offM) };
+  const k = clamp(1.78 / camera.aspect, 1, 1.45);   // 畫面比 16:9 窄（例如 4:3 的平板）：鏡頭拉遠一點，三座島才放得下
+  return { tgt: PARK.tgt.clone(), pos: PARK.tgt.clone().add(PARK.off.clone().multiplyScalar(k)) };
+}
 // ---- 手機直式畫面：鏡頭自動拉遠、視角放寬，並把畫面中心移到「上方工具列」和「下方卡片、控制列」之間 ----
 const VIEW = { k: 1, oy: 0 };                  // k：鏡頭距離倍率（電腦版 = 1）；oy：畫面往上移幾個像素
 const offV = new THREE.Vector3();
@@ -4202,7 +4755,7 @@ const displayName = p => p.ambient ? p.label : p.role === 'operator' && p.generi
 function avatarHTML(p, cls) {
   const R = ROLES[p.role], src = p.portrait && PORTRAITS[p.portrait];
   return src ? `<img class="${cls}" src="${src}" alt="${displayName(p)}的肖像">`
-    : `<span class="${cls} ph" style="--c:${R.color}">${p.ambient ? R.emoji : p.generic ? '👷' : p.name[0]}</span>`;
+    : `<span class="${cls} ph" style="--c:${R.color}">${p.ambient || p.npi ? R.emoji : p.generic ? '👷' : p.name[0]}</span>`;
 }
 function buildPeopleList() {
   listMode = 'people'; $('panelTitle').textContent = state.play ? '🎯 聊天任務' : '👷 人員名單';
@@ -4213,7 +4766,8 @@ function buildPeopleList() {
     + MAIN_ORDER.map(id => item(PEOPLE_BY_ID[id])).join('')
     + head('#A39E94', '其他人員') + PEOPLE.filter(p => p.generic).map(item).join('')
     + head('#6F9B78', '園區路人') + AMBIENT.filter(p => !p.isle).map(item).join('')
-    + head('#2F6F8F', state.play ? '報關島（從出貨碼頭過橋就到了）' : '報關島') + AMBIENT.filter(p => p.isle).map(item).join('');
+    + head('#2F6F8F', state.play ? '報關島（從出貨碼頭過橋就到了）' : '報關島') + AMBIENT.filter(p => p.isle).map(item).join('')
+    + head('#8074A7', state.play ? 'NPI 研發島（從員工出入口往東過步行橋）' : 'NPI 研發島（新機種的研發團隊）') + NPI_PEOPLE.map(item).join('');
   $('stationList').querySelectorAll('.pp-item').forEach(b => b.addEventListener('click', () => {
     if (state.play) walkToPerson(b.dataset.id); else selectPerson(b.dataset.id);
     if (isMobile()) setDrawer(false);           // 手機版：選好人就把抽屜關上，看得到 3D 畫面
@@ -4242,12 +4796,12 @@ function personHTML(p) {
   const top = `<button class="mini close-x" id="btnUnsel" title="回到整體狀況">✕</button>
     <div class="person-head">${avatarHTML(p, 'portrait')}
       <div><span class="zone-tag" style="--c:${R.color}">${R.title}・${R.en}</span>
-      <h2>${displayName(p)}</h2>${p.portrait ? '<div class="en">虛構人物・肖像由 Codex 繪製</div>' : p.ambient ? `<div class="en">${p.isle ? '報關島' : '園區路人'}</div>` : ''}</div></div>
+      <h2>${displayName(p)}</h2>${p.portrait ? '<div class="en">虛構人物・肖像由 Codex 繪製</div>' : p.ambient ? `<div class="en">${p.isle ? '報關島' : '園區路人'}</div>` : p.npi ? '<div class="en">虛構人物・NPI 研發島</div>' : ''}</div></div>
     <div class="status" id="infoStatus"></div>
     ${state.play ? '' : '<button class="btn follow" id="btnFollow">🎥 鏡頭跟隨</button>'}
     <h3>🧑‍🏭 工作內容</h3><p>${R.duty}</p>`;
   if (p.ambient) return top + `<div class="tip"><b>💡 小知識</b><p>${R.tip}</p></div>`;
-  const items = p.tasks.map((t, i) => t.label ? `<li data-i="${i}"><b>${fmt(clockAt(t.d0))}</b><span>${t.label}</span></li>` : '').join('');
+  const items = p.tasks.map((t, i) => t.label ? `<li data-i="${i}"><b>${fmt(clockAt(t.by ? t.arrive : t.d0))}</b><span>${t.label}</span></li>` : '').join('');   // by：開會這類「幾點要到」的行程，顯示開始的時間
   return top + `<h3>🗓️ 今天的行程</h3><ol class="sched" id="schedList">${items}</ol>
     <div class="tip"><b>💡 小知識</b><p>${R.tip}</p></div>`;
 }
@@ -4268,13 +4822,13 @@ function playHTML() {                          // 下場走走：還沒選人時
     <div class="status" id="infoStatus"></div>
     <h3>🕹️ 怎麼玩</h3><ul>${how}</ul>
     <h3>🎯 聊天任務</h3><p>和左邊名單裡的人都聊聊看。頭上有「<b>！</b>」的人正在做重要的事，先去找他！每認識一種角色，寶箱就多一張<b>人物卡</b>。</p>
-    <h3>🎒 撿寶物</h3><p>地上發光的寶石就是寶物，走過去就能撿：藍色是<b>零件卡</b>，藏在各工站旁邊；橘色是<b>文件卡</b>，在出貨碼頭和報關島（從碼頭過橋就到了）。</p>
+    <h3>🎒 撿寶物</h3><p>地上發光的寶石就是寶物，走過去就能撿：藍色是<b>零件卡</b>，藏在各工站旁邊；橘色是<b>文件卡</b>，在出貨碼頭、報關島（從碼頭過橋）和 NPI 研發島（從員工出入口往東過步行橋）。</p>
     <p class="hint">時間會照常流動。想看 14:00 的機台異常，可以按下方的 ⏭ 跳到下一段。</p>`;
 }
 
 // ---- NPC 對話框：說的話依照他「現在正在做的事」而定 ----
 const DLG = { open: false, who: null, pages: [], i: 0, shown: 0, met: new Set() };
-const TALK_TOTAL = MAIN_ORDER.length + PEOPLE.filter(p => p.generic).length + AMBIENT.length;
+const TALK_TOTAL = MAIN_ORDER.length + PEOPLE.filter(p => p.generic).length + AMBIENT.length + NPI_PEOPLE.length;
 function sayOf(p) {
   const o = p.o;
   for (let k = o.i ?? -1; k >= 0; k--) {
@@ -4393,7 +4947,8 @@ function dayEndHTML() {
 }
 function selectPerson(id) {
   if (state.play) { walkToPerson(id); return; }   // 下場走走：走過去找他
-  if (state.mode !== 'day') { setMode('day'); if (state.D < 0.01) state.D = SC[3].d0 + 1; }   // 從其他模式點人物：跳到上午生產時段
+  if (state.mode === 'npi') { const nD = npiStepD(); setMode('day'); state.D = nD; state.lastScene = sceneIdx(nD); }   // NPI 島導覽：接著看「這一步的時刻」
+  else if (state.mode !== 'day') { setMode('day'); if (state.D < 0.01) state.D = SC[3].d0 + 1; }   // 從其他模式點人物：跳到上午生產時段
   state.selPerson = id; state.follow = id; infoKey = '';
   openTalk(id);
 }
@@ -4460,6 +5015,7 @@ function updateUI(rdt) {
   if (state.mode === 'home') return;           // 首頁沒有說明卡和時間軸要更新
   if (state.mode === 'day') { updateDayUI(); return; }
   if (state.mode === 'customs') { updateCustomsUI(); return; }
+  if (state.mode === 'npi') { updateNpiUI(); return; }
   const tau = heroTau(), total = SCHED.total, items = stItems();
   const frac = clamp01(tau / total);
   $('tlFill').style.width = (frac * 100) + '%';
@@ -4520,12 +5076,14 @@ function setMode(m) {
   $('btnFree').classList.toggle('active', m === 'free');
   $('btnDay').classList.toggle('active', m === 'day');
   $('btnCustoms').classList.toggle('active', m === 'customs');
+  $('btnNpi').classList.toggle('active', m === 'npi');
   $('btnOverview').classList.toggle('active', m === 'home');
   controls.enablePan = m !== 'tour';
   document.body.classList.toggle('home-mode', m === 'home');   // 首頁：藏起名單、說明卡、控制列，畫面乾淨
   document.body.classList.toggle('day-mode', m === 'day');
   document.body.classList.toggle('customs-mode', m === 'customs');
-  const unit = m === 'day' ? '段' : m === 'customs' ? '步' : '站';   // 人員一日一段一段、報關島一步一步、產線一站一站
+  document.body.classList.toggle('npi-mode', m === 'npi');
+  const unit = m === 'day' ? '段' : m === 'customs' || m === 'npi' ? '步' : '站';   // 人員一日一段一段、報關島和 NPI 島一步一步、產線一站一站
   $('autoPauseLabel').textContent = `每${unit}自動暫停`;
   $('btnPrev').querySelector('.lbl').textContent = ` 上一${unit}`;
   $('btnNext').querySelector('.lbl').textContent = `下一${unit} `;
@@ -4539,9 +5097,13 @@ function setMode(m) {
     if (listMode !== 'customs') buildCustomsList();
     buildCustomsTimeline();
     goCustoms(CZ.step);
+  } else if (m === 'npi') {
+    if (listMode !== 'npi') buildNpiList();
+    buildNpiTimeline();
+    goNpi(NZ.step);
   } else {
     if (listMode !== 'stations') buildStationList();
-    if (prev === 'day' || prev === 'customs') buildTimeline();
+    if (prev === 'day' || prev === 'customs' || prev === 'npi') buildTimeline();
   }
   if (m === 'tour' && getHeroPos(heroPos)) flyTo(heroPos.clone().add(sOff(tourOff())), heroPos.clone(), 1.6, true);
   if (isMobile()) setTimeout(fitView, 50);     // 手機版：人員一日多了上方時間列，重新計算畫面中心
@@ -4559,6 +5121,7 @@ function pickStation(k) {
 function stepStation(dir) {
   if (state.mode === 'home') return;           // 首頁沒有上一站／下一站
   if (state.mode === 'customs') goCustoms(CZ.step + dir);
+  else if (state.mode === 'npi') goNpi(NZ.step + dir);
   else if (state.mode === 'day') stepScene(dir);
   else if (state.mode === 'tour') {
     const tau = heroTau(); let cur = STATIONS.length;
@@ -4568,6 +5131,7 @@ function stepStation(dir) {
 }
 function restartTour() {
   if (state.mode === 'customs') { goCustoms(0); return; }                     // 報關島：回到第 1 步
+  if (state.mode === 'npi') { goNpi(0); return; }                             // NPI 島：回到第 1 步
   if (state.mode === 'day') { state.D = 0; state.lastScene = -1; return; }   // 人員一日：從 07:40 重新開始
   state.heroN = Math.floor(state.T / SPAWN) + 1;
   state.T = state.heroN * SPAWN - 0.3;
@@ -4678,6 +5242,117 @@ function updateCustomsUI() {
   stItems().forEach((el, k) => { el.classList.toggle('current', k === i); el.classList.toggle('done', k < i); });
   setInfo('cu' + i, customsHTML(i));
   const el = $('infoStatus'); if (el) el.innerHTML = customsLive(S);
+}
+
+// ---- NPI 島導覽：一台新筆電從開案、設計、三次試產（EVT／DVT／PVT）到量產，9 步 ----
+//   phase：design 設計、verify 驗證、mp 量產；meet：說明卡下方的人物按鈕 [人物, 跳到人員一日的幾點]
+//   clock：導覽到這一步時，研發人員停在「今天幾點」正在做的事（例如開案那一步，大家正在會議室開早會）
+const NPI_STEPS = [
+  { phase: 'design', title: '開案：訂規格、排時程', en: 'Project Kick-off', at: new THREE.Vector3(93.1, 0.5, -26), off: new THREE.Vector3(9, 12, 13),
+    who: 'PM 專案經理、客戶、各部門主管', docs: '產品規格書、專案時程表',
+    what: '客戶（或公司的產品企劃）提出需求：螢幕多大、多重、電池用多久、多少錢、什麼時候上市。PM 召集各部門開「開案會議」，訂出產品規格書和專案時程。',
+    why: '規格和時程一開始就要講清楚。所有部門照同一份規格設計，最後做出來的東西才兜得起來。',
+    tip: '一台新筆電從開案到量產，大約要 9～12 個月。開案時也要先估算成本：賺不賺錢，這時候就要算清楚。',
+    meet: [['pm', '09:00']], clock: '09:10' },
+  { phase: 'design', title: '外觀與機構設計', en: 'Industrial & Mechanical Design', at: new THREE.Vector3(73.2, 0.5, -26.6), off: new THREE.Vector3(4, 11, 13),
+    who: 'ID 外觀設計師、ME 機構工程師', docs: '外觀設計圖、3D 機構圖',
+    what: 'ID 設計師畫草圖、做 3D 模型和外觀模型，決定顏色和材質（CMF）。機構工程師再把外觀拆成一個個零件：上蓋、底殼、轉軸、螺絲柱，把主機板、電池、風扇都「堆疊」進機身。',
+    why: '外觀決定消費者第一眼的印象；機構決定零件裝不裝得進去、摔不摔得壞。兩邊要一直來回討論。',
+    tip: '外殼零件大多用模具生產。一套模具要花幾十天、上百萬元，所以開模前要反覆確認，開了模再改就很貴。',
+    meet: [['idd', '09:40'], ['me', '09:40']], clock: '09:40' },
+  { phase: 'design', title: '電路與佈線設計', en: 'Circuit & PCB Layout', at: new THREE.Vector3(85.5, 0.5, -28), off: new THREE.Vector3(0, 11, 13),
+    who: 'EE 電子工程師、Layout 佈線工程師', docs: '線路圖、BOM 表',
+    what: 'EE 工程師挑選 CPU、記憶體、電源晶片等零件，畫出主機板的線路圖、列出 BOM 表（零件清單）；Layout 工程師把線路圖變成真正的電路板：決定每顆零件的位置，再把上千條線連起來。',
+    why: '線路圖是電路的「設計」，Layout 是電路板的「施工圖」。板子做出來，就是產線第 1 站裁切的那種電路板。',
+    tip: '筆電主機板通常有 8～12 層線路。高速訊號的線還要「等長」，訊號才不會一前一後打架。',
+    meet: [['ee', '11:05'], ['layout', '09:40']], clock: '09:40' },
+  { phase: 'design', title: '天線與散熱設計', en: 'Antenna & Thermal Design', at: new THREE.Vector3(72.3, 0.5, -8.5), off: new THREE.Vector3(2, 15, 15),
+    who: 'RF 天線工程師、散熱工程師', docs: '天線量測報告、散熱測試報告',
+    what: '天線工程師在「電波暗室」量測 Wi-Fi、藍牙天線的效率；散熱工程師用電腦模擬熱流，設計導熱管、鰭片和風扇，再把樣機放進溫箱做高溫測試。',
+    why: '筆電越做越薄，天線和散熱的空間都很小。機身如果是金屬，還要開「天線窗」，讓電波出得去。',
+    tip: '電波暗室牆上的藍色錐子叫「吸波錐」，會把電波吸收掉、不反射，量到的才是天線本身的表現。',
+    meet: [['rf', '09:40'], ['thermal', '10:50']], clock: '10:50' },
+  { phase: 'design', title: '韌體與軟體', en: 'BIOS, Firmware & Software', at: new THREE.Vector3(81, 0.5, -25.5), off: new THREE.Vector3(0, 12, 14),
+    who: 'BIOS 韌體工程師、軟體工程師', docs: 'BIOS 版本、出廠映像檔',
+    what: 'BIOS 工程師寫按下電源鍵後第一個執行的程式，負責開機、睡眠、充電和風扇控制；軟體工程師準備出廠映像檔（Windows＋驅動程式），也寫產線用的自動測試程式。',
+    why: '硬體要有軟體才會動。硬體每改一版，韌體和驅動程式也要跟著改、重新測試。',
+    tip: '你買回家第一次開機看到的畫面，就是軟體工程師做的出廠映像檔，產線在第 18 站燒機時就已經裝好了。',
+    meet: [['bios', '09:40'], ['sw', '09:40']], clock: '09:40' },
+  { phase: 'verify', title: 'EVT：工程驗證', en: 'Engineering Verification Test', at: new THREE.Vector3(87.7, 0.5, -29), off: new THREE.Vector3(4, 8, 10),
+    who: 'EE、BIOS、測試工程師', docs: '問題清單',
+    what: '第一批樣機（通常幾十台）做出來了！工程師在實驗台上量電路、燒錄 BIOS，把每個功能都測一遍，找出設計的問題，開進「問題清單」追蹤。',
+    why: 'EVT 要確認「設計是對的」：功能都正常、規格都達到。這時候改設計還來得及，越晚改越貴。',
+    tip: 'EVT 的樣機很多是手工組裝的，外殼也可能是 3D 列印或電腦數控（CNC）加工的，還不是量產的模具件。',
+    meet: [['ee', '09:40'], ['bios', '10:40']], clock: '10:40' },
+  { phase: 'verify', title: 'DVT：設計驗證', en: 'Design Verification Test', at: new THREE.Vector3(88, 0.5, -7.5), off: new THREE.Vector3(-2, 18, 18),
+    who: '測試工程師、機構工程師、認證安規工程師', docs: '測試報告、認證證書',
+    what: '用接近量產的零件和模具做出幾百台樣機，做完整的可靠度測試（落摔、轉軸開闔、高低溫），也送各國認證（安規、EMC 電磁相容、無線電）。研發島上今天就在 DVT 階段！',
+    why: 'DVT 要確認「產品夠耐用、符合法規」：使用者怎麼摔、怎麼用都不容易壞，也拿得到在各國販賣的認證。',
+    tip: '轉軸開闔機會一直開蓋、闔蓋，通常要 2 萬次以上不鬆、不斷，才算通過。',
+    meet: [['tester', '09:40'], ['cert', '09:40'], ['me', '10:40']], clock: '10:50' },
+  { phase: 'verify', title: 'PVT：量產驗證', en: 'Production Verification Test', at: new THREE.Vector3(-6, 0.5, 6), off: new THREE.Vector3(3, 20, 22),
+    who: 'NPI 試產工程師、產線、研發工程師', docs: '試產報告、SOP 作業指導書',
+    what: '在真正的產線上，用量產的速度和流程試產。NPI 試產工程師準備治具、寫 SOP、教作業員組裝；研發工程師到每一站看問題、記錄、改善。（人員一日裡，下午 3 點的 DVT 試產也在這裡）',
+    why: '實驗室裡做得好，不代表產線一天做幾百台也做得好。PVT 要確認「工廠做得出來，良率也夠高」。',
+    tip: '試產問題常用「4M」分析：人、機、料、法。直通率（一次就通過測試的比例）是試產最重要的指標之一。',
+    meet: [['pe', '15:10'], ['pm', '15:20'], ['ee', '15:20']], clock: '15:50' },
+  { phase: 'mp', title: 'MP：正式量產', en: 'Mass Production', park: true,
+    who: '整座工廠', docs: '量產 BOM、出貨報告',
+    what: 'PVT 通過，新機種正式量產（Mass Production）：產線每天穩定地做出上千台，從 PCB 打板、SMT、組裝、測試到包裝，再經過報關島出口到世界各地。',
+    why: '這時研發把產品交棒給工廠。研發還會繼續支援：處理客戶回報的問題、降低成本，同時開始準備下一代機種。',
+    tip: '想看量產的完整流程，就按下面的「產線導覽」；想看筆電怎麼出國，就去「報關島」。',
+    links: [['tour', '🎬', '產線導覽', '跟著一台筆電走完 23 站'], ['customs', '🛃', '報關島', '筆電怎麼通關出國']], clock: '11:20' },
+];
+const NZ = { step: 0 };
+const npiStepD = () => dAtClock(hm(NPI_STEPS[NZ.step].clock));   // 這一步要呈現的時刻（人員一日的縮時秒數）
+const NPI_PHASE = { design: ['#8074A7', '🧭 設計', '設計'], verify: ['#D19A35', '🧪 驗證（三次試產）', '驗證'], mp: ['#4D9C97', '🏭 量產', '量產'] };   // [顏色, 標題, 簡稱]
+const nColor = S => NPI_PHASE[S.phase][0];
+function goNpi(i) {                            // 跳到第 i 步，鏡頭飛過去
+  NZ.step = clamp(i, 0, NPI_STEPS.length - 1); infoKey = '';
+  const S = NPI_STEPS[NZ.step], v = S.park ? parkView() : qView(S.at.clone(), S.off);
+  flyTo(v.pos, v.tgt, 1.6);
+}
+function buildNpiList() {
+  listMode = 'npi'; $('panelTitle').textContent = '🧪 NPI 研發島';
+  const item = (S, i) => `<button class="st-item" data-n="${i}"><span class="num" style="--c:${nColor(S)}">${String(i + 1).padStart(2, '0')}</span><span class="nm">${S.title}</span><span class="ck">✓</span></button>`;
+  const head = (c, t) => `<div class="zone-head"><span class="dot" style="background:${c}"></span>${t}</div>`;
+  $('stationList').innerHTML = Object.entries(NPI_PHASE).map(([ph, [c, t]]) => head(c, t) + NPI_STEPS.map((S, i) => S.phase === ph ? item(S, i) : '').join('')).join('');
+  $('stationList').querySelectorAll('.st-item').forEach(b => b.addEventListener('click', () => { goNpi(+b.dataset.n); if (isMobile()) setDrawer(false); }));
+}
+function buildNpiTimeline() {
+  const n = NPI_STEPS.length;
+  $('tlZones').innerHTML = NPI_STEPS.map(S => `<div style="width:${100 / n}%;background:${nColor(S)}"></div>`).join('');
+  $('tlFillInner').innerHTML = $('tlZones').innerHTML;
+  $('tlTicks').innerHTML = NPI_STEPS.slice(1).map((S, i) => `<i style="left:${(i + 1) / n * 100}%"></i>`).join('');
+}
+function npiHTML(i) {
+  const S = NPI_STEPS[i], c = nColor(S);
+  const chips = S.links
+    ? S.links.map(([go, ic, t, s]) => `<button class="npi-chip" data-go="${go}"><span class="gi">${ic}</span><span><b>${t}</b><small>${s}</small></span></button>`).join('')
+    : S.meet.map(([r, at]) => { const p = PEOPLE_BY_ID['npi_' + r]; return `<button class="npi-chip" data-np="${p.id}" data-t="${at}">${avatarHTML(p, 'av')}<span><b>${p.name}</b><small>${ROLES[r].title}</small></span></button>`; }).join('');
+  return `<span class="zone-tag" style="--c:${c}">${NPI_PHASE[S.phase][1]} · NPI 研發島</span>
+    <h2 style="--c:${c}"><span class="num">${String(i + 1).padStart(2, '0')}</span>${S.title}</h2>
+    <div class="en">${S.en}</div>
+    <h3>👥 誰負責？</h3><p>${S.who}</p>
+    <h3>🔧 在做什麼？</h3><p>${S.what}</p>
+    <h3>🎯 為什麼重要？</h3><p>${S.why}</p>
+    <div class="tip"><b>💡 小知識</b><p>${S.tip}</p></div>
+    <div class="result"><span>📄 這一步的文件</span><b>${S.docs}</b></div>
+    <h3>${S.links ? '👉 接下來去看看' : '🗓️ 看看他們的一天（點人物，跳到「人員一日」跟著他）'}</h3><div class="npi-who">${chips}</div>`;
+}
+function npiMeet(id, clock) {                  // 從 NPI 島導覽跳到人員一日：時間跳到 clock，鏡頭跟著這個人
+  setMode('day');
+  state.D = dAtClock(hm(clock)); state.lastScene = sceneIdx(state.D);
+  selectPerson(id);
+}
+function updateNpiUI() {
+  const n = NPI_STEPS.length, i = NZ.step, S = NPI_STEPS[i], frac = (i + 1) / n;
+  $('tlFill').style.width = (frac * 100) + '%';
+  $('tlFillInner').style.width = (100 / frac) + '%';
+  $('tlHandle').style.left = ((i + 0.5) / n * 100) + '%';
+  $('progText').innerHTML = `🧪 NPI 研發島　第 <b>${i + 1}</b> / ${n} 步（${NPI_PHASE[S.phase][2]}）`;
+  stItems().forEach((el, k) => { el.classList.toggle('current', k === i); el.classList.toggle('done', k < i); });
+  setInfo('npi' + i, npiHTML(i));
 }
 
 // ---- 新人闖關：6 分鐘、6 關（報到 → 認識產線 → 找對的人 → 品檢找碴 → 出貨防呆 → 通關放行），最後拿結業證書 ----
@@ -4991,13 +5666,13 @@ $('qCard').addEventListener('click', e => {    // 關卡卡片裡的所有按鈕
 });
 $('qCard').addEventListener('keydown', e => { if (e.target.id === 'qName' && e.key === 'Enter') questStart(); });
 
-// ---- 寶物收集（像寶可夢圖鑑）：零件卡、文件卡、人物卡、闖關徽章、傳說寶物，一共 44 個 ----
+// ---- 寶物收集（像寶可夢圖鑑）：零件卡、文件卡、人物卡、闖關徽章、傳說寶物，一共 63 個（第 9 版加了 NPI 研發島的 19 個）----
 //   零件卡、文件卡：下場走走時，走到地上發光的寶石旁邊就撿得到；人物卡：第一次和某種角色聊天就拿到；徽章：闖關每過一關掉一個
 //   寶箱存在這台裝置的瀏覽器（localStorage），關掉再開都還在；但清除「Cookie 和其他網站資料」會一起被清掉，所以另外提供「寶箱代碼」備份
 const RARITY = [null, { name: '普通', color: '#8A7F78' }, { name: '稀有', color: '#3F73AE' }, { name: '傳說', color: '#C08A1E' }];
 const T_CATS = [
   { id: 'part', name: '零件卡', note: '下場走走時，到各工站旁邊撿藍色寶石' },
-  { id: 'doc', name: '文件卡', note: '下場走走時，到出貨碼頭和報關島撿橘色寶石' },
+  { id: 'doc', name: '文件卡', note: '下場走走時，到出貨碼頭、報關島和 NPI 研發島撿橘色寶石' },
   { id: 'person', name: '人物卡', note: '第一次和某種角色聊天就拿得到' },
   { id: 'badge', name: '闖關徽章', note: '新人闖關每過一關掉一個' },
   { id: 'legend', name: '傳說寶物', note: '完成特別的挑戰' },
@@ -5027,6 +5702,16 @@ const DOC_LIST = [
   ['importDecl', '📥', '進口報單', [-98.6, -11.4], '零件從國外進來時，送給海關的申報書。進口一樣會被分成 C1／C2／C3。', '在報關島的進口通關站'],
   ['ledger', '📒', '保稅帳冊', [-90.2, -13.2], '記錄保稅零件「進了多少、用了多少、做成多少台出口」。帳要對得上，不然就要補稅。', '在報關島的保稅倉旁邊'],
 ];
+// 研發文件卡（NPI 研發島）：[代號, 圖示, 名稱, 位置 [x, z], 說明, 去哪裡找]
+const NPI_DOC_LIST = [
+  ['specbook', '📘', '產品規格書', [90.3, -25.8], '新機種的「規格」：螢幕多大、多重、電池用多久、要通過哪些測試。開案時由 PM 和客戶一起訂好，所有人都照著它設計。', '在 NPI 研發島的會議室裡'],
+  ['idDrawing', '🎨', '外觀設計圖', [68.2, -24.6], 'ID 設計師畫的外觀圖：造型、尺寸、顏色和表面處理（CMF）。機構工程師會依照它設計外殼零件。', '在 NPI 研發島的 ID 設計室'],
+  ['schematic', '📐', '線路圖', [87.4, -25.6], 'EE 工程師畫的電路設計圖，標出每一顆零件怎麼連接。Layout 工程師再把它畫成真正的電路板。', '在研發辦公區的 EE 實驗台旁'],
+  ['bom', '🧮', 'BOM 表', [77.5, -25.5], '物料清單（Bill of Materials）：一台筆電用到的每一顆零件、數量和料號。採購照它買料，工廠照它備料。', '在研發辦公區的走道上'],
+  ['testReport', '📊', '測試報告', [81.8, -10.6], '可靠度測試的結果：落摔、轉軸、高低溫……哪些通過、哪些失敗、原因是什麼。失敗的項目要改善後再測一次。', '在可靠度實驗室裡'],
+  ['certificate', '📜', '認證證書', [97, -10.9], '通過各國認證的證明，例如台灣的 BSMI、NCC，美國的 FCC，歐洲的 CE。拿到證書，產品才能在那個國家賣。', '在認證實驗室裡'],
+  ['pilotReport', '📝', '試產報告', [50.5, -16], 'EVT、DVT、PVT 每次試產後寫的報告：做了幾台、良率多少、有哪些問題。它決定新機種能不能進入下一個階段。', '在往 NPI 研發島的步行橋上'],
+];
 const PERSON_ROLES = ['leader', 'operator', 'ipqc', 'tech', 'material', 'night', 'guard', 'cleaner', 'dock', 'visitor', 'sales', 'office', 'broker', 'customs', 'crane', 'bonded'];
 const PERSON_WHEN = { night: '19:40 交接班時才會出現', visitor: '09:00–17:00 在園區參觀', sales: '09:00–17:00 在園區參觀', cleaner: '07:40–18:00 在南側步道' };
 const BADGE_ICONS = ['⚡', '🗺️', '🤝', '🔍', '⚖️', '🛳️'];
@@ -5038,6 +5723,10 @@ const TREASURES = [                            // 寶箱代碼依照這個順序
   { id: 'gold', cat: 'legend', rar: 3, icon: '🏅', name: '闖關金牌', desc: '新人闖關拿到三顆星的人才有：流程、分工、品質、通關，你都懂了！', hint: '新人闖關拿到三顆星（540 分以上）' },
   { id: 'laptop', cat: 'legend', rar: 3, icon: '💻', name: '我的第一台筆電', desc: '集滿 12 張零件卡，親手「組」出一台筆電！從銅箔基板到紙箱，你已經認識一台筆電的所有零件。', hint: '集滿 12 張零件卡' },
   { id: 'master', cat: 'legend', rar: 3, icon: '👑', name: '圖鑑大師', desc: '收集到其他所有寶物的人，才是真正的工廠通！', hint: '收集到其他所有的寶物' },
+  // 第 9 版新增（只能加在最後面）：NPI 研發島的 12 張人物卡、7 張研發文件卡
+  ...NPI_DEF.map(d => d.role).map(r => ({ id: 'p_' + r, cat: 'person', rar: 2, icon: ROLES[r].emoji, name: ROLES[r].title, desc: ROLES[r].duty,
+    hint: `到 NPI 研發島和「${ROLES[r].title}」聊聊天（08:20 上班，下午會到產線看試產）` })),
+  ...NPI_DOC_LIST.map(([id, icon, name, at, desc, hint]) => ({ id, cat: 'doc', rar: 1, icon, name, at, desc, hint })),
 ];
 const T_BY_ID = Object.fromEntries(TREASURES.map(t => [t.id, t]));
 const CODE_ORDER = TREASURES.map(t => t.id);
@@ -5077,7 +5766,7 @@ function updateGemBar() {                      // 下場走走時，左邊名單
   const list = TREASURES.filter(t => t.cat === 'part' || t.cat === 'doc'), n = list.filter(t => chest.got[t.id]).length;
   el.innerHTML = `🎒 撿到寶物 <b>${n}</b> / ${list.length}<div class="qbar"><i style="width:${n / list.length * 100}%"></i></div>`;
 }
-// 地上的寶石：藍色＝零件卡（工站前面）、橘色＝文件卡（碼頭和報關島），只有下場走走時才看得到
+// 地上的寶石：藍色＝零件卡（工站前面）、橘色＝文件卡（碼頭、報關島和 NPI 研發島），只有下場走走時才看得到
 const GEMS = [];
 {
   const geo = new THREE.OctahedronGeometry(0.2, 0), ringGeo = new THREE.RingGeometry(0.24, 0.42, 28);
@@ -5216,10 +5905,11 @@ $('btnTour').onclick = () => setMode('tour');
 $('btnFree').onclick = () => setMode('free');
 $('btnDay').onclick = () => setMode('day');
 $('btnCustoms').onclick = () => setMode('customs');
+$('btnNpi').onclick = () => setMode('npi');
 $('btnOverview').onclick = () => {
   if (state.mode === 'day') { state.follow = null; if (state.play) state.camFree = true; }   // 人員一日維持在同一個模式，只是鏡頭不再跟人（玩家一走動就會再跟上）
   else { state.selected = -1; setMode('home'); }   // 其他模式：回到乾淨的首頁
-  infoKey = ''; const v = parkView(); flyTo(v.pos, v.tgt, 1.8); $('btnOverview').classList.add('active');   // 工廠和報關島一起看
+  infoKey = ''; const v = parkView(); flyTo(v.pos, v.tgt, 1.8); $('btnOverview').classList.add('active');   // 報關島、工廠、NPI 研發島一起看
 };
 // ---- 首頁「我想去哪裡？」：開始一種體驗，或直接飛到某個地方看（留在乾淨的首頁）----
 const HOME_PLACES = [                          // [名稱, 鏡頭看的位置, 鏡頭的相對位置]
@@ -5230,18 +5920,20 @@ const HOME_PLACES = [                          // [名稱, 鏡頭看的位置, �
   ['員工區（打卡、換靜電衣）', new THREE.Vector3(29.6, 0.6, -9.2), new THREE.Vector3(-8, 10, 12)],
   ['出貨碼頭（成品裝上貨櫃車）', new THREE.Vector3(-40, 0, 12.5), new THREE.Vector3(3, 18, 22)],
   ['報關島（通關出國）', new THREE.Vector3(-87, 0, 7), new THREE.Vector3(10, 50, 44)],
+  ['NPI 研發島（新筆電的研發與試產）', new THREE.Vector3(81, 0, -15), new THREE.Vector3(6, 44, 40)],
 ];
 $('homeGo').innerHTML = `<optgroup label="開始體驗">
     <option value="tour">🎬 產線導覽：跟著一台筆電走完 23 站</option>
     <option value="day">👷 人員一日：看工廠的人怎麼過一天</option>
     <option value="customs">🛃 報關島：筆電怎麼通關出國</option>
+    <option value="npi">🧪 NPI 研發島：新筆電怎麼從設計到量產</option>
     <option value="quest">🏆 新人闖關：6 分鐘、6 個關卡</option>
     <option value="play">🎮 下場走走：自己逛工廠、撿寶物</option>
     <option value="chest">🎒 看我的寶箱</option>
   </optgroup>
   <optgroup label="飛過去看看">${HOME_PLACES.map((p, i) => `<option value="p${i}">📍 ${p[0]}</option>`).join('')}</optgroup>`;
 function homeGo(v) {
-  if (v === 'tour' || v === 'day' || v === 'customs') setMode(v);
+  if (v === 'tour' || v === 'day' || v === 'customs' || v === 'npi') setMode(v);
   else if (v === 'quest') questOpen();
   else if (v === 'play') setPlay(true);
   else if (v === 'chest') openChest();
@@ -5254,6 +5946,9 @@ $('infoBody').addEventListener('click', e => {
   if (id === 'btnReplay') { state.D = 0; state.lastScene = -1; setPaused(false); infoKey = ''; }
   else if (id === 'btnFollow') state.follow = state.follow === state.selPerson ? null : state.selPerson;
   else if (id === 'btnUnsel') { state.selPerson = null; infoKey = ''; }
+  const chip = e.target.closest('.npi-chip');   // NPI 島導覽：點人物 → 人員一日跟著他；點連結 → 換到那個模式
+  if (chip && chip.dataset.np) npiMeet(chip.dataset.np, chip.dataset.t);
+  else if (chip && chip.dataset.go) setMode(chip.dataset.go);
 });
 $('btnHelp').onclick = () => $('helpModal').classList.remove('hidden');
 $('btnHelpClose').onclick = () => $('helpModal').classList.add('hidden');
@@ -5298,6 +5993,7 @@ $('btnSpeed').onclick = () => setSpeed(SPEEDS[(SPEEDS.indexOf(state.speed) + 1) 
     const r = tl.getBoundingClientRect(), f = clamp01((e.clientX - r.left) / r.width);
     if (state.mode === 'day') { state.D = f * DAY_TOTAL; state.lastScene = -1; return; }   // 人員一日：拖曳的是一天的時間
     if (state.mode === 'customs') { const i = Math.min(CUSTOMS_STEPS.length - 1, Math.floor(f * CUSTOMS_STEPS.length)); if (i !== CZ.step) goCustoms(i); return; }   // 報關島：點哪一段就跳到哪一步
+    if (state.mode === 'npi') { const i = Math.min(NPI_STEPS.length - 1, Math.floor(f * NPI_STEPS.length)); if (i !== NZ.step) goNpi(i); return; }
     state.T = state.heroN * SPAWN + f * SCHED.total; state.lastHeroK = -1;
     if (state.mode !== 'tour') setMode('tour');
   };
@@ -5398,7 +6094,8 @@ window.__sim = { state, STATIONS, SCHED, SC, PEOPLE_BY_ID, renderer, camera, con
   PLAYER, NAVG, AMBIENT, DLG, setPlay, openTalk, closeTalk, advanceTalk, walkTo, walkToPerson, findPath, groundY, walkable,
   QZ, Q_LEVELS, questOpen, questLevel, questNext, questExit,
   AMB, CI, TRUCKS, CUSTOMS_STEPS, CZ, goCustoms, chest, chestGrant, chestCode, parseChestCode, GEMS, TREASURES, openChest, showGot,
-  updateCustoms, evalAmbient, AMBIENT_BY_ID: Object.fromEntries(AMBIENT.map(p => [p.id, p])), PARK, parkView, scene };   // 方便除錯用
+  updateCustoms, evalAmbient, AMBIENT_BY_ID: Object.fromEntries(AMBIENT.map(p => [p.id, p])), PARK, parkView, scene,
+  NPI_SPOTS, NPI_PEOPLE, NPI_STEPS, NZ, goNpi, evalPerson, npiRoute, ISLE3, BRIDGE3, NAV_BLOCKS };   // 方便除錯用
 if (isMobile()) setDrawer(false);              // 手機版：名單預設收起來
 fitView();
 { const v = parkView(); camera.position.copy(v.pos); controls.target.copy(v.tgt); }   // 一打開先看整個園區
@@ -5410,7 +6107,7 @@ fitView();
 //   #day=14:05        人員一日模式，直接跳到 14:05（可加 &follow=tech 指定跟隨的人）
 //   &play             直接下場走走（可加 &at=34,-12 指定玩家位置、&talk=leader 開啟時就和某人對話）
 //   &pause            開啟時先暫停
-//   #quest            新人闖關；#customs=3 報關島第 3 步；#chest 打開寶箱
+//   #quest            新人闖關；#customs=3 報關島第 3 步；#npi=6 NPI 島第 6 步；#chest 打開寶箱
 const HASH = new URLSearchParams(location.hash.slice(1));
 setMode(HASH.has('station') ? 'tour' : 'home');   // 一打開是乾淨的首頁；#station 才直接進導覽
 if (HASH.has('day')) {
@@ -5439,6 +6136,7 @@ if (HASH.has('look')) {
 if (HASH.has('pause')) setPaused(true);
 if (HASH.has('quest')) questOpen();            // #quest：一打開就進入新人闖關（分享給同事用）
 if (HASH.has('customs')) { CZ.step = clamp((+HASH.get('customs') || 1) - 1, 0, CUSTOMS_STEPS.length - 1); setMode('customs'); }   // #customs=3：報關島第 3 步
+if (HASH.has('npi')) { NZ.step = clamp((+HASH.get('npi') || 1) - 1, 0, NPI_STEPS.length - 1); setMode('npi'); }   // #npi=6：NPI 島第 6 步（EVT）
 if (HASH.has('chest')) openChest();            // #chest：一打開就看寶箱
 // ---- 日夜光線：人員一日模式時，天空、陽光、海面與路燈跟著工廠時鐘變化（其他模式固定在白天）----
 const SKY_KEYS = [
@@ -5461,18 +6159,21 @@ function updateEnvironment(time) {
   scene.fog.color.copy(u.hor.value);
   hemi.color.lerpColors(a.hs, b.hs, f); hemi.groundColor.lerpColors(a.hg, b.hg, f); hemi.intensity = L(a.hi, b.hi);
   sun.color.lerpColors(a.sc, b.sc, f); sun.intensity = L(a.si, b.si);
-  // 陰影範圍跟著鏡頭：看工廠或報關島時範圍小、陰影比較清楚；拉遠看整個園區時放大到兩座島
-  const camD = camera.position.distanceTo(controls.target), wide = camD > 125, isle = controls.target.x < -50;
+  // 陰影範圍跟著鏡頭：看工廠、報關島或 NPI 島時範圍小、陰影比較清楚；拉遠看整個園區時放大到三座島
+  const camD = camera.position.distanceTo(controls.target), wide = camD > 125, tx = controls.target.x;
   if (wide !== shadowWide) {
     shadowWide = wide;
-    const sc = sun.shadow.camera, r = wide ? 110 : 50, t = wide ? 110 : 42;
-    sc.left = -r; sc.right = r; sc.top = t; sc.bottom = -t; sc.far = wide ? 420 : 220; sc.updateProjectionMatrix();
+    const sc = sun.shadow.camera, r = wide ? 130 : 50, t = wide ? 130 : 42;
+    sc.left = -r; sc.right = r; sc.top = t; sc.bottom = -t; sc.far = wide ? 460 : 220; sc.updateProjectionMatrix();
   }
-  sun.target.position.set(wide ? -34 : isle ? -86 : 6, 0, wide ? 2 : isle ? 7 : 0);
+  if (wide) sun.target.position.set(-6, 0, 0);
+  else if (tx < -50) sun.target.position.set(-86, 0, 7);   // 報關島
+  else if (tx > 52) sun.target.position.set(81, 0, -15);   // NPI 研發島
+  else sun.target.position.set(6, 0, 0);
   const fogX = Math.max(0, camD - 110);          // 霧：鏡頭拉遠時往後推，遠處的報關島才不會霧茫茫
   scene.fog.near = 140 + fogX; scene.fog.far = 380 + fogX * 1.2;
   const az = THREE.MathUtils.degToRad(L(a.az, b.az)), el = THREE.MathUtils.degToRad(L(a.el, b.el));
-  sun.position.set(Math.cos(az) * Math.cos(el), Math.sin(el), Math.sin(az) * Math.cos(el)).multiplyScalar(wide ? 200 : 100).add(sun.target.position);
+  sun.position.set(Math.cos(az) * Math.cos(el), Math.sin(el), Math.sin(az) * Math.cos(el)).multiplyScalar(wide ? 220 : 100).add(sun.target.position);
   WORLD.seaMat.color.lerpColors(a.sea, b.sea, f);
   const lamp = L(a.lamp, b.lamp);
   WORLD.bulb.color.lerpColors(BULB_DAY, BULB_NIGHT, lamp);
@@ -5482,8 +6183,8 @@ function updateEnvironment(time) {
   // 背景小動畫：波紋飄移、風機轉動、小船繞島、浮標搖晃
   WORLD.ripple.material.map.offset.set(time * 0.004, time * 0.0025);
   for (const h of WORLD.blades) h.rotation.z = time * 1.2;
-  const ang = time * 0.025;                      // 小船繞著兩座島（橢圓）
-  WORLD.boat.position.set(-30 + Math.cos(ang) * 108, SEA_Y + 0.2, 4 + Math.sin(ang) * 66); WORLD.boat.rotation.y = Math.atan2(-108 * Math.sin(ang), 66 * Math.cos(ang));
+  const ang = time * 0.02;                       // 小船繞著三座島（橢圓）
+  WORLD.boat.position.set(-8 + Math.cos(ang) * 150, SEA_Y + 0.2, Math.sin(ang) * 66); WORLD.boat.rotation.y = Math.atan2(-150 * Math.sin(ang), 66 * Math.cos(ang));
   WORLD.buoys.forEach((bu, k) => { bu.rotation.z = 0.08 * Math.sin(time * 1.3 + k); bu.position.y = SEA_Y + 0.08 * Math.sin(time * 1.1 + k * 2); });
 }
 let last = performance.now(), firstFrame = true;
@@ -5518,6 +6219,7 @@ renderer.setAnimationLoop(now => {
   updatePeople();
   updateAmbient(now / 1000);
   updateCustoms(rdt, now / 1000);
+  updateNpiIsland();
   updatePlayer(rdt, now / 1000);
   updateTreasures(rdt, now / 1000);
   updateMarkers(now / 1000);
