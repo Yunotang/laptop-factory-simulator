@@ -1029,6 +1029,8 @@ function makeTex(w, h, draw, srgb = true) {
   return t;
 }
 function rrect(g, x, y, w, h, r) { g.beginPath(); g.roundRect(x, y, w, h, r); }
+const measureCtx = document.createElement('canvas').getContext('2d');   // 量文字寬度用：名牌、標示牌的寬度跟著字數變
+const textWidth = (font, s) => { measureCtx.font = font; return measureCtx.measureText(s).width; };
 function barcode(g, x, y, w, h, seed) {
   const R = rng(seed); let cx = x;
   g.fillStyle = '#111';
@@ -1325,7 +1327,11 @@ function flat(p, w, d, mat, x, y, z) {                    // 平躺、朝上的�
 }
 // 3D 標籤：暖白小卡，左邊用圓點標示區域色；num 會用斜體襯線數字顯示（例如站號）；solid 用在警示牌
 function textSprite(text, sub, color, scale = 1, { num = '', solid = false } = {}) {
-  const tex = makeTex(512, 150, (g, W, H) => {
+  // 牌子的寬度跟著字數變：至少 512，字比較多就加寬（高度不變），標題和英文小字都不會被切掉
+  const need = Math.max(74 + (num ? textWidth('italic bold 44px Georgia, serif', num) + 14 : 0) + textWidth(`900 44px ${FONT}`, text),
+    76 + textWidth(`bold 25px ${FONT}`, sub));
+  const TW = Math.max(512, Math.ceil(need + 34));
+  const tex = makeTex(TW, 150, (g, W, H) => {
     g.fillStyle = solid ? color : 'rgba(255,253,250,.96)'; rrect(g, 6, 6, W - 12, H - 12, 40); g.fill();
     if (!solid) { g.strokeStyle = '#E2D6CB'; g.lineWidth = 3; rrect(g, 6, 6, W - 12, H - 12, 40); g.stroke(); }
     g.fillStyle = solid ? '#FFFDFA' : color; g.beginPath(); g.arc(48, 58, 12, 0, Math.PI * 2); g.fill();
@@ -1335,7 +1341,7 @@ function textSprite(text, sub, color, scale = 1, { num = '', solid = false } = {
     g.fillStyle = solid ? 'rgba(255,253,250,.85)' : '#8A7F78'; g.font = `bold 25px ${FONT}`; g.fillText(sub, 76, 116);
   });
   const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, toneMapped: false }));
-  sp.scale.set(1.75 * scale, 0.51 * scale, 1);
+  sp.scale.set(1.75 * scale * TW / 512, 0.51 * scale, 1);
   return sp;
 }
 function banner(text, sub, color, w = 4.6, h = 0.9) {
@@ -3556,15 +3562,16 @@ const MARK_MAT = {
 };
 function nameTag(def, R) {
   const label = def.role === 'night' ? R.title : `${def.name}・${R.title}`;
-  const tex = makeTex(384, 88, (g, W, H) => {
+  // 名牌的寬度跟著字數變（研發人員的職稱比較長，例如「Layout 佈線工程師」），名字和職稱才不會被切掉
+  const NW = Math.ceil(textWidth(`bold 40px ${FONT}`, label)) + 56, NH = 88;
+  const tex = makeTex(NW, NH, (g, W, H) => {
     g.font = `bold 40px ${FONT}`;
-    const w = Math.min(W - 8, g.measureText(label).width + 44);
-    g.fillStyle = R.color; rrect(g, (W - w) / 2, 8, w, H - 16, 30); g.fill();
+    g.fillStyle = R.color; rrect(g, 4, 8, W - 8, H - 16, 30); g.fill();
     g.fillStyle = '#ffffff'; g.textAlign = 'center'; g.fillText(label, W / 2, 58);
   });
-  // sizeAttenuation: false → 名牌在畫面上維持固定大小，不會因為離鏡頭近就變得很大
+  // sizeAttenuation: false → 名牌在畫面上維持固定大小，不會因為離鏡頭近就變得很大；寬高比和貼圖一樣，字不會被擠扁
   const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, toneMapped: false, depthWrite: false, sizeAttenuation: false }));
-  sp.scale.set(0.105, 0.024, 1); sp.position.y = 1.72; sp.renderOrder = 5;
+  sp.scale.set(0.024 * NW / NH, 0.024, 1); sp.position.y = 1.72; sp.renderOrder = 5;
   return sp;
 }
 function buildFigure(def) {
