@@ -979,7 +979,7 @@ const TRACES = (() => {
  * 6. 3D 引擎初始化
  * =================================================================== */
 const container = document.getElementById('scene');
-const renderer = new THREE.WebGLRenderer({ antialias: true });
+const renderer = new THREE.WebGLRenderer({ antialias: true, logarithmicDepthBuffer: true });   // 對數深度：三座島從 0.3 公尺到 900 公尺，地板上疊的道路、區域色塊才不會遠看閃爍（手機的深度精度只有電腦的 1/256）
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -996,7 +996,7 @@ const pmrem = new THREE.PMREMGenerator(renderer);
 scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
 scene.environmentIntensity = 0.45;
 
-const camera = new THREE.PerspectiveCamera(38, window.innerWidth / window.innerHeight, 0.05, 900);   // 視角窄一點，更像桌上的微縮模型
+const camera = new THREE.PerspectiveCamera(38, window.innerWidth / window.innerHeight, 0.3, 900);   // 視角窄一點，更像桌上的微縮模型；最近 0.3 公尺（鏡頭最近只會到 0.6），深度精度比 0.05 好 6 倍
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.08;
