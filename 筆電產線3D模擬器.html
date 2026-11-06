@@ -2353,7 +2353,6 @@ const TL_ANIM = {};                                             // 會動的機�
     spot(id, x, z, face, place);
   };
   desk('dDesign', 77.4, -50.4, F.S, '模具設計', ['分模線 ✔', '頂針 24 支', '冷卻水路 v3'], TL_COLOR, '模具島辦公室・模具設計師的座位');
-  desk('dBuyer', 81.2, -50.4, F.S, '採購', ['修模報價 30,000', '交期 5 天 → 3 天', 'PO 待開'], '#0EA5E9', '模具島辦公室・採購的座位');
   box(scene, 2.6, 0.06, 1.2, deskTop, 88, Y + 0.74, -52.2);                 // 會議桌
   for (const sx of [-1.1, 1.1]) box(scene, 0.06, 0.72, 1.0, M.steel, 88 + sx, Y + 0.36, -52.2, false);
   [[87.3, -53.4, F.S], [88.7, -53.4, F.S], [87.3, -51.0, F.N], [88.7, -51.0, F.N]].forEach(([x, z, f], i) => { cyl(scene, 0.19, 0.19, 0.45, seatM, x, Y + 0.225, z, 14); spot('mt' + i, x, z, f, '模具島辦公室・會議桌'); });
@@ -2377,7 +2376,7 @@ const TL_ANIM = {};                                             // 會動的機�
     devTag('模具時程看板', 'Mold Schedule：T0・T1・交模', TL_COLOR, 77, 2.55, -55.6);
     [[75.4, -53.0], [76.6, -52.5], [77.8, -52.5], [79.0, -53.0], [80.0, -53.8]].forEach(([x, z], i) => spot('m' + i, x, z, F.N, '模具島辦公室・早會'));
   }
-  roomTag('辦公室', 'Office：模具設計・採購', 83, 2.9, -52.2);
+  roomTag('辦公室', 'Office：模具設計・開會', 83, 2.9, -52.2);
   // ---- 模具倉：貨架上一套套的模具（每套都有編號標籤），門口朝北對著貨車廣場 ----
   const TW = { x0: 61.2, x1: 71, z0: -80, z1: -70.4 };
   flatAt(TW.x0, TW.z0, TW.x1, TW.z1, std(0xE3DED3, { roughness: 0.85 }), 0.02);
@@ -2415,7 +2414,11 @@ const TL_ANIM = {};                                             // 會動的機�
   spot('inj', 87.4, -61.7, F.N, '模具廠・試模區（射出機）'); spot('injQC', 94.6, -61.4, F.N, '模具廠・試模件檢查桌');
   spot('injDes', 93.2, -61.4, F.N, '模具廠・試模件檢查桌'); spot('injBuyer', 96.0, -61.4, F.N, '模具廠・試模件檢查桌');
   // 採購到研發島找人時站的位置（在機構工程師、PM 的座位後面）
-  spot('meVisit', 77.0, -25.6, F.N, '研發辦公區・機構工程師吳俊宏的座位旁'); spot('pmVisit', 87.9, -24.3, F.S, '研發辦公區・PM 周子涵的座位旁');
+  spot('meVisit', 77.0, -25.6, F.N, '研發辦公區・機構工程師吳俊宏的座位旁');
+  // NPI 採購坐在研發島（跟著新機種專案走），座位在 PM 旁邊；三個人一起看時程時，站在 PM 的專案時程看板前
+  desk('dBuyer', 88.0, -26.6, F.E, '採購', ['修模報價 30,000', '交期 5 天 → 3 天', 'PO 待開'], '#0EA5E9', '研發辦公區・採購的座位');
+  spot('wbME', 84.3, -21.3, F.S, '研發辦公區・專案時程看板前'); spot('wbBuyer', 86.7, -21.3, F.S, '研發辦公區・專案時程看板前');
+  spot('nbus', 65.0, 1.3, F.N, '研發島・交通車站');
 }
 function updateToolingIsland(now) {              // 模具廠機台的動畫（跟著園區時鐘，暫停時一起停）
   const t = AMB.t;
@@ -3376,9 +3379,9 @@ const ROLES = {
     intro: '每一套模具放在哪裡、用了多少次、修過幾次，都記在我這裡。',
     duty: '管理模具倉：模具進出都要登記，更新每一套模具的「履歷卡」（模次、修模紀錄、存放位置）；保養好的模具擦乾、上防鏽油再上架；也負責把試模件交給貨車送到工廠。',
     tip: '模具通常是品牌客戶出錢做的，屬於客戶的財產，所以每一套都要編號、定期盤點。' },
-  buyer: { title: '採購專員', en: 'Buyer (Purchasing)', color: '#0E87C4', smock: '#1e3a5f', pants: '#1f2937', shoes: '#1f2937', hat: 'none', emoji: '🛒',
-    intro: '我是採購，負責向模具廠買模具、談價錢和交期，也是模具廠、機構工程師和 PM 之間的窗口。',
-    duty: '收到機構工程師的開模或修模需求後，請模具廠報價、比價、議價，開出採購單（PO）；追蹤模具的進度和交期，出問題時把成本、時程的影響告訴機構工程師和 PM，一起決定怎麼處理。',
+  buyer: { title: 'NPI 採購', en: 'NPI Buyer (Purchasing)', color: '#0E87C4', smock: '#1e3a5f', pants: '#1f2937', shoes: '#1f2937', hat: 'none', emoji: '🛒',
+    intro: '我坐在研發島，跟著新機種專案走：新零件、模具、治具，都由我向廠商下單。',
+    duty: '新機種開案時，協助評估規格的成本；替 NPI 的新零件找供應商，發包模具和治檢具，比價、議價、開採購單（PO）；盯緊供應商的產能和交期，確保 NPI 的時程。模具要修改時，先和機構工程師確認要不要改、再和 PM 一起看時程，最後才去和模具廠談費用和交期。',
     tip: '採購要同時顧好三件事：價格（Cost）、交期（Delivery）、品質（Quality）。只顧便宜、拖到交期，整個專案都會延後。' },
   // 玩家：下場走走時扮演的參觀者
   // 玩家：黃色小熊耳帽＋珊瑚橘參觀服＋綠色小背包，工廠裡沒有其他人穿這個顏色，一眼就認得出來
@@ -3422,7 +3425,7 @@ const TL_DEF = [
   { role: 'polish', name: '陳美惠', hair: 'bun', skin: '#f1c7a3', hairC: '#2b211b', home: ['pol1', 'bench'] },
   { role: 'tryout', name: '張文彬', hair: 'short', skin: '#e4b58f', hairC: '#1c1c1c', home: ['inj', 'inspect'] },
   { role: 'moldkeeper', name: '李淑貞', hair: 'long', skin: '#f3cfb0', hairC: '#231a15', glasses: true, home: ['mwDesk', 'desk'] },
-  { role: 'buyer', name: '林佳蓉', hair: 'long', skin: '#f5d0b3', hairC: '#2b1d16', desk: 'dBuyer', home: ['dBuyer', 'type'] },
+  { role: 'buyer', name: '林佳蓉', hair: 'long', skin: '#f5d0b3', hairC: '#2b1d16', desk: 'dBuyer', home: ['dBuyer', 'type'], area: 'npi' },   // 採購坐在研發島，名單列在 NPI 島
 ];
 TL_DEF.forEach((d, i) => PEOPLE_DEF.push({ ...d, id: 'tl_' + d.role, idx: 40 + i, tl: true, walker: true, ti: i }));   // walker：用可行走地圖找路的人（研發島、模具島）
 
@@ -4514,7 +4517,7 @@ const NPI_PLAN = {
       ['10:20', 'dPM', 'type', '和工廠、供應商開視訊會議', ['我在和工廠、零件供應商開視訊會議，確認下午試產的零件都到齊了。', '少一顆零件，整條線就不能試產，所以 PM 要一直追物料。']],
       ['11:15', 'pmLab', 'talk', '到可靠度實驗室，了解落摔測試的問題', ['我現在在「可靠度實驗室」：這裡專門想辦法把筆電弄壞——旁邊是落摔機，那邊是轉軸開闔機和溫箱。', '昨天落摔測試有一台的轉軸鬆了，我來聽聽測試工程師找到什麼原因。', '問題要「關閉」，一定要找到根本原因、改好設計，再測一次通過才算數。']]],
     pm: [['13:30', 'mtgPM', 'talk', '主持設計審查：外觀、機構、散熱、天線一起看', ['設計審查會：外觀、機構、散熱、天線、電子的工程師一起看最新的設計，有衝突當場解決。', '例如 ID 想把機身再做薄 1 公釐，散熱就會變差、天線的空間也變小，大家要一起取捨。'], { by: true, key: true }],
-      ['14:40', 'dPM', 'type', '寫設計審查的會議紀錄', ['會議的結論要馬上寫成會議紀錄寄給大家：誰、在什麼時候、要做什麼，寫得清清楚楚。', '採購剛來說修模要多 5 天。我算了一下，PVT 最多只能延 3 天，請她和模具廠談加班。']],
+      ['14:40', 'warBoard', 'point', '和機構工程師、採購一起確認模具時程', ['採購說模具島的修模要多 5 天。時程的事，我請機構工程師和採購一起到時程看板前看。', '機構工程師說這個修改一定要做；我看了 PVT 的時程，最多只能延 3 天，請採購去和模具廠談加班。'], { key: true }],
       ['15:05', 'f14', 'inspect', '到產線看試產：追進度、確認問題', ['試產開始了！我在產線上看每一站順不順，有問題就找對的工程師處理。', '這 200 台試產機，一部分送去做可靠度測試，一部分寄給客戶驗證。']]],
     review: ['今天試產發現 3 個新問題，我們一項一項看：原因是什麼、誰負責、什麼時候改好。', '每個問題都有編號、放進問題清單，一直追蹤到「關閉」為止。'],
     after: ['寫試產結果報告，準備晚上和美國客戶開會', ['晚上 9 點要和美國客戶開視訊會議，我先把今天試產的結果整理成報告。']], leave: '19:40' },
@@ -4534,7 +4537,7 @@ const NPI_PLAN = {
       ['10:30', 'hingeB', 'inspect', '看轉軸開闔測試', ['轉軸開闔機會一直幫筆電開蓋、闔蓋，要開闔 2 萬次以上才算過關。', '昨天鬆掉的那台，可能是轉軸旁邊的螺絲柱太薄，我在想要怎麼補強。']],
       ['11:15', 'dME', 'type', '修改設計：把螺絲柱加厚', ['我把螺絲柱加厚了 0.2 公釐。改模具要花時間和錢，所以改之前要很確定。', '模具島的採購林佳蓉等一下會來問：這個修改是不是一定要做？我要說明為什麼要改。']]],
     pm: [['13:30', 'meet1', 'meet', '設計審查：外觀、機構、散熱、天線一起看', ['散熱工程師想把風扇加大，我要看看底殼裡還有沒有空間。機構設計就像在玩很精密的拼圖。'], { by: true }],
-      ['14:40', 'dME', 'type', '更新 3D 機構圖', ['審查會的結論要改進 3D 圖裡，再通知模具廠修改模具。']],
+      ['14:40', 'wbME', 'talk', '和 PM、採購確認修模的時程', ['螺絲柱加厚是為了通過落摔測試，一定要改。', '修改後的 3D 圖我今天就能給模具廠，可以幫他們省一點時間。']],
       ['15:10', 'f15', 'inspect', '到第 16 站看鍵盤上蓋（C 件）的組裝', ['我來看作業員組裝鍵盤上蓋（C 件）：卡勾好不好扣、螺絲好不好鎖。', '工程師在實驗室自己裝很順，不代表作業員一天裝幾百台也很順。試產就是要找出這種問題。']]],
     review: ['今天試產，第 16 站有幾台的卡勾不好扣。我回去把卡勾的角度修一點點。'],
     after: ['修改卡勾的設計', ['卡勾要好扣，又不能太鬆。我改好之後，下次試產再確認一次。']] },
@@ -4649,7 +4652,7 @@ const TL_PLAN = {
       ['10:00', 'cnc2', 'inspect', '到 CNC 區確認加工程式', ['CNC 照著我畫的 3D 圖，一刀一刀把鋼材削出模仁的形狀。我來確認加工程式和刀具對不對。']],
       ['11:00', 'dDesign', 'type', '估算修模：要改哪裡、要幾天', ['螺絲柱加厚 0.2 公釐，模具這一塊要重新放電加工，我估要 5 天、費用 3 萬元，已經報價給採購。']]],
     pm: [['13:20', 'injDes', 'inspect', 'T1 試模：檢查第一批打出來的外殼', ['T1 是第二次試模：用修過的模具打出外殼，看尺寸、毛邊和縮水。'], { by: true }],
-      ['15:40', 'mt0', 'meet', '和採購開會：修模的費用和交期', ['採購說 PM 只能接受延後 3 天，我們討論後決定加班，把修模從 5 天縮成 3 天。'], { by: true }],
+      ['15:40', 'mt0', 'meet', '和採購開會：修模的費用和交期', ['採購說 PM 和機構工程師確認過了：一定要修，但最多只能延 3 天。我們決定加班，把修模從 5 天縮成 3 天。'], { by: true }],
       ['16:40', 'dDesign', 'type', '畫修模圖', ['修模圖要標清楚改哪裡、改多少，現場的師傅才不會改錯。']]], leave: '18:00' },
   cnc: { first: ['到 CNC 區：檢查晚上跑完的加工', ['早安！機台晚上自己跑了 10 個小時的精加工，我先量量看尺寸。']],
     mtg: ['我報告：下蓋的模仁今天粗加工完成，晚上機台繼續跑精加工。'],
@@ -4683,15 +4686,15 @@ const TL_PLAN = {
     pm: [['13:00', 'mwDesk', 'desk', '登記試模件出貨', ['送了幾個、送給誰、哪一天，都要登記。']],
       ['15:00', 'yard', 'inspect', '點收貨車送回來的模具', ['送回來的模具要先檢查有沒有撞傷，再擦乾、上防鏽油。']],
       ['16:00', 'mw1', 'inspect', '把保養好的模具上架', ['模具放進倉庫前要擦乾、上防鏽油，不然會生鏽。']]] },
-  buyer: { first: ['到座位：看模具廠的報價和機構的修模需求', ['早安！機構工程師要修模，模具廠也寄來報價了，我先整理一下。']],
-    am: [['09:00', 'tlBoard', 'point', '更新模具時程表：T0、T1、修模、交模', ['這是模具時程表：T0 是第一次試模、T1 是第二次，修模之後才「交模」給量產用。', '採購要盯緊每一個日期，模具晚一天，量產就晚一天。']],
-      ['09:40', 'mt1', 'meet', '比較報價（成本）', ['模具廠的修模報價是 3 萬元。我會和以前類似的修模比一比，看看合不合理。', '採購的工作不只是「買」，還要確認價格、交期和品質都沒問題。']],
-      ['11:30', 'meVisit', 'talk', '到研發島找機構工程師，確認修模需求（ISSUE）', ['吳工程師，模具廠說螺絲柱加厚 0.2 公釐要修模：費用 3 萬元、要 5 天。', '這個修改一定要做嗎？有沒有不用改模具的方法？確認之後我才能下單。'], { key: true, by: true }]],
-    pm: [['13:20', 'injBuyer', 'inspect', '到試模區看 T1 試模', ['我來看 T1 試模：外殼有沒有問題，會影響要不要再修模、要多花多少錢。'], { by: true }],
-      ['14:45', 'pmVisit', 'talk', '到研發島找 PM，報告模具時程（SCHEDULE）', ['周經理，修模要 5 天，交模日會從 11/15 延到 11/20。', '這會不會影響 PVT？如果要趕，可以請模具廠加班，但費用會再增加一點。'], { key: true, by: true }],
-      ['15:10', 'dBuyer', 'type', '整理 PM 的決定', ['PM 說最多只能延後 3 天。我要回去和模具廠談：能不能加班趕工、費用多少。']],
-      ['15:40', 'mt1', 'meet', '和模具廠開會：議價、確認交期', ['模具廠願意加班，把修模縮成 3 天，費用談到 3 萬 2 千元，在預算裡。'], { by: true }],
-      ['16:40', 'dBuyer', 'type', '開採購單（PO）給模具廠', ['談好了就開「採購單」：寫清楚做什麼、多少錢、什麼時候交。模具廠收到採購單才會開工。']]], leave: '18:00' },
+  buyer: { first: ['到研發島的座位：看模具廠的報價、更新零件成本表', ['早安！我坐在研發島，跟著新機種「珊瑚」的專案走。', '機構工程師要修模，模具廠也寄來報價了，我先整理成本和交期。']],
+    am: [['09:00', 'dBuyer', 'type', '追新零件、治具的交期', ['除了模具，新機種還有好多新零件和產線治具要買。我每天都要追：廠商的產能夠不夠、會不會晚交。']],
+      ['09:40', 'mt1', 'meet', '走去模具島，和模具廠談修模報價（成本）', ['模具廠的修模報價是 3 萬元。我會和以前類似的修模比一比，看看合不合理。', '採購的工作不只是「買」，還要確認價格、交期和品質都沒問題。']],
+      ['11:30', 'meVisit', 'talk', '回研發島找機構工程師，確認修模需求（ISSUE）', ['吳工程師，模具廠說螺絲柱加厚 0.2 公釐要修模：費用 3 萬元、要 5 天。', '這個修改一定要做嗎？有沒有不用改模具的方法？確認之後我才能下單。'], { key: true, by: true }]],
+    pm: [['13:20', 'injBuyer', 'inspect', '到模具島看 T1 試模', ['我來看 T1 試模：外殼有沒有問題，會影響要不要再修模、要多花多少錢。'], { by: true }],
+      ['14:45', 'wbBuyer', 'talk', '和 PM、機構工程師一起確認模具時程（SCHEDULE）', ['模具廠說修模要 5 天，交模日會從 11/15 延到 11/20。時程要 PM 和機構工程師一起看，我不能自己決定。', '結論：一定要修，但最多只能延 3 天。我等一下去和模具廠談加班和價錢。'], { key: true, by: true }],
+      ['15:05', 'dBuyer', 'type', '打電話給模具廠，約好下午開會', ['我先打電話給模具廠：PM 和機構工程師確認過了，要請你們加班，把修模縮短成 3 天。']],
+      ['15:40', 'mt1', 'meet', '到模具島開會：議價、確認交期', ['模具廠願意加班，把修模縮成 3 天，費用談到 3 萬 2 千元，在預算裡。'], { by: true }],
+      ['16:40', 'dBuyer', 'type', '回研發島開採購單（PO）給模具廠', ['談好了就開「採購單」：寫清楚做什麼、多少錢、什麼時候交。模具廠收到採購單才會開工。', '最後再把新的交模日寄給 PM 和機構工程師，大家的時程才會一致。']]], leave: '18:00' },
 };
 function planToolDay() {
   const T = s => dAtClock(hm(s));
@@ -4699,15 +4702,16 @@ function planToolDay() {
     const P = npiPlanner(p), R = TL_PLAN[p.role], i = p.ti, buyer = p.role === 'buyer', host = p.role === 'tdesign';
     const step = ([clock, id, act, label, say, opt = {}]) => P.go(id, act, T(clock), label, { say, ...opt });
     const seat = p.desk || 'r' + i;            // 吃午餐的地方：有座位的人在座位上，其他人在午餐桌
-    P.go('tbus' + i, 'stand', T(buyer ? '08:20' : '07:50') + i * 0.25, '搭交通車到模具島', { hold: 0.6, say: ['早安！模具島在研發島的北邊，交通車每天早上送我們來上班。'] });
+    const bus = buyer ? 'nbus' : 'tbus' + i;  // 採購坐在研發島，從研發島的交通車站上下班
+    P.go(bus, 'stand', T(buyer ? '08:20' : '07:50') + i * 0.25, buyer ? '搭交通車到研發島' : '搭交通車到模具島', { hold: 0.6, say: ['早安！模具島在研發島的北邊，交通車每天早上送我們來上班。'] });
     if (!buyer) P.go(host ? 'tlBoard' : 'm' + (i - 1), host ? 'talk' : 'listen', T('08:10'), host ? '主持早會：今天的加工排程' : '早會：報告今天的工作', { by: true, key: host, say: host ? R.host : R.mtg });
     P.go(buyer ? p.desk : R.am[0][1], buyer ? 'type' : R.am[0][2], P.free, R.first[0], { say: R.first[1] });
     R.am.forEach(step);
     P.go(seat, 'eat', T('12:00'), '吃午餐', { say: [buyer ? '我在座位上吃便當，順便看模具廠寄來的修模照片。' : '模具廠的同事都在外面的午餐桌一起吃飯。'] });
     P.go(seat, buyer || host ? 'nap' : 'rest', T('12:30'), '午休', { say: ['（小聲）午休時間，休息一下，下午要試模……'] });
     R.pm.forEach(step);
-    P.go('tbus' + i, 'stand', T(R.leave || '17:30') + i * 0.15, '走到交通車站', { hold: 0.6, say: ['今天辛苦了！搭交通車下班囉。'] });
-    P.go('tbus' + i, 'gone', P.free, '搭交通車下班');
+    P.go(bus, 'stand', T(R.leave || '17:30') + i * 0.15, '走到交通車站', { hold: 0.6, say: ['今天辛苦了！搭交通車下班囉。'] });
+    P.go(bus, 'gone', P.free, '搭交通車下班');
   }
 }
 planToolDay();
@@ -5219,22 +5223,22 @@ function avatarHTML(p, cls) {
 // 人員名單分成三區（上方分頁）：工廠（含園區路人）、報關島、NPI 研發島；看 NPI 島的人時，名單就不會混著工廠的人
 let peopleArea = 'factory';
 const AREAS = [['factory', '🏭 工廠'], ['isle', '🛃 報關'], ['npi', '🧪 NPI'], ['tool', '🧰 模具']];
-const areaOf = p => p.npi ? 'npi' : p.tl ? 'tool' : p.isle ? 'isle' : 'factory';
+const areaOf = p => p.area || (p.npi ? 'npi' : p.tl ? 'tool' : p.isle ? 'isle' : 'factory');   // area：例外指定（例如採購的行程跟模具島一起排，但人坐在研發島）
 const ppItem = p => `<button class="pp-item" data-id="${p.id}">${avatarHTML(p, 'av')}<span class="pp-txt"><b>${displayName(p)}</b><small id="pa-${p.id}">${ROLES[p.role].title}</small></span><span class="met" id="pm-${p.id}">${DLG.met.has(p.id) ? '✓' : ''}</span></button>`;
 const ppHead = (c, t) => `<div class="zone-head"><span class="dot" style="background:${c}"></span>${t}</div>`;
 const ppTabs = (list, cur, key) => `<div class="pp-tabs">${list.map(([a, t]) => `<button class="pp-tab${a === cur ? ' on' : ''}" data-${key}="${a}">${t}</button>`).join('')}</div>`;
-const NPI_GROUPS = [['#B84F2D', '專案與試產', ['pm', 'pe']], ['#5B8DB8', '硬體設計', ['idd', 'me', 'thermal', 'ee', 'layout', 'rf']],
+const NPI_GROUPS = [['#B84F2D', '專案、採購與試產', ['pm', 'tl_buyer', 'pe']], ['#5B8DB8', '硬體設計', ['idd', 'me', 'thermal', 'ee', 'layout', 'rf']],
   ['#0F766E', '韌體與軟體', ['bios', 'sw']], ['#EA580C', '測試與認證', ['tester', 'cert']]];
-const TL_GROUPS = [[TL_COLOR, '模具廠', ['tdesign', 'cnc', 'edm', 'polish', 'tryout', 'moldkeeper']], ['#0E87C4', '採購', ['buyer']]];
+const TL_GROUPS = [[TL_COLOR, '模具廠', ['tdesign', 'cnc', 'edm', 'polish', 'tryout', 'moldkeeper']]];
 const tlPeopleHTML = () => TL_GROUPS.map(([c, t, roles]) => ppHead(c, t) + roles.map(r => ppItem(PEOPLE_BY_ID['tl_' + r])).join('')).join('');
-const npiPeopleHTML = () => NPI_GROUPS.map(([c, t, roles]) => ppHead(c, t) + roles.map(r => ppItem(PEOPLE_BY_ID['npi_' + r])).join('')).join('');
+const npiPeopleHTML = () => NPI_GROUPS.map(([c, t, roles]) => ppHead(c, t) + roles.map(r => ppItem(PEOPLE_BY_ID[r.includes('_') ? r : 'npi_' + r])).join('')).join('');
 function buildPeopleList() {
   listMode = 'people'; $('panelTitle').textContent = state.play ? '🎯 聊天任務' : '👷 人員名單';
   const a = peopleArea;
   const body = a === 'tool'
-    ? ppHead(TL_COLOR, state.play ? '模具島（從研發島往北過步行橋）' : '模具島：7 個人（點一下看他的一天）') + tlPeopleHTML()
+    ? ppHead(TL_COLOR, state.play ? '模具島（從研發島往北過步行橋）' : '模具島：6 個人（點一下看他的一天）') + tlPeopleHTML()
     : a === 'npi'
-    ? ppHead('#8074A7', state.play ? 'NPI 研發島（從員工出入口往東過步行橋）' : 'NPI 研發島：12 位研發人員（點一下看他的一天）') + npiPeopleHTML()
+    ? ppHead('#8074A7', state.play ? 'NPI 研發島（從員工出入口往東過步行橋）' : 'NPI 研發島：12 位研發人員＋NPI 採購（點一下看他的一天）') + npiPeopleHTML()
     : a === 'isle'
       ? ppHead('#2F6F8F', state.play ? '報關島（從出貨碼頭過橋就到了）' : '報關島') + AMBIENT.filter(p => p.isle).map(ppItem).join('')
       : ppHead('#D96B45', state.play ? '主要人物（點名字就會走過去找他）' : '主要人物（點一下聽他說話）')
@@ -5289,7 +5293,7 @@ function personHTML(p) {
   const top = `<button class="mini close-x" id="btnUnsel" title="回到整體狀況">✕</button>
     <div class="person-head">${avatarHTML(p, 'portrait')}
       <div><span class="zone-tag" style="--c:${R.color}">${R.title}・${R.en}</span>
-      <h2>${displayName(p)}</h2>${p.portrait ? '<div class="en">虛構人物・肖像由 Codex 繪製</div>' : p.ambient ? `<div class="en">${p.isle ? '報關島' : '園區路人'}</div>` : p.npi ? '<div class="en">虛構人物・NPI 研發島</div>' : p.tl ? '<div class="en">虛構人物・模具島</div>' : ''}</div></div>
+      <h2>${displayName(p)}</h2>${p.portrait ? '<div class="en">虛構人物・肖像由 Codex 繪製</div>' : p.ambient ? `<div class="en">${p.isle ? '報關島' : '園區路人'}</div>` : p.walker ? `<div class="en">虛構人物・${areaOf(p) === 'npi' ? 'NPI 研發島' : '模具島'}</div>` : ''}</div></div>
     <div class="status" id="infoStatus"></div>
     ${state.play ? '' : '<button class="btn follow" id="btnFollow">🎥 鏡頭跟隨</button>'}
     <h3>🧑‍🏭 工作內容</h3><p>${R.duty}</p>`;
@@ -5486,7 +5490,7 @@ function updateDayUI() {
   } else {
     setInfo('sc-' + si + peopleArea, sceneHTML(s));
     $('infoStatus').innerHTML = `${alarm ? '🔴 <b>異常停線</b>' : run ? '🟢 <b>產線運轉中</b>' : '🟡 <b>產線停止</b>'}　今日產量 <b>${out}</b> 台`;
-    const who = peopleArea === 'tool' ? TL_PEOPLE : peopleArea === 'npi' ? NPI_PEOPLE : peopleArea === 'isle' ? AMBIENT.filter(p => p.isle) : MAIN_ORDER.map(id => PEOPLE_BY_ID[id]);   // 跟著名單的分區
+    const who = peopleArea === 'tool' || peopleArea === 'npi' ? PEOPLE.filter(p => p.walker && areaOf(p) === peopleArea) : peopleArea === 'isle' ? AMBIENT.filter(p => p.isle) : MAIN_ORDER.map(id => PEOPLE_BY_ID[id]);   // 跟著名單的分區
     $('whoList').innerHTML = who.map(p => `<li><b>${displayName(p)}</b>${p.ambient ? '' : `（${ROLES[p.role].title}）`}：${activityText(p)}</li>`).join('');
   }
 }
@@ -5844,9 +5848,9 @@ const TL_STEPS = [
     meet: [['tryout', '13:40'], ['tdesign', '13:40'], ['buyer', '13:40']], clock: '13:40' },
   { phase: 'try', title: '修模：成本、時程、問題一起解決', en: 'Mold Modification', at: new THREE.Vector3(86, 0.5, -52.4), off: new THREE.Vector3(4, 10, 12),
     who: '採購、機構工程師、PM、模具廠', docs: '修模單、模具承認書',
-    what: '試模發現問題，機構工程師決定要不要改設計（ISSUE）；採購請模具廠報價、議價（成本）；PM 看修模的天數會不會影響整個專案（SCHEDULE）。三方都同意了，才開單修模。修到外殼合格，客戶簽「模具承認書」。',
+    what: '試模發現問題，機構工程師決定要不要改設計（ISSUE）；採購請模具廠報價、議價（成本）；修模的天數由 PM 和機構工程師一起確認會不會影響整個專案（SCHEDULE）。三方都同意了，才開單修模。修到外殼合格，客戶簽「模具承認書」。',
     why: '修模又花錢又花時間。採購、機構和 PM 把資訊對齊，才能用最少的錢、最短的時間解決問題。',
-    tip: '今天的人員一日裡，採購林佳蓉就在處理這件事：11:30 問機構、14:45 問 PM、15:40 和模具廠談加班。',
+    tip: '今天的人員一日裡，NPI 採購林佳蓉（坐在研發島）就在處理這件事：11:30 問機構工程師、14:45 和 PM、機構工程師在時程看板前一起看時程、15:40 到模具島談加班。',
     meet: [['buyer', '15:50'], ['tdesign', '15:50']], clock: '15:50' },
   { phase: 'mp', title: '交模：入模具倉、送量產', en: 'Mold Release & Storage', at: new THREE.Vector3(64, 0.5, -68), off: new THREE.Vector3(6, 13, 15),
     who: '模具倉管員、貨車司機', docs: '模具履歷卡',
@@ -5987,7 +5991,7 @@ const Q_LEVELS = [
     tasks: [
       { q: '模具廠的修模報價，比預算高了 20%（成本）', a: 'tl_buyer', hint: '要找負責和廠商談價錢的人。', why: '採購負責比價、議價，把成本控制在預算裡。' },
       { q: '試模的外殼，螺絲柱太薄、卡勾扣不緊（ISSUE）', a: 'npi_me', hint: '要找設計外殼零件的人。', why: '機構工程師判斷要怎麼改設計，再請模具廠照著修模。' },
-      { q: '修模要多 5 天，可能趕不上 PVT（SCHEDULE）', a: 'npi_pm', hint: '要找管整個專案時程的人。', why: 'PM 看整個專案的時程，決定能延幾天，或請模具廠加班趕工。' },
+      { q: '修模要多 5 天，可能趕不上 PVT（SCHEDULE）', a: 'npi_pm', hint: '要找管整個專案時程的人。', why: 'PM 管整個專案的時程：和機構工程師一起確認修模要多久，再決定能延幾天，或請模具廠加班趕工。' },
     ],
     done: '全對！採購顧成本、機構工程師解問題、PM 顧時程。三個人把資訊對齊，模具才能又快又省地交出來。' },
 ];
@@ -6316,7 +6320,7 @@ const TREASURES = [                            // 寶箱代碼依照這個順序
   ...NPI_DOC_LIST.map(([id, icon, name, at, desc, hint]) => ({ id, cat: 'doc', rar: 1, icon, name, at, desc, hint })),
   // 第 13 版新增（只能加在最後面）：模具島的 7 張人物卡、6 張文件卡、闖關第 7 關的徽章
   ...TL_DEF.map(d => d.role).map(r => ({ id: 'p_' + r, cat: 'person', rar: 2, icon: ROLES[r].emoji, name: ROLES[r].title, desc: ROLES[r].duty,
-    hint: `到模具島和「${ROLES[r].title}」聊聊天（從研發島往北過步行橋）` })),
+    hint: r === 'buyer' ? '到 NPI 研發島和「NPI 採購」聊聊天（座位在 PM 旁邊，有時會走去模具島）' : `到模具島和「${ROLES[r].title}」聊聊天（從研發島往北過步行橋）` })),
   ...TL_DOC_LIST.map(([id, icon, name, at, desc, hint]) => ({ id, cat: 'doc', rar: 1, icon, name, at, desc, hint })),
   ...Q_LEVELS.slice(6).map((L, k) => ({ id: 'q' + (k + 7), cat: 'badge', rar: 2, icon: BADGE_ICONS[k + 6], name: `${L.title}徽章`, desc: L.done, hint: `通過新人闖關第 ${k + 7} 關「${L.title}」` })),
 ];
