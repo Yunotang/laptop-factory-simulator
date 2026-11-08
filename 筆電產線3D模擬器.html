@@ -37,6 +37,8 @@
   .modes{display:flex;gap:4px;padding:5px;flex-wrap:wrap;justify-content:flex-end;backdrop-filter:blur(10px)}
   .seg{border:0;background:transparent;padding:9px 14px;border-radius:13px;color:var(--text-2);font-weight:700;font-size:14px;white-space:nowrap}
   .seg.active{background:var(--ink);color:#FFFDFA}
+  .seg-sep{flex:none;width:1px;align-self:stretch;margin:7px 3px;background:var(--line)}   /* 按鈕分組的細線 */
+  #btnPlaces{display:none}
   .seg:hover:not(.active){background:var(--panel-tint)}
 
   /* ---------- 左側清單 ---------- */
@@ -133,6 +135,7 @@
   .pill{font-size:12.5px;font-weight:800;padding:3px 10px;border-radius:999px;background:var(--sage-soft);color:#3F6B4A}
   .pill.stop{background:var(--yellow-soft);color:#8A5A12}
   .pill.alarm{background:#F8DDD6;color:#9E3326}
+  .pill.isle{background:var(--panel-soft);color:var(--text-2)}
   .pp-item{display:flex;align-items:center;gap:10px;width:100%;border:0;border-left:3px solid transparent;background:transparent;text-align:left;padding:6px 8px;border-radius:12px}
   .pp-item:hover{background:var(--panel-tint)}
   .pp-item.current{background:var(--coral-soft);border-left-color:var(--coral)}
@@ -169,6 +172,7 @@
   .isle-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
   .isle-btn{display:flex;align-items:center;gap:10px;text-align:left;border:1px solid var(--line);background:#FFFDFA;border-radius:14px;padding:10px 12px;cursor:pointer;color:var(--text)}
   .isle-btn:hover{background:var(--panel-tint)}
+  @media (max-width:480px){.isle-grid{grid-template-columns:1fr;gap:8px}.isle-btn{padding:8px 12px}}   /* 手機：選島、選地點一排一個，島名才不會斷成兩行 */
   .isle-btn .ic{font-size:26px;flex:none}
   .isle-btn b{display:block;font-size:15px}
   .isle-btn small{display:block;font-size:12px;color:var(--muted);line-height:1.35}
@@ -258,14 +262,17 @@
     .brand p{display:none}
     .seg{padding:9px 10px}
   }
-  @media (max-width:1400px){                   /* v18 多了海外島按鈕：1280 寬的筆電再收緊一點，維持一排 */
-    .seg{padding:9px 7px}
+  @media (max-width:1400px){                   /* 1280 寬的筆電：四座島收進「🏝️ 去哪座島」，工具列維持一排（v21） */
     .seg .ic{margin-right:3px}
+    .seg-isle{display:none}
+    #btnPlaces{display:inline-block}
+    #dayBar .tl-note{display:none}             /* 時間列：看海外島時字比較多，收掉「縮時播放」才放得下一排 */
   }
   @media (max-width:1180px){
     #infoCard{width:320px}
     #stationPanel{width:210px}
     .brand>div{display:none}                   /* 再窄一點：只留 NB 標誌 */
+    .seg{padding:9px 8px}                      /* 直立的平板（820～1180）：按鈕留白小一點，工具列才放得下一排 */
     .brand{padding:10px}
   }
   /* 手機版才用到的元件：電腦版先藏起來 */
@@ -287,6 +294,8 @@
     .seg .sh{display:block}
     #btnMenu{display:flex}
     #btnFree{display:none}                     /* 手機版按鈕太擠：自由參觀改從「☰ 清單」進去 */
+    #btnPlaces{display:flex}
+    #btnOverview,.seg-sep,.seg-isle{display:none}   /* 手機：全景和四座島都收進「🏝️ 地點」，一排 7 顆，每顆夠大、好點 */
     /* 站點／人員名單：從左邊滑出的抽屜 */
     #stationPanel,#stationPanel.collapsed{top:0;left:0;bottom:0;width:min(84vw,320px);max-height:none;border-radius:0 20px 20px 0;z-index:16;transition:transform .25s ease}
     #stationPanel.collapsed{transform:translateX(-105%)}
@@ -374,6 +383,8 @@
   .pp-tab{flex:1;min-width:0;border:0;background:transparent;border-radius:9px;padding:6px 2px;font-size:12.5px;font-weight:800;color:var(--text-2);white-space:nowrap;cursor:pointer}
   .pp-tab:hover:not(.on){background:var(--panel-tint)}
   .pp-tab.on{background:var(--ink);color:#FFFDFA}
+  .pp-tabs.many .pp-tab{display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 0 4px;font-size:12px;line-height:1.1}
+  .pp-tabs.many .pp-tab .ic{font-size:15px;line-height:1}
   .pp-note{margin:4px 8px 2px;font-size:12px;line-height:1.5;color:var(--muted)}
   /* NPI 島導覽：說明卡下方「看看他們的一天」人物按鈕 */
   .npi-who{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
@@ -477,21 +488,25 @@
     <div class="logo">NB</div>
     <div>
       <h1>筆電產線 3D 模擬器</h1>
-      <p>從 PCB 打板、SMT、組裝、測試到包裝出貨的完整旅程</p>
+      <p>一台筆電從研發、生產、通關出國到顧客手上的旅程</p>
     </div>
   </div>
-  <!-- 每個按鈕有兩種文字：.lg 電腦版的完整名稱、.sh 手機版的短名稱（圖示在上、字在下） -->
+  <!-- 每個按鈕有兩種文字：.lg 電腦版的完整名稱、.sh 手機版的短名稱（圖示在上、字在下）
+       分成三組（v21）：怎麼看（模式）｜去哪裡（地點）｜工具；螢幕不夠寬時，四座島收進「🏝️ 去哪座島」 -->
   <div class="modes card">
     <button class="seg" id="btnMenu" aria-label="站點／人員名單"><span class="ic">☰</span><span class="sh">清單</span></button>
     <button class="seg active" id="btnTour"><span class="ic">🎬</span><span class="lg">導覽模式</span><span class="sh">導覽</span></button>
     <button class="seg" id="btnFree"><span class="ic">🧭</span><span class="lg">自由參觀</span><span class="sh">參觀</span></button>
     <button class="seg" id="btnDay"><span class="ic">👷</span><span class="lg">人員一日</span><span class="sh">人員</span></button>
-    <button class="seg" id="btnCustoms"><span class="ic">🛃</span><span class="lg">報關島</span><span class="sh">報關</span></button>
-    <button class="seg" id="btnNpi"><span class="ic">🧪</span><span class="lg">NPI 島</span><span class="sh">NPI</span></button>
-    <button class="seg" id="btnTool"><span class="ic">🧰</span><span class="lg">模具島</span><span class="sh">模具</span></button>
-    <button class="seg" id="btnOv"><span class="ic">🌍</span><span class="lg">海外島</span><span class="sh">海外</span></button>
-    <button class="seg" id="btnOverview"><span class="ic">🗺️</span><span class="lg">全景</span><span class="sh">全景</span></button>
     <button class="seg seg-quest" id="btnQuest"><span class="ic">🏆</span><span class="lg">新人闖關</span><span class="sh">闖關</span></button>
+    <span class="seg-sep"></span>
+    <button class="seg" id="btnOverview"><span class="ic">🗺️</span><span class="lg">全景</span><span class="sh">全景</span></button>
+    <button class="seg seg-isle" id="btnCustoms"><span class="ic">🛃</span><span class="lg">報關島</span><span class="sh">報關</span></button>
+    <button class="seg seg-isle" id="btnNpi"><span class="ic">🧪</span><span class="lg">NPI 研發島</span><span class="sh">NPI</span></button>
+    <button class="seg seg-isle" id="btnTool"><span class="ic">🧰</span><span class="lg">模具島</span><span class="sh">模具</span></button>
+    <button class="seg seg-isle" id="btnOv"><span class="ic">🌍</span><span class="lg">海外市場島</span><span class="sh">海外</span></button>
+    <button class="seg" id="btnPlaces" title="選一座島去看看"><span class="ic">🏝️</span><span class="lg">去哪座島</span><span class="sh">地點</span></button>
+    <span class="seg-sep"></span>
     <button class="seg" id="btnChest" title="我的寶箱（寶物圖鑑）"><span class="ic">🎒</span><span class="lg">寶箱</span><span class="sh">寶箱</span><span class="cnt" id="chestCnt"></span></button>
     <button class="seg" id="btnHelp"><span class="ic">❓</span><span class="lg">說明</span><span class="sh">說明</span></button>
   </div>
@@ -579,22 +594,31 @@
     <div style="text-align:right;margin-top:14px"><button class="btn" id="isleClose">取消</button></div>
   </div>
 </div>
+<div id="placeModal" class="modal hidden">
+  <div class="card">
+    <h2>🏝️ 要去哪裡看？</h2>
+    <p style="margin-top:6px;color:var(--muted)">選一個地方，鏡頭就會飛過去，跟著導覽一步一步看。</p>
+    <div class="isle-grid" id="placeGrid"></div>
+    <div style="text-align:right;margin-top:14px"><button class="btn" id="placeClose">取消</button></div>
+  </div>
+</div>
 <div id="helpModal" class="modal hidden">
   <div class="card">
     <h2>❓ 操作說明</h2>
-    <p>這是一座「虛擬筆電工廠」。一片銅箔基板會依序經過 <b>6 大區、23 個站</b>，最後變成裝箱好、可以出貨的筆電；再開過大橋到<b>報關島</b>通關，吊上貨船出國。工廠東邊的 <b>NPI 研發島</b>，則是新筆電從設計到量產的地方。</p>
+    <p>這是一座「虛擬筆電園區」，有一座工廠和四座島。一片銅箔基板在<b>工廠</b>經過 <b>6 大區、23 個站</b>，變成裝箱好的筆電；再開過大橋到<b>報關島</b>通關，吊上貨船，送到<b>海外市場島</b>賣給顧客。工廠東邊的 <b>NPI 研發島</b>是新筆電從設計到量產的地方，北邊的<b>模具島</b>做筆電外殼的模具。</p>
     <ul>
-      <li><b>🗺️ 首頁／全景</b>：一打開是乾淨的園區全景（報關島＋工廠＋NPI 研發島）。在「我想去哪裡？」選一種體驗或一個地方，按「出發」；隨時按上方的「全景」回到這裡。</li>
-      <li><b>🎬 導覽模式</b>：鏡頭自動跟著「示範機」（頭上有黃色箭頭）走完全程，右邊的卡片會解說每一站。</li>
-      <li><b>🧭 自由參觀</b>：滑鼠<b>左鍵拖曳</b>旋轉、<b>右鍵拖曳</b>平移、<b>滾輪</b>縮放（手機：<b>單指拖曳</b>旋轉、<b>雙指</b>縮放與平移）；<b>點任一台機器或島上的設備、建築</b>就會飛過去並顯示說明（島上的設備有自己的介紹）；清單上方有工廠、報關島、NPI 島、模具島、海外島五個分頁。</li>
-      <li><b>🏆 新人闖關</b>：7 分鐘、7 個關卡，用遊戲認識筆電工廠：報到流程、6 大區的順序、出事要找誰、品檢找碴、出貨防呆、到報關島通關放行，最後到模具島處理模具問題。每過一關會掉一個寶物，完成後可以下載結業證書（排行榜下一版開放）。</li>
+      <li><b>🗺️ 首頁／全景</b>：一打開是乾淨的園區全景，五個地方都看得到。在「我想去哪裡？」選一種體驗或一個地方，按「出發」；隨時按上方的「🗺️ 全景」回到這裡。上方的按鈕分成三組：怎麼看（導覽、參觀、人員一日、闖關）｜去哪裡（全景和四座島；螢幕不夠寬時收在「🏝️ 去哪座島」裡）｜寶箱和說明。</li>
+      <li><b>🎬 導覽模式</b>：鏡頭自動跟著「示範機」（頭上有黃色箭頭）走完工廠全程，右邊的卡片會解說每一站。</li>
+      <li><b>🧭 自由參觀</b>：滑鼠<b>左鍵拖曳</b>旋轉、<b>右鍵拖曳</b>平移、<b>滾輪</b>縮放（手機：<b>單指拖曳</b>旋轉、<b>雙指</b>縮放與平移）；<b>點任一台機器或島上的設備、建築</b>就會飛過去並顯示說明；清單上方有工廠、報關、NPI、模具、海外五個分頁。</li>
+      <li><b>👷 人員一日</b>：用縮時方式看工廠人員的一天（兩班制日班 08:00–20:00）：打卡、換靜電衣、早會、生產、休息用餐、處理機台異常，一直到交接班下班。點左邊名單或畫面中的人物，會跳出<b>對話框</b>聽他說現在在做什麼。名單上方可以換到其他島的人；頭上有「<b>！</b>」的人正在做重要的事。</li>
+      <li><b>🎮 下場走走</b>：先選要去哪座島，扮演一位參觀者走走看。<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> 或方向鍵走路，按住 <kbd>Shift</kbd> 跑步；靠近人按 <kbd>E</kbd> 聊天。滑鼠或手機：<b>點地板</b>自動走過去，<b>點人物</b>就走過去和他聊天。走路時按「🧭 換島」可以換到別座島；左邊的「聊天任務」會記錄你聊過誰。</li>
       <li><b>🛃 報關島</b>：筆電做好之後怎麼合法出國？跟著 10 個步驟看出口通關（C1／C2／C3、X 光查驗、放行、吊上船），以及零件進口、保稅倉。島上貨櫃車的車頭顏色，就是它被分到的通道。</li>
-      <li><b>🧰 模具島</b>：筆電外殼是塑膠打進「模具」做出來的。跟著 8 個步驟看模具怎麼報價下單、設計、CNC 加工、放電加工、拋光、試模、修模，最後入模具倉、用貨車送到工廠北側的進料區；左邊「模具島人員」分頁可以直接選人，看採購怎麼在模具廠、機構工程師和 PM 之間協調成本、問題和時程。</li>
-      <li><b>🧪 NPI 島</b>：一台新筆電在量產之前，要經過開案、設計、三次試產（EVT／DVT／PVT）才能量產。跟著 9 個步驟看外觀、機構、電路、佈線、天線、散熱、韌體、軟體、測試、認證、PM、試產工程師這 12 種研發人員在做什麼；點說明卡下方的人物，就能跳到「人員一日」看他一整天的行程。</li>
-      <li><b>🎒 寶箱</b>：像寶可夢圖鑑一樣收集 94 個寶物，有三種拿法：① <b>新人闖關</b>每過一關拿 1 個徽章；② <b>人員一日 → 🎮 下場走走</b>，走到工站旁、報關島、NPI 研發島和模具島，地上發光的寶石就是零件卡、文件卡；③ 和每一種角色<b>聊天</b>拿人物卡。打開寶箱可以看還缺哪些、去哪裡找。寶箱記在這台裝置的瀏覽器裡，也可以用「寶箱代碼」備份。</li>
-      <li><b>📱 手機</b>：左上角 <b>☰ 清單</b>打開站點或人員名單；下方說明卡平常收合，<b>點一下</b>展開完整說明；速度按鈕點一下就切換 0.5×～4×。</li>
-      <li><b>👷 人員一日</b>：用縮時方式看工廠人員的一天（兩班制日班 08:00–20:00）：打卡、換靜電衣、早會、生產、休息用餐、處理機台異常，一直到交接班下班。點左邊名單或畫面中的人物，會跳出<b>對話框</b>聽他說現在在做什麼，右邊也會顯示他的肖像和行程。頭上有「<b>！</b>」的人正在做重要的事。</li>
-      <li><b>🎮 下場走走</b>（在人員一日的時間列上）：扮演一位參觀者走進工廠。<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> 或方向鍵走路，按住 <kbd>Shift</kbd> 跑步；靠近人按 <kbd>E</kbd> 聊天。滑鼠或手機：<b>點地板</b>自動走過去，<b>點人物</b>就走過去和他聊天。左邊的「聊天任務」會記錄你聊過誰。</li>
+      <li><b>🧪 NPI 研發島</b>：一台新筆電在量產之前，要經過開案、設計、三次試產（EVT／DVT／PVT）才能量產。跟著 9 個步驟看外觀、機構、電路、佈線、天線、散熱、韌體、軟體、測試、認證、PM、試產工程師這 12 種研發人員在做什麼；點說明卡下方的人物，就能跳到「人員一日」看他一整天的行程。</li>
+      <li><b>🧰 模具島</b>：筆電外殼是塑膠打進「模具」做出來的。跟著 8 個步驟看模具怎麼報價下單、設計、CNC 加工、放電加工、拋光、試模、修模，最後入模具倉、用貨車送到工廠北側的進料區；左邊「模具島人員」分頁可以直接選人。</li>
+      <li><b>🌍 海外市場島</b>：筆電出國之後，怎麼到顧客手上？跟著 14 個步驟看：貨船靠岸、進口通關、貨機和空運貨運站、經銷商倉庫點收上架、揀貨送到門市，零售店的行銷檔期與促銷、業務巡門市、門市活動，最後是維修中心的售後服務和 RMA 的後續。店裡的促銷檔期可以切換（開學季、新品上市、黑色星期五、年終）。</li>
+      <li><b>🏆 新人闖關</b>：大約 8 分鐘、8 個關卡，用遊戲認識筆電工廠：報到流程、6 大區的順序、出事要找誰、品檢找碴、出貨防呆、到報關島通關放行、到模具島處理模具問題，最後到海外市場島把筆電送到顧客手上。每過一關會掉一個寶物，完成後可以下載結業證書（排行榜下一版開放）。</li>
+      <li><b>🎒 寶箱</b>：像寶可夢圖鑑一樣收集 94 個寶物，有三種拿法：① <b>新人闖關</b>每過一關拿 1 個徽章；② <b>🎮 下場走走</b>，在工廠和四座島上，地上發光的寶石就是零件卡、文件卡；③ 和每一種角色<b>聊天</b>拿人物卡。打開寶箱可以看還缺哪些、去哪裡找。寶箱記在這台裝置的瀏覽器裡，也可以用「寶箱代碼」備份。</li>
+      <li><b>📱 手機</b>：左上角 <b>☰ 清單</b>打開站點或人員名單（自由參觀也在這裡）；<b>🏝️ 地點</b>可以回到全景或去四座島；下方說明卡平常收合，<b>點一下</b>展開完整說明；速度按鈕點一下就切換 0.5×～4×。</li>
       <li><b>下方進度條</b>可以點擊或拖曳，直接跳到任何階段。</li>
       <li>勾選<b>「每站自動暫停」</b>，示範機每到一站就會停下來，適合簡報時一站一站講解。</li>
       <li>快捷鍵：<kbd>空白鍵</kbd> 播放 / 暫停，<kbd>←</kbd> <kbd>→</kbd> 上一站 / 下一站。</li>
@@ -1387,7 +1411,7 @@ function zoneLabel(no, text, sub, color) {
     g.fillStyle = 'rgba(255,253,250,.97)'; rrect(g, 6, 6, W - 12, H - 12, 52); g.fill();
     g.strokeStyle = '#E2D6CB'; g.lineWidth = 3; rrect(g, 6, 6, W - 12, H - 12, 52); g.stroke();
     g.fillStyle = color; g.beginPath(); g.arc(70, 75, 44, 0, Math.PI * 2); g.fill();
-    g.fillStyle = '#FFFDFA'; g.font = `italic bold 50px Georgia, serif`; g.textAlign = 'center'; g.fillText(no, 70, 92); g.textAlign = 'left';
+    g.fillStyle = '#FFFDFA'; g.font = `italic bold ${no.length > 2 ? 30 : 50}px Georgia, serif`; g.textAlign = 'center'; g.fillText(no, 70, no.length > 2 ? 86 : 92); g.textAlign = 'left';
     g.fillStyle = '#282322'; g.font = `900 50px ${FONT}`; g.fillText(text, 134, 78);
     g.fillStyle = '#8A7F78'; g.font = `bold 26px ${FONT}`; g.fillText(sub, 136, 116);
   });
@@ -1494,12 +1518,16 @@ for (const st of STATIONS) {
   m.renderOrder = -1;
 }
 // 區域名稱（懸浮在每一區的上方）
-ZONES.forEach((z, zi) => {
+//   鏡頭拉遠（園區全景）時，6 區的名牌會疊成一團 → 改成只顯示一個「筆電工廠」名牌（在 updateEnvironment 切換，v21）
+const ZONE_LBS = ZONES.map((z, zi) => {
   const sts = STATIONS.filter(s => s.zone === z.id);
   const x = sts.reduce((a, s) => a + s.x, 0) / sts.length;
   const lb = zoneLabel(String(zi + 1), `${z.name}區`, z.en, z.color);
   lb.position.set(x, 4.6, sts[0].z); scene.add(lb);
+  return lb;
 });
+const FACTORY_LB = zoneLabel('1–6', '筆電工廠', 'Laptop Factory・6 大區、23 站', '#D96B45');
+FACTORY_LB.position.set(0, 8, 0); FACTORY_LB.visible = false; scene.add(FACTORY_LB);
 // 原料倉
 (() => {
   const g = new THREE.Group(); g.position.set(-20.5, 0, -13.5); scene.add(g);
@@ -4896,6 +4924,28 @@ function evalAmbient(p, A, o) {
   o.pos.y = groundY(o.pos.x, o.pos.z); o.sitY = p.sitY;
   return o;
 }
+// 名牌太擠時（好幾個人站在一起），只留離鏡頭近的，被擋住的先收起來，名字才不會疊成一團（v21）
+//   正在看、正在跟、正在聊天的人一定留著；上一格有顯示的名牌稍微優先，人走來走去時名牌才不會一直閃
+const _tg = new THREE.Vector3(), _tags = [];
+function declutterTags() {
+  const W = renderer.domElement.clientWidth, H = renderer.domElement.clientHeight;
+  const k = H / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)));   // 名牌的大小（sizeAttenuation: false）換算成像素
+  _tags.length = 0;
+  for (const p of PEOPLE) {
+    const t = p.fig.tag; if (!t || !t.visible || !p.fig.root.visible) continue;
+    t.getWorldPosition(_tg); const d = _tg.distanceTo(camera.position); _tg.project(camera);
+    if (_tg.z > 1 || Math.abs(_tg.x) > 1.2 || Math.abs(_tg.y) > 1.2) continue;   // 在鏡頭後面或畫面外：不用比
+    const keep = p.id === state.selPerson || p.id === state.follow || (DLG.open && DLG.who === p.id);
+    _tags.push({ t, x: (_tg.x + 1) / 2 * W, y: (1 - _tg.y) / 2 * H, w: t.scale.x * k, h: t.scale.y * k, s: keep ? -1 : d * (t.userData.shown ? 0.85 : 1) });
+  }
+  _tags.sort((a, b) => a.s - b.s);
+  const kept = [];
+  for (const a of _tags) {
+    const hit = kept.some(b => Math.abs(a.x - b.x) * 2 < a.w + b.w + 4 && Math.abs(a.y - b.y) * 2 < a.h + b.h + 2);
+    a.t.visible = !hit; a.t.userData.shown = !hit;
+    if (!hit) kept.push(a);
+  }
+}
 function updateAmbient(time) {
   const clock = state.mode === 'day' ? clockAt(state.D) : hm('11:00');
   for (const p of AMBIENT) {
@@ -6032,7 +6082,10 @@ const AREAS = [['factory', '🏭 工廠'], ['isle', '🛃 報關'], ['npi', '�
 const areaOf = p => p.area || (p.npi ? 'npi' : p.tl ? 'tool' : p.ov ? 'ov' : p.isle ? 'isle' : 'factory');   // area：例外指定（例如採購的行程跟模具島一起排，但人坐在研發島）
 const ppItem = p => `<button class="pp-item" data-id="${p.id}">${avatarHTML(p, 'av')}<span class="pp-txt"><b>${displayName(p)}</b><small id="pa-${p.id}">${ROLES[p.role].title}</small></span><span class="met" id="pm-${p.id}">${DLG.met.has(p.id) ? '✓' : ''}</span></button>`;
 const ppHead = (c, t) => `<div class="zone-head"><span class="dot" style="background:${c}"></span>${t}</div>`;
-const ppTabs = (list, cur, key) => `<div class="pp-tabs">${list.map(([a, t]) => `<button class="pp-tab${a === cur ? ' on' : ''}" data-${key}="${a}">${t}</button>`).join('')}</div>`;
+// 分頁 4 個以上（工廠＋四座島）時，圖示放上面、字放下面：一排五個也不會擠成一團（v21）
+const ppTabs = (list, cur, key) => { const many = list.length > 3;
+  return `<div class="pp-tabs${many ? ' many' : ''}">${list.map(([a, t]) => { const [ic, ...w] = t.split(' ');
+    return `<button class="pp-tab${a === cur ? ' on' : ''}" data-${key}="${a}">${many ? `<span class="ic">${ic}</span><span>${w.join(' ')}</span>` : t}</button>`; }).join('')}</div>`; };
 const NPI_GROUPS = [['#B84F2D', '專案、採購與試產', ['pm', 'tl_buyer', 'pe']], ['#5B8DB8', '硬體設計', ['idd', 'me', 'thermal', 'ee', 'layout', 'rf']],
   ['#0F766E', '韌體與軟體', ['bios', 'sw']], ['#EA580C', '測試與認證', ['tester', 'cert']]];
 const TL_GROUPS = [[TL_COLOR, '模具廠', ['tdesign', 'cnc', 'edm', 'polish', 'tryout', 'moldkeeper']]];
@@ -6131,7 +6184,7 @@ function playHTML() {                          // 下場走走：還沒選人時
     <div class="status" id="infoStatus"></div>
     <h3>🕹️ 怎麼玩</h3><ul>${how}</ul>
     <h3>🎯 聊天任務</h3><p>和左邊名單裡的人都聊聊看。頭上有「<b>！</b>」的人正在做重要的事，先去找他！每認識一種角色，寶箱就多一張<b>人物卡</b>。</p>
-    <h3>🎒 撿寶物</h3><p>地上發光的寶石就是寶物，走過去就能撿：藍色是<b>零件卡</b>，藏在各工站旁邊；橘色是<b>文件卡</b>，在出貨碼頭、報關島（從碼頭過橋）、NPI 研發島（從員工出入口往東過步行橋）和模具島（從研發島往北過步行橋）。</p>
+    <h3>🎒 撿寶物</h3><p>地上發光的寶石就是寶物，走過去就能撿：藍色是<b>零件卡</b>，藏在各工站旁邊；橘色是<b>文件卡</b>，在出貨碼頭、報關島（從碼頭過橋）、NPI 研發島（從員工出入口往東過步行橋）、模具島（從研發島往北過步行橋）和海外市場島（在報關島南岸搭渡輪）。</p>
     <p class="hint">時間會照常流動。想看 14:00 的機台異常，可以按下方的 ⏭ 跳到下一段。</p>`;
 }
 
@@ -6268,18 +6321,69 @@ function stepScene(dir) {
   const j = clamp(dir > 0 ? i + 1 : (into > 1.5 ? i : i - 1), 0, SC.length - 1);
   state.D = SC[j].d0 + 0.01; state.lastScene = -1;
 }
+// ---- 人員一日：看哪一區，上方時間列和右邊說明卡就顯示那一區的狀態（v21）----
+//   工廠：產線運轉、今日產量（DAY_SCENES）；海外市場島：零售店、貨船、貨機（OV_SCENES）；報關島、研發島、模具島：島上的一天
+//   時段和說明照著各島人員的行程寫（OV_PLAN 等），改行程時這裡也要對一下
+const OV_SCENES = [                            // [開始, 結束, 時段名稱, 說明]
+  ['07:40', '08:20', '還沒上班', '海外市場島的人還沒到。等一下大家會搭地鐵來上班，地鐵站的出口就在市場街的北邊。'],
+  ['08:20', '09:00', '上班準備', '大家搭地鐵到班：海關看今天要到港的貨櫃清單，倉管看船公司寄來的到貨通知，店員整理展示桌，品牌行銷換上這一檔的櫥窗海報。'],
+  ['09:00', '10:00', '進口查驗、收貨', '今天有兩櫃新機種「珊瑚 14」到港。海關審核進口報單，倉管在卸貨月台點收第一櫃，地勤在停機坪等貨機，維修中心開始收件。'],
+  ['10:00', '12:00', '開店、上架、補貨', '10:00 零售店開門營業。倉庫把新到的筆電掃條碼上架，揀貨員把門市要的貨裝箱、過斑馬線送去補貨；通路業務巡店，教店員新品的賣點。'],
+  ['12:00', '13:00', '午餐', '中午大家到南邊的午餐桌一起吃飯、休息一下，下午還有第二櫃貨要處理。'],
+  ['13:00', '13:30', '下午開工', '海關確認關稅、營業稅都繳了才放行；倉管開揀貨單；店員點收倉庫送來的貨；地勤通知經銷商來提空運的貨。'],
+  ['13:30', '15:30', '門市活動：體驗會', '品牌行銷在活動區主持新品體驗會：試玩、抽獎，業務在旁邊看人潮。倉庫點收第二櫃，海關查驗第二櫃。'],
+  ['15:30', '17:30', '盤點、售後服務', '倉管盤點庫存、更新系統；維修中心通知顧客取件，再修下一台；行銷整理活動成效，業務寫巡店報告。'],
+  ['17:30', '20:05', '下班', '大部分的人搭地鐵下班。倉管、維修技術員做到 18:00，零售店的店員留到 19:20。'],
+].map(([from, to, name, desc]) => ({ from, to, name, desc, t0: hm(from), t1: hm(to) }));
+const GEN_SCENES = [['07:40', '08:00', '上班前'], ['08:00', '12:00', '上午'], ['12:00', '13:00', '午餐、午休'], ['13:00', '17:30', '下午'], ['17:30', '20:05', '下班']]
+  .map(([from, to, name]) => ({ from, to, name, t0: hm(from), t1: hm(to) }));
+const AREA_INFO = {                            // 每一區的名稱、顏色、一句話介紹
+  isle: { ic: '🛃', name: '報關島', color: '#2F6F8F', desc: '報關島是筆電出國前通關的地方：貨櫃車在這裡過磅、走 C1／C2／C3 通道，有的要 X 光查驗；放行之後吊上貨船。' },
+  npi: { ic: '🧪', name: 'NPI 研發島', color: '#8074A7', desc: 'NPI 研發島是新筆電從設計到量產的地方：研發人員在實驗室、會議室之間跑來跑去，試產時也會到工廠產線看。' },
+  tool: { ic: '🧰', name: '模具島', color: TL_COLOR, desc: '模具島做筆電外殼的模具：設計、CNC、放電加工、拋光、試模，做好的模具用貨車送到工廠。' },
+  ov: { ic: '🌍', name: '海外市場島', color: OV_COLOR, desc: '' },
+};
+const PLANE_NOW = { approach: '貨機快降落了', roll: '貨機剛降落', taxiIn: '貨機滑行到停機位', park: '貨機在卸貨', taxiOut: '貨機準備起飛', takeoff: '貨機起飛了', climb: '貨機飛回台灣', away: '貨機在台灣裝貨' };
+function areaDay(area, clock) {                // 這一區在 clock 這個時間的狀態
+  const A = AREA_INFO[area], list = area === 'ov' ? OV_SCENES : GEN_SCENES;
+  const k = Math.max(0, list.findIndex(x => clock < x.t1)), sc = list[k] || list[list.length - 1];
+  const r = { key: area + k, ic: A.ic, area: A.name, color: A.color, from: sc.from, to: sc.to, name: sc.name, desc: sc.desc || A.desc };
+  if (area === 'ov') {
+    const open = clock >= hm('10:00') && clock < hm('19:20');
+    r.pill = open ? '🛍️ 零售店營業中' : clock < hm('10:00') ? '🕗 零售店 10:00 開門' : '🌙 零售店打烊了';
+    r.cls = open ? '' : ' stop';
+    const ship = shipDocked('o', AMB.t) ? '🚢 貨船在碼頭卸貨' : '🚢 貨船在海上', plane = '✈️ ' + PLANE_NOW[planeAt(AMB.t).s.key];
+    r.out = ship;                              // 時間列放不下太多字：只放貨船，貨機寫在說明卡
+    r.status = `${open ? '🛍️ <b>零售店營業中</b>' : '🌙 <b>零售店沒有營業</b>'}　${ship}　${plane}`;
+  } else {
+    const here = PEOPLE.filter(p => p.walker && areaOf(p) === area && p.fig.root.visible).length + (area === 'isle' ? AMBIENT.filter(p => p.isle && p.fig.root.visible).length : 0);
+    r.pill = `${A.ic} ${A.name}`; r.cls = ' isle';
+    r.out = area === 'isle' ? (shipDocked('c', AMB.t) ? '🚢 貨船在碼頭裝貨櫃' : '🚢 貨船在海上') : `島上 ${here} 個人`;
+    r.status = `${A.ic} <b>${A.name}</b>　島上現在 <b>${here}</b> 個人` + (area === 'isle' ? `　${r.out}` : '');
+  }
+  return r;
+}
+function areaSceneHTML(A) {                    // 說明卡：這一區現在的時段
+  return `<span class="zone-tag" style="--c:${A.color}">${A.ic} ${A.area}・${A.from} – ${A.to}</span>
+    <h2>${A.name}</h2>
+    <div class="status" id="infoStatus"></div>
+    <p style="margin-top:10px">${A.desc}</p>
+    <h3>👀 ${A.area}上大家在做什麼？</h3><ul class="who" id="whoList"></ul>
+    <p class="hint">點左邊名單或畫面中的人物，可以聽他說現在在做什麼，鏡頭也會跟著他走。想親自走走看、撿寶物，按上方的「🎮 下場走走」。</p>`;
+}
 function updateDayUI() {
   const D = state.D, si = sceneIdx(D), s = SC[si], out = outputAt(D), alarm = alarmAt(D), run = lineRunningAt(D);
+  const fac = peopleArea === 'factory', A = fac ? null : areaDay(peopleArea, clockAt(D));   // 名單看哪一區，就顯示哪一區的狀態
   $('dayClock').textContent = fmt(clockAt(D));
-  $('dayScene').textContent = s.name;
-  $('dayLine').textContent = alarm ? '🔴 異常停線' : run ? '🟢 生產中' : '🟡 停線中';
-  $('dayLine').className = 'pill' + (alarm ? ' alarm' : run ? '' : ' stop');
-  $('dayOut').textContent = `今日產量 ${out} / ${DAY_TARGET} 台`;
+  $('dayScene').textContent = fac ? s.name : A.name;
+  $('dayLine').textContent = fac ? (alarm ? '🔴 異常停線' : run ? '🟢 生產中' : '🟡 停線中') : A.pill;
+  $('dayLine').className = 'pill' + (fac ? (alarm ? ' alarm' : run ? '' : ' stop') : A.cls);
+  $('dayOut').textContent = fac ? `今日產量 ${out} / ${DAY_TARGET} 台` : A.out;
   const frac = clamp01(D / DAY_TOTAL);
   $('tlFill').style.width = (frac * 100) + '%';
   $('tlFillInner').style.width = (frac > 0 ? 100 / frac : 0) + '%';
   $('tlHandle').style.left = (frac * 100) + '%';
-  $('progText').innerHTML = `🕗 <b>${fmt(clockAt(D))}</b>　${s.name}（${si + 1} / ${SC.length}）`;
+  $('progText').innerHTML = `🕗 <b>${fmt(clockAt(D))}</b>　` + (fac ? `${s.name}（${si + 1} / ${SC.length}）` : `${A.ic} ${A.name}`);
   for (const p of ALL_NPC) { const el = $('pa-' + p.id); if (el) el.textContent = activityText(p); }
   $('stationList').querySelectorAll('.pp-item').forEach(el => el.classList.toggle('current', el.dataset.id === state.selPerson));
   if (D >= DAY_TOTAL - 0.01) { setInfo('dayEnd', dayEndHTML()); return; }
@@ -6298,10 +6402,10 @@ function updateDayUI() {
     }
   } else if (state.play) {
     setInfo('play', playHTML());
-    $('infoStatus').innerHTML = `🕗 <b>${fmt(clockAt(D))}</b>　${s.name}　${alarm ? '🔴 異常停線' : run ? '🟢 生產中' : '🟡 停線中'}`;
+    $('infoStatus').innerHTML = `🕗 <b>${fmt(clockAt(D))}</b>　` + (fac ? `${s.name}　${alarm ? '🔴 異常停線' : run ? '🟢 生產中' : '🟡 停線中'}` : `${A.ic} ${A.area}：${A.name}`);
   } else {
-    setInfo('sc-' + si + peopleArea, sceneHTML(s));
-    $('infoStatus').innerHTML = `${alarm ? '🔴 <b>異常停線</b>' : run ? '🟢 <b>產線運轉中</b>' : '🟡 <b>產線停止</b>'}　今日產量 <b>${out}</b> 台`;
+    setInfo('sc-' + (fac ? si : A.key) + peopleArea, fac ? sceneHTML(s) : areaSceneHTML(A));
+    $('infoStatus').innerHTML = fac ? `${alarm ? '🔴 <b>異常停線</b>' : run ? '🟢 <b>產線運轉中</b>' : '🟡 <b>產線停止</b>'}　今日產量 <b>${out}</b> 台` : A.status;
     const who = peopleArea === 'tool' || peopleArea === 'npi' || peopleArea === 'ov' ? PEOPLE.filter(p => p.walker && areaOf(p) === peopleArea) : peopleArea === 'isle' ? AMBIENT.filter(p => p.isle) : MAIN_ORDER.map(id => PEOPLE_BY_ID[id]);   // 跟著名單的分區
     $('whoList').innerHTML = who.map(p => `<li><b>${displayName(p)}</b>${p.ambient ? '' : `（${ROLES[p.role].title}）`}：${activityText(p)}</li>`).join('');
   }
@@ -6400,6 +6504,9 @@ function setMode(m) {
   $('btnTool').classList.toggle('active', m === 'tool');
   $('btnOv').classList.toggle('active', m === 'ov');
   $('btnOverview').classList.toggle('active', m === 'home');
+  const P = PLACES.find(q => q[0] === m && q[0] !== 'home');   // 在某座島上：「去哪座島」按鈕顯示現在在哪座島
+  $('btnPlaces').classList.toggle('active', !!P);
+  $('btnPlaces').innerHTML = P ? `<span class="ic">${P[2]}</span><span class="lg">${P[3]}</span><span class="sh">${P[4]}</span>` : '<span class="ic">🏝️</span><span class="lg">去哪座島</span><span class="sh">地點</span>';
   controls.enablePan = m !== 'tour';
   document.body.classList.toggle('home-mode', m === 'home');   // 首頁：藏起名單、說明卡、控制列，畫面乾淨
   document.body.classList.toggle('day-mode', m === 'day');
@@ -6703,7 +6810,7 @@ const NPI_PHASE = { design: ['#8074A7', '🧭 設計', '設計'], verify: ['#D19
 const TL_PHASE = { plan: [TL_COLOR, '📝 開模', '開模'], make: ['#3F73AE', '⚙️ 做模具', '做模具'], try: ['#D97706', '🧪 試模與修模', '試模'], mp: ['#4D9C97', '📦 交模', '交模'] };
 // 島嶼導覽的共用設定：每座有人員的島一份（mode 模式名稱、steps 步驟、phase 分段、z 目前第幾步、prefix 人物代號開頭、flag 人物旗標）
 const OV_STEPS = [
-{ phase: 'port', title: '貨船靠岸，卸下貨櫃', en: 'Arrival & Unloading', at: new THREE.Vector3(-156, 3, 16), off: new THREE.Vector3(26, 16, 20), clock: '09:00',
+{ phase: 'port', title: '貨船靠岸，卸下貨櫃', en: 'Arrival & Unloading', at: new THREE.Vector3(-160, 0, 8), off: new THREE.Vector3(40, 44, 22), clock: '09:00',   // v21：鏡頭拉高、拉遠，吊車才不會擋住整個畫面，也看得到倉庫和街道
     who: '船公司、碼頭的吊車司機', docs: '提單（B/L）、到貨通知',
     what: '貨船從報關島開過來，靠在海外市場島的進口碼頭。岸邊吊車把貨櫃一個一個吊下來，放上場內拖車。船公司也會寄「到貨通知」給收貨的經銷商。',
     why: '經銷商要拿著提單才能領貨：提單就像這批貨的「提貨券」，在報關島上船時由船公司開出。',
@@ -7221,7 +7328,7 @@ function questOpen() {                         // 開始畫面：輸入暱稱
   { const v = parkView(); flyTo(v.pos, v.tgt, 1.6); }   // 開頭先看整個園區（第 6 關會到報關島）
   const best = qBest();
   qRender(`<div class="q-title">新人報到闖關</div>`
-    + qSay('嗨，新同事！7 分鐘、7 個關卡，帶你認識筆電工廠：一台筆電怎麼做出來、產線上誰負責什麼、怎麼通關出國，最後到模具島看新外殼的模具。先告訴我你的暱稱吧！')
+    + qSay('嗨，新同事！大約 8 分鐘、8 個關卡，帶你認識筆電工廠：一台筆電怎麼做出來、產線上誰負責什麼、怎麼通關出國，再到模具島看新外殼的模具，最後到海外市場島，看筆電怎麼送到顧客手上。先告訴我你的暱稱吧！')
     + `<p class="hint" style="margin-top:10px">🎁 每過一關，拿 1 個徽章放進 🎒 寶箱（灰色是還沒拿到的）：</p><div class="q-badges">${qBadgeRow()}</div>`
     + `<input class="q-input" id="qName" maxlength="12" autocomplete="nickname" placeholder="你的暱稱（最多 12 個字）" value="${esc(qStore.get('nbQuestName') || '')}">`
     + `<div class="q-fb no" id="qFb"></div>`
@@ -7724,6 +7831,19 @@ $('btnCustoms').onclick = () => setMode('customs');
 $('btnNpi').onclick = () => setMode('npi');
 $('btnTool').onclick = () => setMode('tool');
 $('btnOv').onclick = () => setMode('ov');
+// 「🏝️ 去哪座島」：螢幕不夠寬時，全景和四座島收在這裡（點了就是按原本的按鈕）
+const PLACES = [                               // [模式, 原本的按鈕, 圖示, 名稱, 短名稱, 說明]
+  ['home', 'btnOverview', '🗺️', '園區全景', '全景', '工廠和四座島一起看'],
+  ['customs', 'btnCustoms', '🛃', '報關島', '報關', '筆電怎麼通關出國'],
+  ['npi', 'btnNpi', '🧪', 'NPI 研發島', 'NPI', '新筆電怎麼從設計到量產'],
+  ['tool', 'btnTool', '🧰', '模具島', '模具', '筆電外殼的模具怎麼做出來'],
+  ['ov', 'btnOv', '🌍', '海外市場島', '海外', '筆電出國後，怎麼到顧客手上'],
+];
+$('placeGrid').innerHTML = PLACES.map(([, id, ic, name, , sub]) => `<button class="isle-btn" data-btn="${id}"><span class="ic">${ic}</span><span><b>${name}</b><small>${sub}</small></span></button>`).join('');
+$('placeGrid').addEventListener('click', e => { const b = e.target.closest('[data-btn]'); if (b) { $('placeModal').classList.add('hidden'); $(b.dataset.btn).click(); } });
+$('placeClose').onclick = () => $('placeModal').classList.add('hidden');
+$('placeModal').onclick = e => { if (e.target.id === 'placeModal') $('placeModal').classList.add('hidden'); };
+$('btnPlaces').onclick = e => { $('placeModal').classList.remove('hidden'); e.currentTarget.blur(); };
 $('btnOverview').onclick = () => {
   if (state.mode === 'day') { state.follow = null; if (state.play) state.camFree = true; }   // 人員一日維持在同一個模式，只是鏡頭不再跟人（玩家一走動就會再跟上）
   else { state.selected = -1; state.place = -1; state.device = -1; setMode('home'); }   // 其他模式：回到乾淨的首頁
@@ -7740,6 +7860,8 @@ const HOME_PLACES = [                          // [名稱, 鏡頭看的位置, �
   ['報關島（通關出國）', new THREE.Vector3(-87, 0, 7), new THREE.Vector3(10, 50, 44)],
   ['NPI 研發島（新筆電的研發與試產）', new THREE.Vector3(81, 0, -15), new THREE.Vector3(6, 44, 40)],
   ['模具島（模具廠、模具倉）', new THREE.Vector3(80, 0, -64), new THREE.Vector3(6, 40, 36)],
+  ['海外市場島（碼頭、經銷商倉庫、零售店、維修中心）', new THREE.Vector3(-182, 0, 7), new THREE.Vector3(6, 44, 40)],
+  ['海外機場（跑道、空運貨運站）', new THREE.Vector3(-270, 0, 4), new THREE.Vector3(6, 54, 50)],
 ];
 $('homeGo').innerHTML = `<optgroup label="開始體驗">
     <option value="tour">🎬 產線導覽：跟著一台筆電走完 23 站</option>
@@ -7748,8 +7870,8 @@ $('homeGo').innerHTML = `<optgroup label="開始體驗">
     <option value="npi">🧪 NPI 研發島：新筆電怎麼從設計到量產</option>
     <option value="tool">🧰 模具島：筆電外殼的模具怎麼做出來</option>
     <option value="ov">🌍 海外市場島：筆電出國後，怎麼到顧客手上</option>
-    <option value="quest">🏆 新人闖關：7 分鐘、7 個關卡</option>
-    <option value="play">🎮 下場走走：自己逛工廠、撿寶物</option>
+    <option value="quest">🏆 新人闖關：約 8 分鐘、8 個關卡</option>
+    <option value="play">🎮 下場走走：選一座島自己逛、撿寶物</option>
     <option value="chest">🎒 看我的寶箱</option>
   </optgroup>
   <optgroup label="飛過去看看">${HOME_PLACES.map((p, i) => `<option value="p${i}">📍 ${p[0]}</option>`).join('')}</optgroup>`;
@@ -7842,7 +7964,7 @@ window.addEventListener('keydown', e => {
   if (e.code === 'Space') { e.preventDefault(); setPaused(!state.paused); }
   else if (e.code === 'ArrowRight') stepStation(1);
   else if (e.code === 'ArrowLeft') stepStation(-1);
-  else if (e.code === 'Escape') $('helpModal').classList.add('hidden');
+  else if (e.code === 'Escape') for (const id of ['helpModal', 'isleModal', 'placeModal']) $(id).classList.add('hidden');
 });
 window.addEventListener('keyup', e => PLAYER.keys.delete(e.code));
 window.addEventListener('blur', () => PLAYER.keys.clear());   // 切換視窗時放開所有按鍵，避免玩家一直往前走
@@ -8055,6 +8177,8 @@ function updateEnvironment(time) {
     const sc = sun.shadow.camera, r = wide ? 235 : 50, t = wide ? 140 : 42;   // 拉遠時陰影範圍包住五座島（含海外機場）
     sc.left = -r; sc.right = r; sc.top = t; sc.bottom = -t; sc.far = wide ? 460 : 220; sc.updateProjectionMatrix();
   }
+  for (const lb of ZONE_LBS) lb.visible = !wide;   // 拉遠：6 區名牌收起來，只留「筆電工廠」
+  FACTORY_LB.visible = wide;
   if (wide) sun.target.position.set(-115, 0, -25);
   else if (tx < -240) sun.target.position.set(-285, 0, 7);   // 海外機場
   else if (tx < -140) sun.target.position.set(-190, 0, 7);   // 海外市場島
@@ -8124,6 +8248,7 @@ renderer.setAnimationLoop(now => {
   if (getHeroPos(heroPos)) { marker.visible = true; marker.position.copy(heroPos).add(tmpV.set(0, 0.6 + 0.04 * Math.sin(now / 250), 0)); marker.rotation.y = now / 600; }
   else marker.visible = false;
   updateCamera(rdt);
+  declutterTags();
   updateDialog(rdt);
   updateUI(rdt);
   renderer.render(scene, camera);
