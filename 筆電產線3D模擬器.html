@@ -184,6 +184,7 @@
   #dlgClose{position:absolute;right:10px;top:10px}
   .caret{display:inline-block;margin-left:6px;color:var(--coral);font-size:12px;animation:blink 1s steps(2) infinite}
   @keyframes blink{50%{opacity:0}}
+  #ferryHint{position:fixed;left:50%;bottom:192px;transform:translateX(-50%);background:#166534;color:#FFFDFA;padding:10px 20px;border-radius:999px;font-size:15px;font-weight:800;z-index:8;display:none;cursor:pointer;white-space:nowrap;border:0;box-shadow:0 4px 14px rgba(0,0,0,.18)}
   #talkHint{position:fixed;left:50%;bottom:146px;transform:translateX(-50%);background:rgba(40,35,34,.88);color:#FFFDFA;padding:9px 18px;border-radius:999px;font-size:14px;font-weight:700;z-index:8;display:none;cursor:pointer;white-space:nowrap;border:0}
   #toast{position:fixed;left:50%;top:150px;transform:translateX(-50%);background:var(--ink);color:#FFFDFA;padding:11px 20px;border-radius:14px;font-size:15px;font-weight:800;z-index:12;opacity:0;pointer-events:none;transition:opacity .4s;max-width:calc(100% - 24px);text-align:center}
   #toast.show{opacity:1}
@@ -192,7 +193,7 @@
   .seg-quest{background:var(--coral-soft);color:var(--coral-dark)}
   .seg-quest:hover:not(.active){background:#F8D3C2}
   body.quest-on #topbar,body.quest-on #stationPanel,body.quest-on #infoCard,body.quest-on #controls,body.quest-on #dayBar,
-  body.quest-on #pauseBadge,body.quest-on #talkHint,body.quest-on #dialog,body.quest-on #drawerMask{display:none !important}
+  body.quest-on #pauseBadge,body.quest-on #talkHint,body.quest-on #ferryHint,body.quest-on #dialog,body.quest-on #drawerMask{display:none !important}
   #qHead{position:fixed;top:12px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:14px;padding:7px 8px 7px 16px;z-index:10;white-space:nowrap}
   #qHead[hidden],#qCard[hidden]{display:none}
   #qHead .qt{font-weight:900;font-size:15px}
@@ -248,6 +249,10 @@
   @media (max-width:1500px){                   /* 模式按鈕變多了：筆電螢幕上收掉副標題、按鈕留白小一點，維持一排 */
     .brand p{display:none}
     .seg{padding:9px 10px}
+  }
+  @media (max-width:1400px){                   /* v18 多了海外島按鈕：1280 寬的筆電再收緊一點，維持一排 */
+    .seg{padding:9px 7px}
+    .seg .ic{margin-right:3px}
   }
   @media (max-width:1180px){
     #infoCard{width:320px}
@@ -314,6 +319,7 @@
     #dlgText{font-size:14px;min-height:3.3em;line-height:1.65}
     body.talking #infoCard,.playing #infoCard{display:none}
     #talkHint{bottom:104px;font-size:13px}
+    #ferryHint{bottom:148px;font-size:14px}
     #toast{top:118px;font-size:13.5px}
     /* 新人闖關（手機）：進度列貼齊上方、關卡卡片貼齊下方 */
     #qHead{top:8px;left:8px;right:8px;transform:none;justify-content:space-between;gap:8px;padding:6px 6px 6px 12px}
@@ -354,7 +360,7 @@
   .seg{position:relative}
   .seg .cnt{display:inline-block;min-width:18px;margin-left:5px;padding:0 5px;border-radius:999px;background:var(--coral);color:#FFFDFA;font-size:11px;line-height:17px;font-weight:900;vertical-align:1px;text-align:center}
   .seg .cnt:empty{display:none}
-  .customs-mode .chk,.npi-mode .chk,.tool-mode .chk{display:none}
+  .customs-mode .chk,.npi-mode .chk,.tool-mode .chk,.ov-mode .chk{display:none}
   /* 左邊清單上方的分頁（人員一日：工廠／報關島／NPI 島；NPI 島：流程／研發人員）：捲動時固定在上面 */
   .pp-tabs{display:flex;gap:3px;margin:2px 2px 6px;padding:3px;background:var(--panel-soft);border:1px solid var(--line);border-radius:12px;position:sticky;top:0;z-index:2}
   .pp-tab{flex:1;min-width:0;border:0;background:transparent;border-radius:9px;padding:6px 2px;font-size:12.5px;font-weight:800;color:var(--text-2);white-space:nowrap;cursor:pointer}
@@ -475,6 +481,7 @@
     <button class="seg" id="btnCustoms"><span class="ic">🛃</span><span class="lg">報關島</span><span class="sh">報關</span></button>
     <button class="seg" id="btnNpi"><span class="ic">🧪</span><span class="lg">NPI 島</span><span class="sh">NPI</span></button>
     <button class="seg" id="btnTool"><span class="ic">🧰</span><span class="lg">模具島</span><span class="sh">模具</span></button>
+    <button class="seg" id="btnOv"><span class="ic">🌍</span><span class="lg">海外島</span><span class="sh">海外</span></button>
     <button class="seg" id="btnOverview"><span class="ic">🗺️</span><span class="lg">全景</span><span class="sh">全景</span></button>
     <button class="seg seg-quest" id="btnQuest"><span class="ic">🏆</span><span class="lg">新人闖關</span><span class="sh">闖關</span></button>
     <button class="seg" id="btnChest" title="我的寶箱（寶物圖鑑）"><span class="ic">🎒</span><span class="lg">寶箱</span><span class="sh">寶箱</span><span class="cnt" id="chestCnt"></span></button>
@@ -521,6 +528,7 @@
   <button class="mini" id="dlgClose" title="結束對話（Esc）">✕</button>
 </div>
 <button id="talkHint"></button>
+<button id="ferryHint"></button>
 <div id="toast"></div>
 <!-- 新人闖關：上方是關卡、分數、計時；下方是關卡卡片（內容由程式產生） -->
 <div id="qHead" class="card" hidden>
@@ -561,12 +569,12 @@
     <ul>
       <li><b>🗺️ 首頁／全景</b>：一打開是乾淨的園區全景（報關島＋工廠＋NPI 研發島）。在「我想去哪裡？」選一種體驗或一個地方，按「出發」；隨時按上方的「全景」回到這裡。</li>
       <li><b>🎬 導覽模式</b>：鏡頭自動跟著「示範機」（頭上有黃色箭頭）走完全程，右邊的卡片會解說每一站。</li>
-      <li><b>🧭 自由參觀</b>：滑鼠<b>左鍵拖曳</b>旋轉、<b>右鍵拖曳</b>平移、<b>滾輪</b>縮放（手機：<b>單指拖曳</b>旋轉、<b>雙指</b>縮放與平移）；<b>點任一台機器或島上的設備、建築</b>就會飛過去並顯示說明（島上的設備有自己的介紹）；清單上方有工廠、報關島、NPI 島、模具島四個分頁。</li>
+      <li><b>🧭 自由參觀</b>：滑鼠<b>左鍵拖曳</b>旋轉、<b>右鍵拖曳</b>平移、<b>滾輪</b>縮放（手機：<b>單指拖曳</b>旋轉、<b>雙指</b>縮放與平移）；<b>點任一台機器或島上的設備、建築</b>就會飛過去並顯示說明（島上的設備有自己的介紹）；清單上方有工廠、報關島、NPI 島、模具島、海外島五個分頁。</li>
       <li><b>🏆 新人闖關</b>：7 分鐘、7 個關卡，用遊戲認識筆電工廠：報到流程、6 大區的順序、出事要找誰、品檢找碴、出貨防呆、到報關島通關放行，最後到模具島處理模具問題。每過一關會掉一個寶物，完成後可以下載結業證書（排行榜下一版開放）。</li>
       <li><b>🛃 報關島</b>：筆電做好之後怎麼合法出國？跟著 10 個步驟看出口通關（C1／C2／C3、X 光查驗、放行、吊上船），以及零件進口、保稅倉。島上貨櫃車的車頭顏色，就是它被分到的通道。</li>
       <li><b>🧰 模具島</b>：筆電外殼是塑膠打進「模具」做出來的。跟著 8 個步驟看模具怎麼報價下單、設計、CNC 加工、放電加工、拋光、試模、修模，最後入模具倉、用貨車送到工廠北側的進料區；左邊「模具島人員」分頁可以直接選人，看採購怎麼在模具廠、機構工程師和 PM 之間協調成本、問題和時程。</li>
       <li><b>🧪 NPI 島</b>：一台新筆電在量產之前，要經過開案、設計、三次試產（EVT／DVT／PVT）才能量產。跟著 9 個步驟看外觀、機構、電路、佈線、天線、散熱、韌體、軟體、測試、認證、PM、試產工程師這 12 種研發人員在做什麼；點說明卡下方的人物，就能跳到「人員一日」看他一整天的行程。</li>
-      <li><b>🎒 寶箱</b>：像寶可夢圖鑑一樣收集 77 個寶物，有三種拿法：① <b>新人闖關</b>每過一關拿 1 個徽章；② <b>人員一日 → 🎮 下場走走</b>，走到工站旁、報關島、NPI 研發島和模具島，地上發光的寶石就是零件卡、文件卡；③ 和每一種角色<b>聊天</b>拿人物卡。打開寶箱可以看還缺哪些、去哪裡找。寶箱記在這台裝置的瀏覽器裡，也可以用「寶箱代碼」備份。</li>
+      <li><b>🎒 寶箱</b>：像寶可夢圖鑑一樣收集 88 個寶物，有三種拿法：① <b>新人闖關</b>每過一關拿 1 個徽章；② <b>人員一日 → 🎮 下場走走</b>，走到工站旁、報關島、NPI 研發島和模具島，地上發光的寶石就是零件卡、文件卡；③ 和每一種角色<b>聊天</b>拿人物卡。打開寶箱可以看還缺哪些、去哪裡找。寶箱記在這台裝置的瀏覽器裡，也可以用「寶箱代碼」備份。</li>
       <li><b>📱 手機</b>：左上角 <b>☰ 清單</b>打開站點或人員名單；下方說明卡平常收合，<b>點一下</b>展開完整說明；速度按鈕點一下就切換 0.5×～4×。</li>
       <li><b>👷 人員一日</b>：用縮時方式看工廠人員的一天（兩班制日班 08:00–20:00）：打卡、換靜電衣、早會、生產、休息用餐、處理機台異常，一直到交接班下班。點左邊名單或畫面中的人物，會跳出<b>對話框</b>聽他說現在在做什麼，右邊也會顯示他的肖像和行程。頭上有「<b>！</b>」的人正在做重要的事。</li>
       <li><b>🎮 下場走走</b>（在人員一日的時間列上）：扮演一位參觀者走進工廠。<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> 或方向鍵走路，按住 <kbd>Shift</kbd> 跑步；靠近人按 <kbd>E</kbd> 聊天。滑鼠或手機：<b>點地板</b>自動走過去，<b>點人物</b>就走過去和他聊天。左邊的「聊天任務」會記錄你聊過誰。</li>
@@ -587,7 +595,7 @@
     <div class="chest-prog" id="chestProg"></div>
     <div class="chest-how">
       <b>🗺️ 怎麼拿寶物？三種方法：</b>
-      <div class="how-row"><span class="how-ic">🏆</span><div><b>新人闖關</b>：每過一關，拿 1 個徽章（共 7 個）</div><button class="btn" data-go="quest">去闖關</button></div>
+      <div class="how-row"><span class="how-ic">🏆</span><div><b>新人闖關</b>：每過一關，拿 1 個徽章（共 8 個）</div><button class="btn" data-go="quest">去闖關</button></div>
       <div class="how-row"><span class="how-ic">💎</span><div><b>下場走走</b>：走到工站旁、報關島、NPI 研發島和模具島，地上發光的寶石就是零件卡、文件卡，走過去就撿到</div><button class="btn" data-go="play">去撿寶</button></div>
       <div class="how-row"><span class="how-ic">💬</span><div><b>聊天</b>：和每一種角色聊一次，拿人物卡</div><button class="btn" data-go="talk">去找人</button></div>
     </div>
@@ -998,13 +1006,13 @@ const pmrem = new THREE.PMREMGenerator(renderer);
 scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
 scene.environmentIntensity = 0.45;
 
-const camera = new THREE.PerspectiveCamera(38, window.innerWidth / window.innerHeight, 0.3, 900);   // 視角窄一點，更像桌上的微縮模型；最近 0.3 公尺（鏡頭最近只會到 0.6），深度精度比 0.05 好 6 倍
+const camera = new THREE.PerspectiveCamera(38, window.innerWidth / window.innerHeight, 0.3, 1200);   // 視角窄一點，更像桌上的微縮模型；最近 0.3 公尺（鏡頭最近只會到 0.6），深度精度比 0.05 好 6 倍
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.08;
 controls.maxPolarAngle = Math.PI * 0.485;
 controls.minDistance = 0.6;
-controls.maxDistance = 420;                    // 園區全景要拉得夠遠，才看得到四座島（報關島、工廠、NPI 研發島、模具島）
+controls.maxDistance = 640;                    // 園區全景要拉得夠遠，才看得到五座島（v18 加了海外市場島）
 
 const hemi = new THREE.HemisphereLight(0xFFF5E4, 0x718D87, 1.45);
 scene.add(hemi);
@@ -1654,7 +1662,7 @@ const CONT_MATS = ['#D96B45', '#6F9B78', '#5B8DB8', '#D19A35', '#8074A7', '#4D9C
       WORLD.blades.push(hub);
     }
   };
-  islet(-132, -104, 14, 9, 0); islet(124, -38, 10, 4, 2); islet(102, 78, 12, 7, 0); islet(-88, 82, 9, 3, 2); islet(26, -142, 20, 14, 3);   // 小島避開繞島小船的航線
+  islet(-132, -104, 14, 9, 0); islet(124, -38, 10, 4, 2); islet(102, 78, 12, 7, 0); islet(-80, 98, 9, 3, 2); islet(26, -142, 20, 14, 3);   // 小島避開繞島小船的航線（v18：南邊的小島往南移，讓出貨船的環狀航線）
   // 北方遠山（被霧淡化，增加縱深）
   const hill = std(0x8FA676, { roughness: 1 });
   for (const [x, z, r] of [[-150, -280, 90], [-20, -310, 110], [130, -290, 95], [260, -240, 80]]) addMesh(scene, sphereGeo(1), hill, x, SEA_Y - 4, z, false).scale.set(r, r * 0.32, r * 0.6);
@@ -1811,8 +1819,8 @@ const CI = {};                                  // 報關島上要做動畫的�
     m.scale.y = d.length(); m.position.copy(a).addScaledVector(d, 0.5);
     m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), d.normalize()); m.castShadow = true; p.add(m); return m;
   };
-  const buildCrane = (z, title, sub) => {
-    const g = new THREE.Group(); g.position.set(0, Y, z); scene.add(g);
+  const buildCrane = (z, title, sub, parent = scene) => {
+    const g = new THREE.Group(); g.position.set(0, Y, z); parent.add(g);
     for (const x of CRANE_LEGS) {
       for (const s of [-1, 1]) box(g, 0.5, 6.9, 0.5, craneMat, x, 3.45, s * 2.6);
       box(g, 0.45, 0.4, 5.7, craneMat, x, 0.35, 0);                                    // 底樑（沿著碼頭方向）
@@ -1838,9 +1846,10 @@ const CI = {};                                  // 報關島上要做動畫的�
   CI.craneEx = buildCrane(CRANE_EX_Z, '出口吊車', 'Quay Crane：把貨櫃吊上船');
   CI.craneIm = buildCrane(CRANE_IM_Z, '進口吊車', 'Quay Crane：把零件卸下船');
   // 貨船：船頭朝南，船橋在北端；甲板上吊車作業的位置是艙口（貨櫃從這裡進出船艙）
-  {
+  //   v18：兩艘一樣的貨船輪流跑「報關島 → 海外市場島」的航線（見 updateShips）；deck 是甲板上的貨櫃，由下往上排，裝船時一個個出現、卸船時從上面一個個消失
+  const buildShip = (seed, hullColor) => {
     const ship = new THREE.Group(); ship.position.set(SHIP_POS.x, SEA_Y, SHIP_POS.z); scene.add(ship);
-    const hull = std(0x4C5554, { roughness: 0.8 });
+    const hull = std(hullColor, { roughness: 0.8 });
     box(ship, 7, 3.2, 36, hull, 0, 1.0, 0);
     cyl(ship, 4.04, 4.04, 3.2, hull, 0, 1.0, 19.21, 3).scale.z = 0.6;                  // 船頭（三角柱）
     box(ship, 7.1, 0.3, 36.1, ZMAT.asm, 0, 2.65, 0, false);
@@ -1848,15 +1857,20 @@ const CI = {};                                  // 報關島上要做動畫的�
     box(ship, 6.6, 0.3, 4.6, M.bodyDark, 0, 7.35, -15.4, false);
     plane(ship, 5.6, 0.7, std(0x3D5A73, { roughness: 0.2, metalness: 0.4 }), 0, 6.3, -13.28);
     cyl(ship, 0.7, 0.8, 2.4, ZMAT.asm, 0, 8.6, -16.2, 16);
-    const R = rng(515), hatch = [CRANE_EX_Z - SHIP_POS.z, CRANE_IM_Z - SHIP_POS.z];
+    const R = rng(seed), hatch = [CRANE_EX_Z - SHIP_POS.z, CRANE_IM_Z - SHIP_POS.z], deck = [];
     for (let z = -11; z <= 13; z += 4.2) {
       if (hatch.some(h => Math.abs(z - h) < 3)) continue;
-      for (const x of [-2.15, 0, 2.15]) for (let k = 0, n = 1 + Math.floor(R() * 3); k < n; k++) box(ship, 1.6, 1.35, 3.9, CONT_MATS[Math.floor(R() * CONT_MATS.length)], x, 3.48 + k * 1.37, z);
+      for (const x of [-2.15, 0, 2.15]) for (let k = 0, n = 1 + Math.floor(R() * 3); k < n; k++) deck.push({ k, m: box(ship, 1.6, 1.35, 3.9, CONT_MATS[Math.floor(R() * CONT_MATS.length)], x, 3.48 + k * 1.37, z) });
     }
     for (const h of hatch) flat(ship, 6.2, 4.6, M.black, 0, 2.81, h);
-    WORLD.ship = CI.ship = ship;
-    for (let z = -8; z <= 24; z += 4) cyl(scene, 0.18, 0.22, 0.45, M.bodyDark, -109.4, Y + 0.22, z, 8);   // 繫船柱
-  }
+    deck.sort((a, b) => a.k - b.k);
+    NAV_SKIP.push(ship);
+    return { g: ship, deck: deck.map(d => d.m), shown: deck.length };
+  };
+  CI.ships = [buildShip(515, 0x4C5554), buildShip(733, 0x3F5A6B)];   // 第二艘船身偏藍，比較好分辨
+  WORLD.ship = CI.ship = CI.ships[0].g;
+  for (let z = -8; z <= 24; z += 4) cyl(scene, 0.18, 0.22, 0.45, M.bodyDark, -109.4, Y + 0.22, z, 8);   // 繫船柱
+  CI.buildCrane = buildCrane;                    // 海外市場島的岸邊吊車也用同一個做法（見 10-5）
   // 路燈（南側道路）、草地與松樹（貨櫃場東邊）
   for (let x = -100; x <= -72; x += 7) { cyl(scene, 0.06, 0.08, 3.4, M.bodyDark, x, Y + 1.7, 31.1, 8); addMesh(scene, sphereGeo(0.2), WORLD.bulb, x, Y + 3.5, 31.1, false); }
   slab(roundRect(-76.4, 19.6, -70.4, 26.4, 1.4), Y + 0.07, 0.07, std(0x91A77A, { roughness: 0.95 }), std(0x7E9468, { roughness: 0.95 }));
@@ -2427,6 +2441,281 @@ function updateToolingIsland(now) {              // 模具廠機台的動畫（�
   TL_ANIM.spark.emissiveIntensity = Math.sin(now * 37) > 0.2 ? 2.6 : 0.2;   // 火花一閃一閃
   const u = (t % 6) / 6;                         // 射出機：合模 → 射出、冷卻 → 開模取件，6 秒一循環
   TL_ANIM.platen.position.x = -3.0 + (u < 0.15 ? u / 0.15 : u < 0.75 ? 1 : 1 - (u - 0.75) / 0.25) * 1.4 - 0.2;
+}
+
+/* =====================================================================
+ * 10-5. 海外市場島（10 號，Overseas Market Island）：筆電出國之後，怎麼到顧客手上
+ *       從東到西：進口碼頭與海關查驗區 → 經銷商倉庫（卸貨月台、貨架、揀貨區）→ 街道 → 零售店（櫥窗、展示桌、櫃檯）→ 維修中心
+ *       在報關島西邊，隔著一段海；兩艘貨船輪流在報關島裝櫃、開到這裡卸櫃（見 updateShips）
+ *       沒有橋（橋會擋到貨船的航線）：報關島南岸和這座島的南岸各有一個渡輪碼頭，下場走走時可以搭渡輪過來
+ * =================================================================== */
+const OV_COLOR = '#166534';                                     // 海外市場島的主題色（深綠）
+const ISLE5 = { x0: -210, z0: -14, x1: -152, z1: 28, r: 7 };    // 海外市場島（島面高度 -0.35）
+const OV_BERTH = { x: -147.5, z: 7 };                           // 貨船靠在東岸：船頭朝北
+const OV_CRANE_Z = 16;                                          // 岸邊吊車的位置（對準船上南邊的艙口）
+const OV_MIRROR = OV_BERTH.x + SHIP_POS.x;                      // 吊車照報關島的做法左右翻過來：世界 x = OV_MIRROR - 原本的 x
+const FERRY_C = { x0: -98.4, x1: -95.8, z0: 31.4, z1: 37.6, boat: { x: -93.6, z: 35.4 } };    // 報關島南岸的渡輪碼頭
+const FERRY_O = { x0: -180.6, x1: -178, z0: 27.4, z1: 33.6, boat: { x: -175.8, z: 31.4 } };  // 海外市場島南岸的渡輪碼頭
+const OV_ANIM = {};                                             // 會動的東西：查驗柵欄、櫥窗的展示筆電
+{
+  const Y = -0.35;
+  const top = std(0xD3D8C8, { roughness: 0.95 }), side = std(0xA4AC95, { roughness: 0.95 });
+  slab(roundRect(ISLE5.x0, ISLE5.z0, ISLE5.x1, ISLE5.z1, ISLE5.r), Y, 1.5, top, side, 0.25);
+  slab(roundRect(ISLE5.x0 - 0.6, ISLE5.z0 - 0.6, ISLE5.x1 + 0.6, ISLE5.z1 + 0.6, ISLE5.r + 0.6), -1.75, 1.4, std(0x8C8475, { roughness: 0.95 }), std(0x756F63, { roughness: 0.95 }));
+  const flatAt = (x0, z0, x1, z1, mat, dy = 0.012) => { const m = flat(scene, x1 - x0, z1 - z0, mat, (x0 + x1) / 2, Y + dy, (z0 + z1) / 2); m.receiveShadow = true; return m; };
+  const devTag = (t, sub, color, x, y, z, sc = 0.55) => { const sp = textSprite(t, sub, color, sc); sp.position.set(x, y, z); scene.add(sp); };
+  const roomTag = (t, sub, x, y, z) => { const sp = textSprite(t, sub, OV_COLOR, 1.1, { solid: true }); sp.position.set(x, y, z); scene.add(sp); };
+  const spot = (id, x, z, face, place) => npiSpot(id, x, z, face, place);
+  const wallM = std(0xF3EEE4, { roughness: 0.9 }), capM = std(new THREE.Color(OV_COLOR), { roughness: 0.8 });
+  const wall = (x0, z0, x1, z1, h = 1.1) => {
+    const w = Math.max(Math.abs(x1 - x0), 0.2), d = Math.max(Math.abs(z1 - z0), 0.2), cx = (x0 + x1) / 2, cz = (z0 + z1) / 2;
+    box(scene, w, h, d, wallM, cx, Y + h / 2, cz);
+    box(scene, w + 0.04, 0.07, d + 0.04, capM, cx, Y + h + 0.035, cz, false);
+  };
+  const deskTop = std(0xFFFDFA, { roughness: 0.7 }), seatM = std(new THREE.Color(OV_COLOR), { roughness: 0.7 }), chairM = std(0x4C5554, { roughness: 0.7 });
+  const road = std(0x6B6A64, { roughness: 0.95 }), walk = std(0xCFC8B8, { roughness: 0.9 }), line = M.white;
+  const lamp = (x, z) => { cyl(scene, 0.06, 0.08, 3.4, M.bodyDark, x, Y + 1.7, z, 8); addMesh(scene, sphereGeo(0.2), WORLD.bulb, x, Y + 3.5, z, false); };
+  const leafM = new THREE.MeshStandardMaterial({ color: 0x5E8C5A, roughness: 0.9, flatShading: true });
+  const tree = (x, z, h = 3.2) => { cyl(scene, 0.12, 0.16, h * 0.45, M.wood, x, Y + h * 0.22, z, 8); addMesh(scene, cachedGeo('ovLeaf', () => new THREE.IcosahedronGeometry(1, 0)), leafM, x, Y + h * 0.62, z).scale.set(h * 0.3, h * 0.32, h * 0.3); };
+  const laptop = (p, x, y, z, rot = 0, color = 0xB9C0C9, open = true) => {   // 小筆電：底座＋螢幕（open：打開成 105 度）
+    const g = new THREE.Group(); g.position.set(x, y, z); g.rotation.y = rot; p.add(g);
+    const body = std(color, { roughness: 0.4, metalness: 0.4 });
+    box(g, 0.34, 0.02, 0.23, body, 0, 0.01, 0, false);
+    const lid = new THREE.Group(); lid.position.set(0, 0.02, -0.115); g.add(lid);
+    if (open) lid.rotation.x = -0.25;
+    box(lid, 0.34, 0.22, 0.012, body, 0, 0.11, 0, false);
+    plane(lid, 0.3, 0.18, basic({ color: 0x38bdf8 }), 0, 0.115, 0.008);
+    return g;
+  };
+  const crate = (x, y, z, w = 0.5, h = 0.38, d = 0.4) => box(scene, w, h, d, M.kraftPlain, x, Y + y + h / 2, z, false);
+  const pallet = (x, z, n = 6) => { box(scene, 1.1, 0.13, 1.0, M.wood, x, Y + 0.065, z); for (let i = 0; i < n; i++) crate(x - 0.26 + (i % 2) * 0.52, 0.13 + Math.floor(i / 4) * 0.38, z - 0.21 + (Math.floor(i / 2) % 2) * 0.42); };
+
+  // ---- 島名：東岸的大看板（面向報關島）＋全景懸浮標籤 ----
+  {
+    const b = banner('海外市場島', 'Overseas Market Island・筆電出國後，怎麼到顧客手上', OV_COLOR, 7.8, 1.45);
+    b.rotation.y = Math.PI / 2; b.position.set(-152.9, Y + 3.1, -6.2); scene.add(b);
+    for (const z of [-9.6, -2.8]) cyl(scene, 0.08, 0.08, 3.1, M.bodyDark, -152.95, Y + 1.55, z, 8);
+    const lb = zoneLabel('10', '海外市場島', 'Overseas Market Island', OV_COLOR); lb.position.set(-181, 10, 7); scene.add(lb);
+  }
+  // ---- 進口碼頭：岸邊吊車、碼頭車道、等著進倉的貨櫃、繫船柱 ----
+  flatAt(-161.4, -12, -153.4, 21.6, road, 0.012);                          // 碼頭車道（南北向）
+  flatAt(-169.1, 0.4, -161.4, 3.6, road, 0.013);                            // 往海關查驗區（東西向）
+  flatAt(-169.1, 3.6, -166.2, 21.6, road, 0.013);                           // 倉庫卸貨月台前（南北向）
+  flatAt(-166.2, 18.6, -161.4, 21.6, road, 0.013);                          // 回碼頭（東西向）
+  for (let z = -10; z < 20; z += 2.2) flat(scene, 0.12, 1.1, line, -155.2, Y + 0.02, z);   // 吊車軌道旁的白線
+  for (let z = -10; z <= 24; z += 4) cyl(scene, 0.18, 0.22, 0.45, M.bodyDark, -152.6, Y + 0.22, z, 8);   // 繫船柱
+  {
+    const g = new THREE.Group(); g.position.x = OV_MIRROR; g.scale.x = -1; scene.add(g);   // 翻過來的吊車：吊臂往東伸到船上
+    OV_ANIM.crane = CI.buildCrane(OV_CRANE_Z, '岸邊吊車', 'Quay Crane：把貨櫃從船上吊下來', g);
+    g.traverse(o => { if (o.isSprite) o.scale.x *= -1; });                // 文字標籤翻回來，不然字會左右相反
+  }
+  {
+    const R = rng(1010);
+    for (const [x, z] of [[-159.6, -10.4], [-159.6, -6.2], [-156.2, -10.4]]) {   // 剛卸下來、等著查驗的貨櫃
+      const n = 1 + Math.floor(R() * 2);
+      for (let k = 0; k < n; k++) box(scene, 1.6, 1.35, 3.9, CONT_MATS[Math.floor(R() * CONT_MATS.length)], x, Y + 0.68 + k * 1.37, z);
+    }
+    devTag('進口碼頭', 'Import Terminal：從報關島來的貨櫃在這裡上岸', OV_COLOR, -157.8, 4.6, -8.2, 0.7);
+  }
+  // ---- 海關查驗區：查驗亭、放行柵欄、開櫃檢查台 ----
+  {
+    flatAt(-166.2, 4.4, -161.8, 15.4, std(0xDDE6EE, { roughness: 0.85 }), 0.02);   // 查驗區地板（淡藍）
+    const kiosk = new THREE.Group(); kiosk.position.set(-164.4, Y, -3.4); scene.add(kiosk);   // 查驗亭（窗口朝南對著車道）
+    box(kiosk, 3.0, 2.2, 2.2, M.white, 0, 1.1, 0); box(kiosk, 3.2, 0.14, 2.4, capM, 0, 2.27, 0, false);
+    plane(kiosk, 2.2, 0.8, std(0x2F3B48, { roughness: 0.2, metalness: 0.4 }), 0, 1.45, 1.105);
+    devTag('查驗亭', 'Inspection Booth：核對文件', OV_COLOR, -164.4, 3.1, -3.4, 0.5);
+    const bar = new THREE.Group(); bar.position.set(-166.4, Y + 0.95, 0.1); scene.add(bar);   // 放行柵欄（從北邊伸過車道，在查驗站的西邊）
+    box(scene, 0.3, 1.0, 0.3, M.bodyDark, -166.4, Y + 0.5, -0.3);
+    const arm = new THREE.Group(); bar.add(arm);
+    box(arm, 0.1, 0.1, 3.2, std(0xC8463A, { roughness: 0.6 }), 0, 0, 1.6, false);
+    for (const z of [0.6, 1.6, 2.6]) box(arm, 0.11, 0.11, 0.4, M.white, 0, 0, z, false);
+    OV_ANIM.bar = arm; NAV_SKIP.push(bar);
+    // 開櫃檢查：打開的貨櫃、紙箱、檢查台
+    const c = new THREE.Group(); c.position.set(-164.4, Y, 9.6); scene.add(c);
+    const cm = CONT_MATS[2];
+    box(c, 2.4, 0.1, 5.8, cm, 0, 0.05, 0); box(c, 2.4, 2.4, 0.1, cm, 0, 1.2, -2.9); for (const s of [-1, 1]) box(c, 0.1, 2.4, 5.8, cm, s * 1.15, 1.2, 0); box(c, 2.4, 0.1, 5.8, cm, 0, 2.4, 0, false);
+    for (let i = 0; i < 8; i++) box(c, 0.6, 0.45, 0.5, M.kraftPlain, -0.6 + (i % 3) * 0.6, 0.33 + Math.floor(i / 6) * 0.46, -2.4 + Math.floor(i / 3) % 2 * 0.55, false);
+    box(scene, 1.8, 0.05, 0.8, deskTop, -164.4, Y + 0.78, 14.4); for (const sx of [-0.8, 0.8]) box(scene, 0.05, 0.76, 0.7, M.steel, -164.4 + sx, Y + 0.38, 14.4, false);
+    laptop(scene, -164.8, Y + 0.81, 14.4, Math.PI); box(scene, 0.5, 0.3, 0.4, M.kraftPlain, -163.9, Y + 0.95, 14.4, false);
+    devTag('開櫃檢查台', 'Physical Inspection：打開箱子對貨', OV_COLOR, -164.4, 2.0, 14.4);
+    roomTag('海關查驗區', 'Customs Inspection', -164.4, 3.7, 6.2);
+    spot('ovBooth', -164.4, -1.6, F.S, '海關查驗區・查驗亭前'); spot('ovInsp', -164.4, 13.3, F.N, '海關查驗區・開櫃檢查台');
+    spot('ovGate', -165.4, -0.6, F.S, '海關查驗區・放行柵欄旁');
+  }
+  // ---- 經銷商倉庫：卸貨月台、收貨區、貨架、揀貨區 ----
+  const WH = { x0: -184, x1: -170, z0: -9, z1: 19 };
+  {
+    flatAt(WH.x0, WH.z0, WH.x1, WH.z1, std(0xE3E3DA, { roughness: 0.85 }), 0.02);
+    flatAt(-176, 4.4, -170.4, 14, std(0xE6EBDD, { roughness: 0.85 }), 0.028);     // 收貨區（淡綠）
+    flatAt(-183.6, 5.4, -176.6, 18.6, std(0xF1E8D6, { roughness: 0.85 }), 0.028); // 揀貨區（淡黃）
+    wall(WH.x0, WH.z0, WH.x1, WH.z0);                                          // 北牆
+    wall(WH.x1, WH.z0, WH.x1, 5); wall(WH.x1, 13, WH.x1, WH.z1);               // 東牆：中間是卸貨月台的開口
+    wall(WH.x0, WH.z1, -176.4, WH.z1); wall(-174, WH.z1, WH.x1, WH.z1);        // 南牆：小門
+    wall(WH.x0, WH.z0, WH.x0, 10); wall(WH.x0, 12.6, WH.x0, WH.z1);            // 西牆：門通往街道（斑馬線）
+    // 卸貨月台：比地面高、邊緣有黃黑斜紋；拖車停在月台東邊卸貨
+    const dockM = std(0xB9B2A6, { roughness: 0.9 });
+    box(scene, 0.8, 0.5, 7, dockM, -169.6, Y + 0.25, 9.5);
+    for (let z = 6.3; z < 12.8; z += 0.6) box(scene, 0.04, 0.12, 0.3, (Math.round(z / 0.6) % 2) ? std(0xE4B64B) : M.bodyDark, -169.18, Y + 0.44, z, false);
+    for (const z of [6.4, 12.6]) box(scene, 0.25, 0.4, 0.4, M.rubber, -169.1, Y + 0.3, z, false);   // 防撞墊
+    devTag('卸貨月台', 'Loading Dock：貨櫃在這裡卸貨', OV_COLOR, -169.4, 2.2, 9);
+    for (const [x, z] of [[-172.2, 5.6], [-174.2, 5.6], [-172.2, 12.6], [-174.6, 12.6]]) pallet(x, z, 6 + (x === -172.2 ? 2 : 0));
+    devTag('收貨區', 'Receiving：點收、貼上儲位標籤', OV_COLOR, -173.2, 2.2, 9.2, 0.5);
+    // 貨架：三排，紙箱上有不同顏色的標籤（不同型號）
+    const rackM = std(0x3F73AE, { roughness: 0.6 }), shelfM = std(0xE4B64B, { roughness: 0.6 }), R = rng(1011);
+    for (const x of [-182.6, -179, -175.4]) {
+      for (const y of [0.05, 0.85, 1.65]) box(scene, 1.0, 0.06, 10, shelfM, x, Y + y, -3.6, false);
+      for (const z of [-8.55, -3.6, 1.35]) for (const sx of [-0.45, 0.45]) box(scene, 0.07, 2.1, 0.07, rackM, x + sx, Y + 1.05, z, false);
+      for (let i = 0; i < 9; i++) for (const y of [0.08, 0.88, 1.68]) {
+        if (R() < 0.18) continue;
+        box(scene, 0.8, 0.5, 0.95, M.kraftPlain, x, Y + y + 0.25, -7.9 + i * 1.07, false);
+        box(scene, 0.01, 0.12, 0.3, CONT_MATS[Math.floor(R() * CONT_MATS.length)], x + (x < -179 ? 0.41 : -0.41), Y + y + 0.3, -7.9 + i * 1.07, false);
+      }
+    }
+    devTag('貨架', 'Racks：每一格都有儲位編號', OV_COLOR, -179, 3.0, -3.6);
+    // 揀貨區：揀貨推車、包裝台、等著送去零售店的紙箱
+    const cart = new THREE.Group(); cart.position.set(-181.4, Y, 8.6); scene.add(cart);
+    box(cart, 0.7, 0.05, 1.1, M.steel, 0, 0.35, 0, false); box(cart, 0.7, 0.05, 1.1, M.steel, 0, 0.8, 0, false);
+    for (const [sx, sz] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) box(cart, 0.04, 1.0, 0.04, M.steelDark, sx * 0.33, 0.5, sz * 0.52, false);
+    for (let i = 0; i < 3; i++) box(cart, 0.5, 0.3, 0.32, M.kraftPlain, 0, 0.53 + (i > 1 ? 0.45 : 0), -0.3 + (i % 2) * 0.55, false);
+    box(scene, 2.4, 0.06, 1.0, deskTop, -179, Y + 0.85, 14.6); for (const sx of [-1.1, 1.1]) box(scene, 0.06, 0.83, 0.9, M.steel, -179 + sx, Y + 0.42, 14.6, false);
+    box(scene, 0.5, 0.36, 0.4, M.kraftPlain, -179.6, Y + 1.06, 14.6, false); box(scene, 0.12, 0.2, 0.08, M.bodyDark, -178.5, Y + 0.98, 14.4, false);   // 紙箱、條碼掃描器
+    monitor(scene, -178.2, Y + 1.2, 14.95, -1, basic({ map: screenTex('揀貨單', ['門市 A：珊瑚 ×6', '門市 B：珊瑚 ×4', '已掃描 7 / 10'], '#22c55e') }), 0.5, 0.32, false);
+    for (const [x, z] of [[-182.6, 17.2], [-181.2, 17.2]]) pallet(x, z, 4);
+    devTag('揀貨區', 'Picking：照揀貨單把貨拿齊、裝箱', OV_COLOR, -180.4, 2.4, 11.6);
+    // 倉管的座位（北牆邊）
+    const g = new THREE.Group(); g.position.set(-172.6, Y, -6.4); g.rotation.y = F.N; scene.add(g);
+    box(g, 1.3, 0.05, 0.62, deskTop, 0, 0.74, 0.78); for (const sx of [-0.6, 0.6]) box(g, 0.05, 0.72, 0.56, M.steel, sx, 0.36, 0.78, false);
+    monitor(g, 0, 1.12, 0.98, -1, basic({ map: screenTex('庫存系統', ['珊瑚 14 吋 在庫 312', '今天入庫 2 櫃', '待出貨 10 箱'], '#38bdf8') }), 0.56, 0.34, false);
+    cyl(g, 0.2, 0.2, 0.45, seatM, 0, 0.225, 0, 14); box(g, 0.38, 0.42, 0.06, chairM, 0, 0.76, -0.2, false);
+    roomTag('經銷商倉庫', 'Distributor Warehouse', -177, 3.9, 2.2);
+    spot('dWh', -172.6, -6.4, F.N, '經銷商倉庫・倉管的座位');
+    spot('ovDock', -171.2, 9, F.E, '經銷商倉庫・卸貨月台'); spot('ovRecv', -173.2, 9.2, F.E, '經銷商倉庫・收貨區');
+    spot('ovRack1', -177.2, -5.2, F.W, '經銷商倉庫・貨架'); spot('ovRack2', -180.8, 0.2, F.W, '經銷商倉庫・貨架');
+    spot('ovPick', -180.2, 8.8, F.W, '經銷商倉庫・揀貨區'); spot('ovPack', -179, 13.6, F.S, '經銷商倉庫・包裝台');
+  }
+  // ---- 街道：南北向的馬路、兩邊人行道、斑馬線、路燈、行道樹、地鐵站出口 ----
+  {
+    flatAt(-189, -13, -185, 27, road, 0.013);
+    flatAt(-191, -13, -189, 27, walk, 0.016); flatAt(-185, -13, -184, 27, walk, 0.016);
+    for (let z = -12; z < 26; z += 2.4) flat(scene, 0.12, 1.2, std(0xF2C14E, { roughness: 0.7 }), -187, Y + 0.025, z);   // 中線（黃色）
+    for (let x = -188.6; x < -185.2; x += 0.7) flat(scene, 0.4, 2.4, line, x, Y + 0.026, 11.3);   // 斑馬線：倉庫 ↔ 零售店
+    for (const z of [-8, 2, 20]) lamp(-184.5, z);
+    for (const z of [-6, 4, 22]) lamp(-190.6, z);
+    for (const z of [-11, 24]) { tree(-184.5, z); tree(-190.5, z); }
+    const sign = textSprite('市場街', 'Market Street', '#4C5554', 0.8); sign.position.set(-187, 3.0, -12.2); scene.add(sign);
+    // 地鐵站出口（島上的人從這裡上下班）
+    const mx = -194.4, mz = -9;
+    box(scene, 4.2, 0.12, 3.0, M.bodyDark, mx, Y + 2.6, mz, false);
+    for (const [sx, sz] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) box(scene, 0.12, 2.6, 0.12, M.bodyDark, mx + sx * 2, Y + 1.3, mz + sz * 1.4, false);
+    box(scene, 3.4, 0.5, 2.4, std(0x4C5554, { roughness: 0.8 }), mx - 0.3, Y + 0.25, mz);   // 往下的樓梯口
+    devTag('地鐵站出口', 'Metro：島上的人搭地鐵上下班', OV_COLOR, mx, 3.4, mz, 0.6);
+    for (let i = 0; i < 6; i++) spot('ovIn' + i, -191.6 + (i % 3) * 0.7, -6.6 - Math.floor(i / 3) * 0.7, F.S, '市場街・地鐵站出口');
+  }
+  // ---- 零售店：東邊是面向街道的櫥窗和店門；店裡有展示桌、靠牆的商品櫃、櫃檯 ----
+  const ST = { x0: -200, x1: -191, z0: -4, z1: 16 };
+  {
+    flatAt(ST.x0, ST.z0, ST.x1, ST.z1, std(0xE9D9C2, { roughness: 0.8 }), 0.02);   // 木地板色
+    wall(ST.x0, ST.z0, ST.x1, ST.z0); wall(ST.x0, ST.z1, ST.x1, ST.z1); wall(ST.x0, ST.z0, ST.x0, ST.z1);
+    // 東牆：櫥窗（矮牆＋玻璃）、店門（z 7.4 ～ 10.4）
+    for (const [z0, z1] of [[ST.z0, 7.4], [10.4, ST.z1]]) {
+      const L = z1 - z0, cz = (z0 + z1) / 2;
+      box(scene, 0.3, 0.5, L, wallM, ST.x1, Y + 0.25, cz); box(scene, 0.34, 0.07, L + 0.04, capM, ST.x1, Y + 0.535, cz, false);
+      const gl = new THREE.Group(); gl.position.set(ST.x1, Y + 1.35, cz); gl.rotation.y = Math.PI / 2; scene.add(gl);
+      plane(gl, L, 1.6, M.glass, 0, 0, 0); box(scene, 0.08, 0.08, L, M.bodyDark, ST.x1, Y + 2.17, cz, false);
+    }
+    for (const z of [7.4, 10.4]) box(scene, 0.16, 2.2, 0.16, M.bodyDark, ST.x1, Y + 1.1, z);   // 門框
+    const b = banner('筆電專賣店', 'Laptop Store', OV_COLOR, 5.4, 1.0); b.rotation.y = Math.PI / 2; b.position.set(ST.x1 + 0.12, Y + 2.85, 6); scene.add(b);
+    // 櫥窗裡：旋轉展示台上的新筆電、海報
+    const turn = new THREE.Group(); turn.position.set(ST.x1 - 1.0, Y + 0.62, 1.6); scene.add(turn);
+    cyl(scene, 0.45, 0.5, 0.6, M.white, ST.x1 - 1.0, Y + 0.3, 1.6, 20);
+    laptop(turn, 0, 0.02, 0.05, 0, 0xDB6A41).scale.setScalar(1.8);
+    OV_ANIM.turn = turn;
+    const poster = makeTex(256, 360, (c, W, H) => {
+      c.fillStyle = '#166534'; c.fillRect(0, 0, W, H);
+      c.fillStyle = '#FFFDFA'; c.font = `900 46px ${FONT}`; c.textAlign = 'center'; c.fillText('NEW', W / 2, 70);
+      c.font = `900 40px ${FONT}`; c.fillText('珊瑚 14', W / 2, 130);
+      c.fillStyle = '#DB6A41'; rrect(c, 40, 160, W - 80, 110, 16); c.fill();
+      c.fillStyle = '#FFFDFA'; c.font = `bold 26px ${FONT}`; c.fillText('現正開賣', W / 2, 228);
+      c.font = `bold 22px ${FONT}`; c.fillText('Coral 14 — Now on sale', W / 2, 320);
+    });
+    const pg = new THREE.Group(); pg.position.set(ST.x1 - 0.5, Y + 1.25, 12.6); pg.rotation.y = Math.PI / 2; scene.add(pg);
+    plane(pg, 0.9, 1.25, basic({ map: poster }), 0, 0, 0);
+    devTag('櫥窗', 'Shop Window：吸引路過的人走進來', OV_COLOR, ST.x1 - 0.6, 2.6, 1.6);
+    // 展示桌：每張桌上三台打開的筆電（可以試用）
+    for (const [x, z] of [[-195.2, 0.6], [-195.2, 5.4]]) {
+      box(scene, 1.4, 0.06, 2.6, std(0xF6F1E8, { roughness: 0.6 }), x, Y + 0.86, z); box(scene, 1.2, 0.8, 2.4, std(0xD8CDBE, { roughness: 0.8 }), x, Y + 0.42, z);
+      for (const dz of [-0.85, 0, 0.85]) laptop(scene, x, Y + 0.89, z + dz, Math.PI / 2, [0xB9C0C9, 0xDB6A41, 0x4C5554][Math.round(dz / 0.85) + 1]);
+    }
+    devTag('展示桌', 'Display Table：顧客可以實際試用', OV_COLOR, -195.2, 2.0, 3);
+    // 靠牆的商品櫃（西牆）
+    for (const y of [0.05, 0.75, 1.45]) box(scene, 0.6, 0.05, 9, std(0xF6F1E8, { roughness: 0.6 }), -199.55, Y + y, 4.5, false);
+    for (let i = 0; i < 12; i++) for (const y of [0.08, 0.78]) box(scene, 0.4, 0.5, 0.55, (i + (y > 0.5)) % 3 ? M.white : std(0xDB6A41, { roughness: 0.6 }), -199.55, Y + y + 0.25, 0.5 + i * 0.72, false);
+    devTag('商品櫃', 'Stock Shelf：盒裝的新筆電', OV_COLOR, -199.4, 2.3, 4.5, 0.5);
+    // 櫃檯：結帳的收銀機、刷卡機、裝袋
+    box(scene, 3.2, 1.0, 0.7, std(0x2F6F4F, { roughness: 0.7 }), -196.6, Y + 0.5, 12.4); box(scene, 3.3, 0.06, 0.8, deskTop, -196.6, Y + 1.03, 12.4, false);
+    monitor(scene, -197.4, Y + 1.3, 12.55, -1, basic({ map: screenTex('收銀', ['珊瑚 14 ×1', '延長保固 ×1', '付款：刷卡'], '#16a34a') }), 0.42, 0.28, false);
+    box(scene, 0.12, 0.05, 0.2, M.bodyDark, -196.4, Y + 1.09, 12.3, false); box(scene, 0.5, 0.4, 0.35, M.kraftPlain, -195.6, Y + 1.26, 12.4, false);
+    devTag('櫃檯', 'Checkout Counter：結帳、登記保固', OV_COLOR, -196.6, 2.3, 12.4);
+    roomTag('零售店', 'Retail Store', -195.6, 3.8, 8.4);
+    spot('ovCounter', -196.6, 13.5, F.N, '零售店・櫃檯'); spot('ovTable', -193.6, 0.6, F.W, '零售店・展示桌'); spot('ovWindow', -192.2, 4.2, F.E, '零售店・櫥窗');
+    spot('ovShelf', -198.6, 2.2, F.W, '零售店・商品櫃'); spot('ovDoor', -192.6, 9, F.E, '零售店・店門口');
+  }
+  // ---- 維修中心：服務櫃檯、兩張維修工作台、零件櫃、測試站（和工廠開視訊會議）----
+  const RP = { x0: -209, x1: -201.4, z0: -6, z1: 10 };
+  {
+    flatAt(RP.x0, RP.z0, RP.x1, RP.z1, std(0xE2E7EC, { roughness: 0.85 }), 0.02);
+    wall(RP.x0, RP.z0, RP.x1, RP.z0); wall(RP.x0, RP.z0, RP.x0, RP.z1); wall(RP.x1, RP.z0, RP.x1, RP.z1);
+    wall(RP.x0, RP.z1, -206.6, RP.z1); wall(-204, RP.z1, RP.x1, RP.z1);   // 南牆：門
+    box(scene, 3.0, 1.0, 0.6, std(0x2F6F4F, { roughness: 0.7 }), -205, Y + 0.5, 6.8); box(scene, 3.1, 0.06, 0.7, deskTop, -205, Y + 1.03, 6.8, false);   // 服務櫃檯
+    laptop(scene, -205.6, Y + 1.06, 6.8, Math.PI, 0x4C5554); box(scene, 0.4, 0.04, 0.3, M.white, -204.4, Y + 1.08, 6.8, false);   // 送修的筆電、維修單
+    devTag('服務櫃檯', 'Service Desk：收件、開維修單', OV_COLOR, -205, 2.3, 6.8);
+    for (const x of [-207, -203.4]) {                                         // 維修工作台：防靜電墊、拆開的筆電、工具
+      box(scene, 2.2, 0.05, 0.9, deskTop, x, Y + 0.85, -4.6); for (const sx of [-1, 1]) box(scene, 0.06, 0.83, 0.8, M.steel, x + sx, Y + 0.42, -4.6, false);
+      flat(scene, 1.6, 0.6, std(0x3C6E8F, { roughness: 0.9 }), x, Y + 0.88, -4.6);
+      const lp = laptop(scene, x - 0.2, Y + 0.89, -4.5, 0, 0x4C5554); lp.children[1].rotation.x = -1.4;   // 螢幕往後攤平，底殼打開
+      box(scene, 0.3, 0.012, 0.2, std(0x2E7D4F), x - 0.2, Y + 0.905, -4.45, false);                     // 看得到的主機板
+      box(scene, 0.25, 0.15, 0.15, std(0xC8463A), x + 0.6, Y + 0.95, -4.7, false); cyl(scene, 0.015, 0.015, 0.22, M.bodyDark, x + 0.4, Y + 0.9, -4.4, 6, false).rotation.z = Math.PI / 2;
+    }
+    devTag('維修工作台', 'Repair Bench：拆機、換零件', OV_COLOR, -205.2, 2.2, -4.6);
+    for (let i = 0; i < 4; i++) { box(scene, 0.9, 1.6, 0.5, std(0x9AA3AD, { metalness: 0.5, roughness: 0.4 }), -208.3, Y + 0.8, -1.6 + i * 1.0); for (let k = 0; k < 4; k++) box(scene, 0.7, 0.02, 0.01, M.bodyDark, -208.3, Y + 0.3 + k * 0.38, -1.34 + i * 1.0, false); }
+    devTag('零件櫃', 'Spare Parts：鍵盤、螢幕、電池', OV_COLOR, -208.2, 2.3, 0, 0.5);
+    box(scene, 1.4, 0.05, 0.7, deskTop, -202.4, Y + 0.85, 2.4); box(scene, 0.06, 0.83, 0.6, M.steel, -202.4, Y + 0.42, 2.4, false);
+    monitor(scene, -201.95, Y + 1.25, 2.4, 1, basic({ map: screenTex('視訊會議', ['NPI 試產工程師', '本週退修：12 台', '最多：轉軸鬆 5 台'], '#a78bfa') }), 0.56, 0.36, false).rotation.y = -Math.PI / 2;   // 螢幕朝西，對著技師
+    devTag('測試站', 'Test Station：修好後再測一次', OV_COLOR, -202.4, 2.2, 2.4, 0.5);
+    roomTag('維修中心', 'Repair Center', -205.2, 3.8, 1.8);
+    spot('ovSvc', -205, 5.8, F.S, '維修中心・服務櫃檯'); spot('ovBench1', -207, -3.6, F.N, '維修中心・維修工作台'); spot('ovBench2', -203.4, -3.6, F.N, '維修中心・維修工作台');
+    spot('ovParts', -207.4, 0.2, F.W, '維修中心・零件櫃'); spot('ovTest', -203.9, 2.4, F.E, '維修中心・測試站');
+  }
+  // ---- 南邊的小廣場：午餐桌、樹、往渡輪碼頭的步道 ----
+  {
+    flatAt(-209, 17.6, -191.4, 24.4, walk, 0.016);
+    for (const cx of [-205, -200, -195]) {
+      box(scene, 1.6, 0.06, 0.9, M.wood, cx, Y + 0.74, 21); box(scene, 0.08, 0.72, 0.7, M.bodyDark, cx, Y + 0.36, 21, false);
+      for (const dz of [-0.8, 0.8]) box(scene, 1.6, 0.06, 0.32, M.wood, cx, Y + 0.45, 21 + dz);
+    }
+    [-205, -200, -195].forEach((cx, k) => { spot('ovL' + (2 * k), cx - 0.4, 20.2, F.S, '南邊小廣場・午餐桌'); spot('ovL' + (2 * k + 1), cx + 0.4, 21.8, F.N, '南邊小廣場・午餐桌'); });
+    for (const x of [-208, -192.6]) tree(x, 23.6, 3.6);
+    flatAt(-182, 19.6, -176.6, 27.6, walk, 0.016);                                    // 往渡輪碼頭的步道
+  }
+  // ---- 渡輪碼頭（兩邊各一個）：木頭棧橋、渡輪、指示牌 ----
+  const ferry = (P, toText, sub) => {
+    const L = P.z1 - P.z0, cx = (P.x0 + P.x1) / 2, cz = (P.z0 + P.z1) / 2;
+    box(scene, P.x1 - P.x0, 0.3, L, M.wood, cx, Y - 0.17, cz);                 // 棧橋面比島面低 2 公分，橋頭才不會閃爍
+    for (const x of [P.x0 + 0.1, P.x1 - 0.1]) box(scene, 0.07, 0.07, L - 1.4, M.steel, x, Y + 0.95, cz + 0.7, false);
+    for (const z of [P.z0 + 2, P.z1 - 0.6]) for (const x of [P.x0 + 0.5, P.x1 - 0.5]) cyl(scene, 0.22, 0.26, 2.2, M.bodyDark, x, Y - 1.4, z, 10);
+    const b = new THREE.Group(); b.position.set(P.boat.x, SEA_Y, P.boat.z); scene.add(b);   // 渡輪：白色船身、深綠船艙
+    box(b, 2.6, 1.0, 7.0, M.white, 0, 1.0, 0); box(b, 2.7, 0.15, 7.1, capM, 0, 1.55, 0, false);
+    box(b, 2.2, 1.1, 3.4, std(0xE9F2EC, { roughness: 0.6 }), 0, 2.15, -0.4); box(b, 2.4, 0.12, 3.6, capM, 0, 2.76, -0.4, false);
+    plane(b, 1.8, 0.45, std(0x2F3B48, { roughness: 0.2, metalness: 0.4 }), 0, 2.3, 1.31);
+    NAV_SKIP.push(b);
+    const sp = textSprite('渡輪碼頭', `Ferry：${toText}`, OV_COLOR, 0.9); sp.position.set(cx, 3.0, P.z0 + 1.2); scene.add(sp);
+    const sp2 = textSprite('⛴️ 搭渡輪', sub, '#2F6F8F', 0.6); sp2.position.set(cx, 2.0, P.z1 - 0.8); scene.add(sp2);
+  };
+  ferry(FERRY_C, '往海外市場島', '下場走走時，走到這裡就能搭');
+  ferry(FERRY_O, '回報關島', '下場走走時，走到這裡就能搭');
+}
+function updateOverseasIsland() {                // 海外市場島的小動畫（跟著園區時鐘）：櫥窗的展示台慢慢轉
+  OV_ANIM.turn.rotation.y = AMB.t * 0.6;
 }
 
 /* =====================================================================
@@ -3383,6 +3672,29 @@ const ROLES = {
     intro: '我坐在研發島，跟著新機種專案走：新零件、模具、治具，都由我向廠商下單。',
     duty: '新機種開案時，協助評估規格的成本；替 NPI 的新零件找供應商，發包模具和治檢具，比價、議價、開採購單（PO）；盯緊供應商的產能和交期，確保 NPI 的時程。模具要修改時，先和機構工程師確認要不要改、再和 PM 一起看時程，最後才去和模具廠談費用和交期。',
     tip: '採購要同時顧好三件事：價格（Cost）、交期（Delivery）、品質（Quality）。只顧便宜、拖到交期，整個專案都會延後。' },
+  // ---- 海外市場島（v18）----
+  ocustoms: { title: '進口國海關關員', en: 'Import Customs Officer', color: '#24476B', smock: '#1e3a5f', cap: '#0f172a', pants: '#1e293b', shoes: '#111827', hat: 'cap', emoji: '🛂',
+    intro: '我是這個國家的海關關員：筆電從國外運進來，要先通過我們的查驗，才能在這裡賣。',
+    duty: '審核進口報單、核對提單和裝箱單；用風險評估決定哪些貨櫃要查驗；開櫃時核對品名、數量，也確認產品有沒有這個國家要求的認證標章（安規、無線電）；關稅和營業稅都繳清了才放行。',
+    tip: '出口時報關島查過一次，進口國還要再查一次：每個國家都要保護自己的消費者，也要收自己的關稅。' },
+  whkeeper: { title: '經銷商倉管', en: 'Distributor Warehouse Keeper', color: '#15803D', smock: '#166534', cap: '#14532d', pants: '#1f2937', shoes: '#3f3f46', hat: 'cap', emoji: '📦',
+    intro: '我在經銷商的倉庫管貨：筆電從碼頭送來，我負責收貨、上架，再出貨到各家門市。',
+    duty: '拖車到月台時，對著到貨通知點收數量、檢查外箱有沒有壓傷；每一箱掃條碼、放上有儲位編號的貨架；每天依照門市的訂單開揀貨單，也定期盤點，讓系統裡的庫存和架上的一樣。',
+    tip: '倉庫常用「先進先出」：先到的貨先出，才不會有舊型號一直壓在倉庫裡。' },
+  picker: { title: '揀貨員', en: 'Order Picker', color: '#CA8A04', smock: '#ca8a04', cap: '#854d0e', pants: '#1f2937', shoes: '#3f3f46', hat: 'cap', emoji: '🧺',
+    intro: '我照著揀貨單，從貨架上把門市要的筆電一箱一箱拿齊，再送到門市。',
+    duty: '拿著揀貨單和掃描器到貨架，找到對的儲位、掃條碼確認型號和數量，放上揀貨推車；揀齊後到包裝台裝箱、貼出貨標籤，再送到門市補貨。',
+    tip: '揀貨最怕揀錯：不同規格的筆電外箱長得很像，所以每一箱都要掃條碼，不能只靠眼睛看。' },
+  clerk: { title: '門市店員', en: 'Retail Sales Associate', color: '#BE185D', smock: '#166534', pants: '#1f2937', shoes: '#1f2937', hat: 'none', emoji: '🛍️',
+    intro: '我在零售店賣筆電：幫顧客挑適合的機型、示範功能、結帳，也提醒他們登記保固。',
+    duty: '開店前整理展示桌、確認每台展示機都開著、價格標示正確；問清楚顧客的需求（上課、工作、玩遊戲）再推薦機型；結帳時說明保固和退換貨的規定；把顧客常問、常抱怨的事回報給品牌。',
+    tip: '展示桌上的筆電要讓顧客「摸得到」：重量、鍵盤手感、螢幕亮度，都是在店裡才感覺得到的。' },
+  repair: { title: '維修技師', en: 'Repair Technician', color: '#0F766E', smock: '#0f766e', pants: '#1f2937', shoes: '#3f3f46', hat: 'none', emoji: '🔧',
+    intro: '我在維修中心修筆電：顧客送來的故障機，由我檢查、換零件、測試，再交還給顧客。',
+    duty: '在服務櫃檯收件、確認保固期、開維修單；拆機找出故障原因，更換鍵盤、螢幕、電池或主機板；修好後再測一次；把常見的故障整理好，回報給原廠的研發和工廠，讓下一批改善。',
+    tip: '維修中心是「顧客的聲音」：同一種故障一直出現，就要回頭找研發和工廠，一起改設計或製程。' },
+  shopper: { title: '顧客', en: 'Customer', color: '#8074A7', smock: '#a78bfa', pants: '#334155', shoes: '#1f2937', hat: 'none', emoji: '🧑',
+    duty: '來零售店看筆電、試用、結帳，或把故障的筆電送到維修中心。', tip: '顧客是整條供應鏈的終點：從工廠、報關、海運到門市，最後都是為了讓顧客買到、用得順。' },
   // 玩家：下場走走時扮演的參觀者
   // 玩家：黃色小熊耳帽＋珊瑚橘參觀服＋綠色小背包，工廠裡沒有其他人穿這個顏色，一眼就認得出來
   player: { title: '參觀者', en: 'You', color: '#DB6A41', smock: '#F26B4A', cap: '#FFC93C', pants: '#3f3f46', hat: 'bear', pack: '#3BA99C', emoji: '🙂', duty: '', tip: '' },
@@ -3428,6 +3740,15 @@ const TL_DEF = [
   { role: 'buyer', name: '林佳蓉', hair: 'long', skin: '#f5d0b3', hairC: '#2b1d16', desk: 'dBuyer', home: ['dBuyer', 'type'], area: 'npi' },   // 採購坐在研發島，名單列在 NPI 島
 ];
 TL_DEF.forEach((d, i) => PEOPLE_DEF.push({ ...d, id: 'tl_' + d.role, idx: 40 + i, tl: true, walker: true, ti: i }));   // walker：用可行走地圖找路的人（研發島、模具島）
+// 海外市場島的 5 個人（姓名皆為虛構；這座島在海外，所以用外文名字）：desk 座位、lunch 吃午餐的位子、home 其他模式時待的地方與動作
+const OV_DEF = [
+  { role: 'ocustoms', name: 'Daniel Ortiz', hair: 'short', skin: '#c98e65', hairC: '#151515', home: ['ovBooth', 'inspect'] },
+  { role: 'whkeeper', name: 'Grace Miller', hair: 'bun', skin: '#f3cfb0', hairC: '#7a4a2a', glasses: true, desk: 'dWh', home: ['ovRecv', 'inspect'] },
+  { role: 'picker', name: 'Leo Nguyen', hair: 'short', skin: '#e0b089', hairC: '#1a1a1a', home: ['ovPick', 'work'] },
+  { role: 'clerk', name: 'Emma Clarke', hair: 'long', skin: '#f5d0b3', hairC: '#8a5a2b', home: ['ovTable', 'talk'] },
+  { role: 'repair', name: 'Kenji Mori', hair: 'short', skin: '#ecc09c', hairC: '#151515', glasses: true, home: ['ovBench1', 'repair'] },
+];
+OV_DEF.forEach((d, i) => PEOPLE_DEF.push({ ...d, id: 'ov_' + d.role, idx: 50 + i, ov: true, walker: true, oi: i }));
 
 // ---- 一天的場景：兩班制的日班 08:00–20:00，用縮時播放（dur = 1 倍速時播幾秒）----
 const DAY_SCENES = [
@@ -4100,6 +4421,7 @@ const PEOPLE = PEOPLE_DEF.map(def => ({ ...def, tasks: [], o: { pos: new THREE.V
 const PEOPLE_BY_ID = Object.fromEntries(PEOPLE.map(p => [p.id, p]));
 const NPI_PEOPLE = PEOPLE.filter(p => p.npi);   // 研發人員的行程要等可行走地圖建好才能排（見 planNpiDay）
 const TL_PEOPLE = PEOPLE.filter(p => p.tl);     // 模具島的人（見 planToolDay）
+const OV_PEOPLE = PEOPLE.filter(p => p.ov);     // 海外市場島的人（見 planOvDay）
 for (const p of PEOPLE) {
   if (p.walker) continue;
   if (p.id === 'leader') planLeader(p);
@@ -4261,6 +4583,14 @@ const AMBIENT_DEF = [
   { id: 'bonded', label: '保稅倉管理員', role: 'bonded', isle: true, hair: 'bun', skin: '#f1c7a3', hairC: '#3a2a1e', speed: 0.6, walkLabel: '在保稅倉門口巡視',
     route: [wp(-75.6, -10.0, { act: 'inspect', wait: 8, face: F.S, label: '清點剛進倉的零件' }), wp(-80, -10.0), wp(-84.2, -10.0, { act: 'look', wait: 5, face: F.S, label: '檢查倉庫門口' }), wp(-80, -10.0)],
     talk: ['我是保稅倉的管理員。從國外進口的零件，會先放在這裡。', '保稅的零件還沒繳稅：做成筆電外銷出口，就不用繳這筆稅。', '所以每一批零件進來、領出去，我都要記在帳冊上，海關會來核對。'] },
+  // 海外市場島的顧客（ov：名單列在「🌍 海外」）：從地鐵站走到零售店、維修中心
+  { id: 'shopper1', label: '顧客 A', role: 'shopper', ov: true, hair: 'long', skin: '#f1c7a3', hairC: '#3a2a1e', speed: 0.9, walkLabel: '逛街', from: '10:00', to: '19:00',
+    route: [wp(-191.6, -7.6, { act: 'look', wait: 4, face: F.S, label: '從地鐵站出來' }), wp(-189.6, -6), wp(-189.6, 9), wp(-192.4, 9, { act: 'look', wait: 3, face: F.W, label: '在店門口看櫥窗' }),
+      wp(-193.4, 3.0, { act: 'inspect', wait: 10, face: F.W, label: '在展示桌試用筆電' }), wp(-196.6, 11.2, { act: 'talk', wait: 7, face: F.S, label: '在櫃檯結帳' }), wp(-192.4, 9.2), wp(-189.6, 9.2), wp(-189.6, -6)],
+    talk: ['我想買一台上課用的筆電：要輕、電池要撐一整天。', '在網路上看規格看不出手感，所以我一定要來店裡摸摸看。', '店員說這台是新機種「珊瑚 14」，剛從海外運來，上禮拜才開賣。'] },
+  { id: 'shopper2', label: '顧客 B', role: 'shopper', ov: true, hair: 'short', skin: '#d9a47e', hairC: '#151515', speed: 0.85, walkLabel: '送修筆電', from: '10:00', to: '19:00', phase: 0.5,
+    route: [wp(-189.6, -5.4), wp(-189.6, 17), wp(-205.3, 17), wp(-205.3, 8.2, { act: 'talk', wait: 9, face: F.N, label: '在維修中心的服務櫃檯送修' }), wp(-205.3, 17), wp(-189.6, 17)],
+    talk: ['我的筆電轉軸鬆了，螢幕立不住，還在保固期內，所以拿來送修。', '技師說會先檢查、換零件，修好再測一次才交還給我。', '他也會把這種故障回報給原廠，讓下一批改善。'] },
 ];
 function buildRoute(def) {                     // 把路線換算成「每一段從第幾秒到第幾秒」
   const pts = def.route, legs = []; let t = 0;
@@ -4340,7 +4670,7 @@ function groundY(x, z) {
 // ---- 可行走地圖（給玩家用）：把整座島切成 0.25 公尺的小格子 ----
 //   0 = 不能走（海、牆、機台、輸送帶、樹……）、1 = 可以走、2 = 天橋（高度另外算）
 const NAVG = (() => {
-  const C = 0.25, X0 = -112, Z0 = -84, NX = Math.round((104 - X0) / C), NZ = Math.round((34 - Z0) / C), RAD = 0.25;   // RAD：人的半徑（範圍涵蓋四座島）
+  const C = 0.25, X0 = -212, Z0 = -84, NX = Math.round((104 - X0) / C), NZ = Math.round((38 - Z0) / C), RAD = 0.25;   // RAD：人的半徑（範圍涵蓋五座島和渡輪碼頭）
   const grid = new Uint8Array(NX * NZ);
   const ci = x => Math.floor((x - X0) / C), cj = z => Math.floor((z - Z0) / C);
   const inRR = (x, z, x0, z0, x1, z1, r) => {   // 點在不在圓角矩形裡
@@ -4359,7 +4689,9 @@ const NAVG = (() => {
       || inRR(x, z, ISLE3.x0 + E, ISLE3.z0 + E, ISLE3.x1 - E, ISLE3.z1 - E, ISLE3.r - E)
       || (x > FOOT4.x0 + 0.2 && x < FOOT4.x1 - 0.2 && z > FOOT4.z0 - 1 && z < FOOT4.z1 + 1)   // 往模具島的步行橋（兩端多延伸 1 公尺接上島）
       || (x > TBV.x0 + 0.3 && x < TBV.x1 - 0.3 && z > TBV.z0 + 0.3 && z < TBV.z1 + 1) || (x > TBH.x0 + 0.3 && x < TBH.x1 + 1 && z > TBH.z0 + 0.3 && z < TBH.z1 - 0.3)   // 貨車大橋
-      || inRR(x, z, ISLE4.x0 + E, ISLE4.z0 + E, ISLE4.x1 - E, ISLE4.z1 - E, ISLE4.r - E)) grid[j * NX + i] = 1;
+      || inRR(x, z, ISLE4.x0 + E, ISLE4.z0 + E, ISLE4.x1 - E, ISLE4.z1 - E, ISLE4.r - E)
+      || inRR(x, z, ISLE5.x0 + E, ISLE5.z0 + E, ISLE5.x1 - E, ISLE5.z1 - E, ISLE5.r - E)
+      || [FERRY_C, FERRY_O].some(P => x > P.x0 + 0.3 && x < P.x1 - 0.3 && z > P.z0 - 1 && z < P.z1 - 0.3)) grid[j * NX + i] = 1;   // 渡輪碼頭（往島上多延伸 1 公尺）
   }
   const block = (x0, z0, x1, z1) => {
     const i0 = Math.max(0, ci(x0)), i1 = Math.min(NX - 1, ci(x1)), j0 = Math.max(0, cj(z0)), j1 = Math.min(NZ - 1, cj(z1));
@@ -4528,7 +4860,8 @@ const NPI_PLAN = {
       ['11:15', 'dID', 'type', '修改 3D 外觀曲面', ['我在電腦上修改 3D 外觀：把轉軸附近的曲線修得更順。', 'ID 的圖會交給機構工程師，他們要把它拆成一個個做得出來的零件。']]],
     pm: [['13:30', 'meet0', 'meet', '設計審查：外觀、機構、散熱、天線一起看', ['我想把天線窗做細一點比較好看；但天線工程師說太細訊號會變差，我們正在找平衡點。'], { by: true }],
       ['14:40', 'dID', 'type', '依照設計審查的結論修改設計', ['審查會決定天線窗維持 2 公釐，我把 3D 圖改好，再交給機構工程師。']],
-      ['15:35', 'f18', 'inspect', '到第 19 站看試產機的外觀', ['外觀品檢這一站會檢查刮傷和色差。我來確認量產外殼的顏色，和我們的色板一不一樣。', '外殼由供應商用模具生產、噴漆，每一批顏色都可能有一點點差異，所以要訂出「可以接受的範圍」。']]],
+      ['15:35', 'f18', 'inspect', '到第 19 站看試產機的外觀', ['外觀品檢這一站會檢查刮傷和色差。我來確認量產外殼的顏色，和我們的色板一不一樣。', '外殼由供應商用模具生產、噴漆，每一批顏色都可能有一點點差異，所以要訂出「可以接受的範圍」。']],
+      ['16:20', 'dID', 'talk', '和海外市場島的門市視訊：顧客對外觀的回饋', ['海外門市的店員說，顧客很喜歡「珊瑚橘」，但亮面的上蓋容易留指紋。', '下一代我會考慮改成霧面，或是多一個比較淺的顏色。'], { by: true }]],
     review: ['我報告：試產機有 2 台的外殼顏色偏暗，我會和供應商一起確認噴漆的條件。'],
     after: ['整理外觀的問題，寄給外殼供應商', ['我把外殼顏色的問題拍照寄給供應商，請他們明天回覆改善的方法。']] },
   me: { first: ['到座位：看昨天的測試結果', ['早安！昨天落摔測試有一台轉軸鬆了，我今天要找出原因。']],
@@ -4616,6 +4949,7 @@ const NPI_PLAN = {
   pe: { first: ['到座位：最後檢查一次試產計畫', ['早安！今天下午 3 點試產，我早上要把所有東西再檢查一遍。']],
     mtg: ['我報告：試產用的治具 12 組都準備好了，SOP 第 1.2 版已經發給產線。'],
     am: [['09:25', 'dPE', 'type', '準備試產：SOP、治具清單', ['SOP 是作業指導書：每一站用什麼工具、照什麼順序、螺絲鎖多緊，都寫得清清楚楚。', '新機種的 SOP 是我寫的，作業員照著做，品質才會穩定。']],
+      ['10:30', 'dPE', 'talk', '和海外市場島的維修中心視訊：了解常見的故障', ['海外維修中心的技師說，這週退修的 12 台裡，有 5 台是轉軸鬆了。', '維修中心是「顧客的聲音」：我把它加進問題清單，請機構工程師一起看，下一批量產前就改好。']],
       ['11:15', 'warBoard', 'point', '看時程看板，確認試產時程', ['試產通常分三次：EVT 數量少、DVT 幾百台、PVT 用量產的速度做，一次比一次接近真正的量產。']]],
     pm: [['13:30', 'f12b', 'inspect', '到產線準備試產：確認治具和物料', ['我先到產線確認：治具、螺絲、新機種的零件都到了，作業員也都上過課了。', '進產線前一樣要穿靜電衣、通過靜電測試，研發的人也不例外。']],
       ['15:00', 'f12b', 'talk', '試產開始：記錄每一站的問題', ['試產開始！我在記錄每一站的問題，用「4M」分類：人、機、料、法。', '例如卡勾不好扣，是零件的問題（料），還是組裝方法的問題（法）？分清楚才知道要找誰改。'], { key: true }],
@@ -4715,6 +5049,68 @@ function planToolDay() {
   }
 }
 planToolDay();
+// ---- 海外市場島的一天：今天有兩櫃新機種「珊瑚 14」從報關島運到；上午點收上架，下午出貨到門市；維修中心把常見故障回報給工廠 ----
+//   am／pm 格式和 NPI_PLAN 一樣：[幾點, 地點, 動作, 在做什麼, 說的話, 選項]；leave 下班時間
+const OV_PLAN = {
+  ocustoms: { first: ['到查驗亭：看今天要到港的貨櫃清單', ['早安！今天有兩櫃筆電從報關島那邊運過來，我先看看文件。']],
+    am: [['09:00', 'ovBooth', 'inspect', '審核進口報單：核對提單、發票和裝箱單', ['進口商（就是經銷商）要先送「進口報單」給海關：貨名、數量、價格、稅則號別都要寫清楚。', '我把報單和船公司的提單、發票、裝箱單對一對，數字要完全一樣。']],
+      ['10:00', 'ovGate', 'look', '看拖車進出查驗區', ['電腦會依照風險把貨櫃分成「免驗」、「審文件」和「開櫃查驗」，跟報關島的 C1、C2、C3 很像。']],
+      ['11:00', 'ovInsp', 'inspect', '開櫃查驗：抽查一櫃筆電', ['這一櫃被抽中開櫃查驗：我打開幾箱，看品名、數量對不對。', '我也會看筆電和變壓器上有沒有這個國家要求的認證標章，沒有標章的電器不能在這裡賣。'], { key: true }]],
+    pm: [['13:00', 'ovBooth', 'inspect', '確認關稅、營業稅都繳了', ['進口要繳關稅和營業稅。稅繳清了，系統才會發出「放行」。']],
+      ['14:30', 'ovInsp', 'inspect', '查驗第二櫃', ['第二櫃只要審文件，不用開櫃，很快就能放行。']],
+      ['16:00', 'ovBooth', 'inspect', '寫查驗紀錄、發放行通知', ['我把今天查驗的結果寫進紀錄，經銷商收到放行通知，就可以把貨領走了。']]], leave: '17:30' },
+  whkeeper: { first: ['到座位：看今天的到貨通知', ['早安！船公司寄來「到貨通知」：今天有兩櫃「珊瑚 14」到港。', '我先把收貨的儲位排好，等一下貨一到就能上架。']],
+    am: [['09:00', 'ovDock', 'look', '在卸貨月台等拖車：點收第一櫃', ['拖車從碼頭載著貨櫃過來了！我在月台這裡點收。', '月台和貨櫃車的車斗差不多高，堆高機可以直接開進去把棧板拉出來。'], { key: true }],
+      ['10:10', 'ovRecv', 'inspect', '點收：數量對不對、外箱有沒有壓傷', ['我照著到貨通知一箱一箱點：數量少了、外箱壓壞了，都要當場拍照記下來，才能向船公司或保險公司求償。']],
+      ['11:00', 'ovRack1', 'inspect', '把新到的筆電上架', ['每一箱都要掃條碼，放上有儲位編號的貨架，系統才知道它在哪一格。']]],
+    pm: [['13:00', 'dWh', 'type', '看門市的訂單、開揀貨單', ['門市 A 要 6 台、門市 B 要 4 台。我開好揀貨單，交給揀貨員。']],
+      ['14:00', 'ovDock', 'look', '點收第二櫃', ['第二櫃也到了。今天的兩櫃，一櫃大概可以放好幾百台筆電。']],
+      ['15:30', 'ovRack2', 'inspect', '盤點庫存', ['盤點就是數一數架上的貨，和系統裡的數字對不對得上。數字不對，門市就可能賣出倉庫裡其實沒有的貨。']],
+      ['16:40', 'dWh', 'type', '更新庫存系統', ['今天進了兩櫃、出了 10 台，我把庫存更新好，業務明天就能接新的訂單。']]], leave: '18:00' },
+  picker: { first: ['到揀貨區：領今天的揀貨單', ['早安！倉管把揀貨單印好了，我先看看今天要揀幾台。']],
+    am: [['09:00', 'ovRack2', 'inspect', '照揀貨單到貨架找貨', ['揀貨單上寫著儲位編號，例如「B-03-2」：B 排、第 3 格、第 2 層。', '找到之後一定要掃條碼確認，型號錯一個字，送到門市就是錯的貨。']],
+      ['10:00', 'ovPick', 'work', '把揀好的貨放上揀貨推車', ['一張揀貨單揀齊了，我把推車推到包裝台。']],
+      ['10:40', 'ovPack', 'work', '在包裝台裝箱、貼出貨標籤', ['裝箱時放好緩衝材，貼上出貨標籤：寫著送到哪家門市、裡面有幾台。']],
+      ['11:20', 'ovShelf', 'carry', '把筆電送到零售店補貨', ['零售店就在對面，過斑馬線就到了。我直接把貨送過去，店員點收後上架。'], { key: true }]],
+    pm: [['13:00', 'ovRack1', 'inspect', '揀下午的訂單', ['下午還有一張門市 B 的訂單：4 台「珊瑚 14」。']],
+      ['14:30', 'ovPack', 'work', '裝箱、貼標籤', ['裝好箱、貼好標籤，等物流車明天一早送到門市 B。']],
+      ['15:30', 'ovRecv', 'inspect', '幫倉管整理收貨區', ['新到的第二櫃貨很多，我幫忙把棧板整理好，走道不能堆貨，堆高機才過得去。']]], leave: '17:30' },
+  clerk: { first: ['到零售店：開店前整理展示桌', ['早安！開店前要把每一台展示機都打開、擦乾淨，價格牌也要對。']],
+    am: [['09:30', 'ovWindow', 'look', '整理櫥窗：把新機種擺在最顯眼的地方', ['新機種「珊瑚 14」上禮拜開賣，我把它放在櫥窗的轉台上，路過的人一眼就看得到。']],
+      ['10:00', 'ovDoor', 'talk', '開店！在門口迎接顧客', ['歡迎光臨！今天有新到的「珊瑚 14」，可以進來試試看喔。']],
+      ['10:30', 'ovTable', 'talk', '幫顧客挑筆電、示範功能', ['我會先問顧客要做什麼：上課、上班，還是玩遊戲？需求不同，適合的筆電也不同。', '這台很輕、電池可以撐一整天，您可以打打看鍵盤、開闔一下螢幕。'], { key: true }],
+      ['11:30', 'ovCounter', 'desk', '結帳、說明保固', ['結帳時我會說明保固：一年內正常使用壞了可以免費維修，記得保留發票。']]],
+    pm: [['13:00', 'ovShelf', 'inspect', '點收倉庫送來的貨、上架', ['倉庫上午送來 6 台，我點收完放上商品櫃。賣得好的機型，要早一點叫貨才不會缺貨。']],
+      ['14:00', 'ovTable', 'talk', '幫顧客比較兩台筆電', ['這兩台差在記憶體和螢幕：多一點記憶體，同時開很多程式也不會卡。']],
+      ['15:30', 'ovCounter', 'desk', '結帳', ['謝謝光臨！這是您的發票和保固卡。']],
+      ['16:20', 'ovCounter', 'talk', '和 NPI 研發島的 ID 設計師視訊：顧客對外觀的回饋', ['蔡設計師您好，這週顧客最常說的是：「珊瑚橘」很好看，但亮面的上蓋容易留指紋。', '也有好幾位顧客問有沒有更淺的顏色，我整理好寄給您。'], { key: true }],
+      ['17:00', 'ovTable', 'inspect', '整理展示機', ['把展示機的畫面、桌面都整理好，明天開店前就輕鬆多了。']]], leave: '19:20' },
+  repair: { first: ['到維修中心：看今天的維修單', ['早安！今天有 4 台要修：2 台轉軸鬆、1 台鍵盤失靈、1 台開不了機。']],
+    am: [['09:00', 'ovSvc', 'talk', '收件：確認保固、開維修單', ['送修時我會先確認保固期，寫好「維修單」：哪台、什麼問題、顧客的聯絡方式。']],
+      ['09:40', 'ovBench1', 'repair', '拆機檢查：找出故障原因', ['拆開底殼，先看主機板有沒有燒焦、接頭有沒有鬆。', '這台開不了機，是電池接頭鬆了，重新插好就能開機。']],
+      ['10:30', 'ovTest', 'talk', '和工廠的 NPI 試產工程師視訊：回報常見故障', ['賴工程師您好，這週退修的 12 台裡，有 5 台是轉軸鬆了，都是同一批的機器。', '我把照片和序號寄給您，請研發和工廠一起看看是設計還是組裝的問題。'], { key: true }],
+      ['11:10', 'ovParts', 'inspect', '到零件櫃拿新的鍵盤', ['零件櫃裡有常用的備品：鍵盤、螢幕、電池、轉軸。換下來的壞零件也要寄回原廠分析。']]],
+    pm: [['13:00', 'ovBench2', 'repair', '換鍵盤', ['筆電鍵盤和上蓋（C 件）是一整片，要整片換。工廠裡第 16 站就是在裝它。']],
+      ['14:30', 'ovTest', 'inspect', '修好後再測一次', ['修好之後要跑測試程式：鍵盤、螢幕、喇叭、Wi-Fi 都測一次，全部通過才交還給顧客。']],
+      ['15:30', 'ovSvc', 'talk', '通知顧客取件、說明修了什麼', ['您的筆電修好了：換了一組新的轉軸，也幫您測試過了。']],
+      ['16:30', 'ovBench1', 'repair', '修下一台', ['今天還剩一台轉軸鬆的，下班前把它修好。']]], leave: '18:00' },
+};
+function planOvDay() {
+  const T = s => dAtClock(hm(s));
+  for (const p of OV_PEOPLE) {
+    const P = npiPlanner(p), R = OV_PLAN[p.role], i = p.oi;
+    const step = ([clock, id, act, label, say, opt = {}]) => P.go(id, act, T(clock), label, { say, ...opt });
+    P.go('ovIn' + i, 'stand', T('08:20') + i * 0.25, '搭地鐵來上班', { hold: 0.6, say: ['早安！海外市場島上的人都搭地鐵上下班，出口就在市場街的北邊。'] });
+    P.go(p.desk || R.am[0][1], p.desk ? 'type' : R.am[0][2], P.free, R.first[0], { say: R.first[1] });
+    R.am.forEach(step);
+    P.go('ovL' + i, 'eat', T('12:00'), '吃午餐', { say: ['中午大家在南邊小廣場的午餐桌一起吃飯。'] });
+    P.go('ovL' + i, 'rest', T('12:30'), '午休', { say: ['休息一下，下午還有第二櫃貨要處理……'] });
+    R.pm.forEach(step);
+    P.go('ovIn' + i, 'stand', T(R.leave || '17:30') + i * 0.15, '走到地鐵站', { hold: 0.6, say: ['今天辛苦了！搭地鐵回家囉。'] });
+    P.go('ovIn' + i, 'gone', P.free, '搭地鐵下班');
+  }
+}
+planOvDay();
 function walkTo(x, z, quiet = false) {         // 點地板：規劃路線走過去
   const path = findPath(PLAYER.pos.x, PLAYER.pos.z, x, z);
   state.camFree = false;
@@ -4790,6 +5186,12 @@ function updatePlayer(rdt, time) {
     else if (d < 1.7 || (!PLAYER.path && d < 3.2)) { const id = PLAYER.chase; PLAYER.chase = null; PLAYER.path = null; openTalk(id); }
     else if ((PLAYER.chaseT -= rdt) <= 0) { PLAYER.chaseT = 0.8; if (!walkTo(p.o.pos.x, p.o.pos.z, true)) { PLAYER.chase = null; toast(`走不到${displayName(p)}那裡`); } }
   }
+  const pier = DLG.open ? null : [FERRY_C, FERRY_O].find(P => PLAYER.pos.x > P.x0 - 0.3 && PLAYER.pos.x < P.x1 + 0.3 && PLAYER.pos.z > P.z0 + 1.2 && PLAYER.pos.z < P.z1 + 0.3);
+  if (pier !== PLAYER.pier) {                   // 走到渡輪碼頭：顯示「搭渡輪」按鈕
+    PLAYER.pier = pier;
+    const fb = $('ferryHint'); fb.style.display = pier ? 'block' : 'none';
+    if (pier) fb.textContent = pier === FERRY_C ? '⛴️ 搭渡輪到海外市場島' : '⛴️ 搭渡輪回報關島';
+  }
   const near = DLG.open ? null : nearestTalkable(2.3);   // 附近可以聊天的人：顯示提示
   if (near !== PLAYER.near) {
     PLAYER.near = near;
@@ -4857,13 +5259,13 @@ function routePos(R, s, out) {
   return out;
 }
 const routeLabel = (R, s) => { let t = R.labels[R.labels.length - 1].text; for (const l of R.labels) if (l.s <= s + 0.01) t = l.text; return t; };
-function makePlan(R, stops) {                      // stops：{ 路點編號: 停幾秒 }，一定要有 0（起點）；兩站之間加速、等速、減速
+function makePlan(R, stops, V = TRUCK_V, acc = 4) { // stops：{ 路點編號: 停幾秒 }，一定要有 0（起點）；兩站之間加速、等速、減速；V 速度、acc 加速用掉的距離（貨船慢、起步也慢）
   const idx = Object.keys(stops).map(Number).sort((a, b) => a - b), legs = []; let t = 0;
   idx.forEach((i, k) => {
     const s0 = R.at(i), s1 = k + 1 < idx.length ? R.at(idx[k + 1]) : R.len;
     legs.push({ stop: true, t0: t, t1: t + stops[i], s0, key: R.pts[i].key }); t += stops[i];
-    const L = s1 - s0, a = Math.min(4, L / 2), ta = 2 * a / TRUCK_V, T = (L - 2 * a) / TRUCK_V + 2 * ta;
-    legs.push({ stop: false, t0: t, t1: t + T, s0, L, a, ta, T }); t += T;
+    const L = s1 - s0, a = Math.min(acc, L / 2), ta = 2 * a / V, T = (L - 2 * a) / V + 2 * ta;
+    legs.push({ stop: false, t0: t, t1: t + T, s0, L, a, ta, T, V }); t += T;
   });
   return { legs, total: t };
 }
@@ -4874,7 +5276,7 @@ function planAt(P, t, out) {
   const g = P.legs[k], u = t - g.t0;
   out.k = k; out.leg = g; out.u = u;
   if (g.stop) out.s = g.s0;
-  else { const acc = TRUCK_V / g.ta; out.s = g.s0 + (u < g.ta ? 0.5 * acc * u * u : u < g.T - g.ta ? g.a + TRUCK_V * (u - g.ta) : g.L - 0.5 * acc * (g.T - u) ** 2); }
+  else { const V = g.V, acc = V / g.ta; out.s = g.s0 + (u < g.ta ? 0.5 * acc * u * u : u < g.T - g.ta ? g.a + V * (u - g.ta) : g.L - 0.5 * acc * (g.T - u) ** 2); }
   return out;
 }
 function buildTruck(cabColor, tagText) {           // 貨櫃車（前進方向為 +z）：車頭、底盤、輪子、貨櫃，車頂上有通道標籤
@@ -4965,6 +5367,92 @@ function updateToolingTruck() {
   T.g.rotation.y = Math.atan2(bx - _tb.x, bz - _tb.z);
   T.label = routeLabel(T.R, s);
 }
+// ---- 貨船航線（v18）：兩艘貨船在同一條環狀航線上輪流跑，跟著園區時鐘循環 ----
+//   報關島碼頭靠岸（吊車把出口貨櫃吊上船）→ 往南繞過去 → 海外市場島東岸靠岸（吊車把貨櫃卸下來）→ 空船往北繞回報關島
+//   兩艘船相隔半圈：一艘在報關島裝櫃時，另一艘在海外或海上；換船時報關島碼頭會空一下（gap 秒），
+//   那段時間吊車不吊（不會把貨櫃吊進海裡），出口貨櫃車把貨櫃先送進貨櫃場，等下一班船
+const SHIP_V = 4;                                  // 貨船速度（公尺／秒）
+const SHIPLINE = (() => {
+  const R = makeRoute([
+    { x: SHIP_POS.x, z: SHIP_POS.z, key: 'c', label: '靠在報關島碼頭：出口吊車把筆電貨櫃吊上船' },
+    // 船長 40 公尺：要直直開到整艘船都離開島邊（船尾過了島的南端），才開始轉彎，不然船尾會掃到碼頭
+    { x: -114.8, z: 30, label: '裝滿了！開往海外市場島' }, { x: -114.8, z: 50 }, { x: -117, z: 60 }, { x: -123.5, z: 66.5 }, { x: -131, z: 68.5 }, { x: -138.5, z: 66.5 }, { x: -145, z: 60 },
+    { x: OV_BERTH.x + 0.3, z: 50 }, { x: OV_BERTH.x + 0.3, z: 30, label: '準備靠岸：海外市場島的進口碼頭' },
+    { x: OV_BERTH.x, z: OV_BERTH.z, key: 'o', label: '靠在海外市場島碼頭：岸邊吊車把貨櫃卸下來' },
+    { x: OV_BERTH.x + 0.3, z: -16, label: '卸完了，空船開回報關島' }, { x: OV_BERTH.x + 0.3, z: -40 }, { x: -145, z: -50 }, { x: -138.5, z: -56.5 }, { x: -131, z: -58.5 }, { x: -123.5, z: -56.5 }, { x: -117, z: -50 },
+    { x: -114.8, z: -40 }, { x: -114.8, z: -16, label: '準備靠岸，再裝下一批筆電' },
+  ]);
+  const oi = R.pts.findIndex(p => p.key === 'o');
+  const HALF = 2 * CI.exP, T = 2 * HALF;           // 一艘船跑一圈 = 4 個出口貨櫃車週期；兩艘相隔半圈
+  const trav = makePlan(R, { 0: 0, [oi]: 0 }, SHIP_V, 14).total, a = {}, b = {};
+  let plan = null, gap = 0;
+  for (let G = 10; G <= 50 && !plan; G++) {        // 找最短的換船空檔：兩艘船在航線上至少隔 46 公尺（船長 40 公尺），才不會撞在一起
+    const Dc = HALF - G, Do = T - Dc - trav;
+    if (Do < 15) break;
+    const P = makePlan(R, { 0: Dc, [oi]: Do }, SHIP_V, 14);
+    let ok = true;
+    for (let t = 0; t < T && ok; t += 0.5) { const d = mod(planAt(P, t, a).s - planAt(P, t + HALF, b).s, R.len); if (Math.min(d, R.len - d) < 46) ok = false; }
+    if (ok) { plan = P; gap = G; }
+  }
+  const t0 = mod(CI.exArrive[0] + 11.6 - plan.legs[0].t1, CI.exP);   // 換船的空檔從出口吊車剛吊完一櫃的時候開始
+  return { R, plan, T, HALF, gap, t0 };
+})();
+const _sp = {}, _sq = {}, _sa = {}, _sb = {};
+function shipDocked(key, t) {                      // t 這個時間，有沒有一艘船停在 key（c 報關島、o 海外市場島）的碼頭
+  const S = SHIPLINE;
+  for (let i = 0; i < 2; i++) { const at = planAt(S.plan, t - S.t0 - i * S.HALF, _sq); if (at.leg.stop && at.leg.key === key) return true; }
+  return false;
+}
+function updateShips() {
+  const S = SHIPLINE, t = AMB.t;
+  CI.ships.forEach((sh, i) => {
+    const at = planAt(S.plan, t - S.t0 - i * S.HALF, _sp), s = at.s;
+    routePos(S.R, s, _sa); routePos(S.R, s + 1, _sb); const bx = _sb.x, bz = _sb.z; routePos(S.R, s - 1, _sb);
+    sh.g.position.set(_sa.x, SEA_Y, _sa.z); sh.g.rotation.y = Math.atan2(bx - _sb.x, bz - _sb.z);
+    // 甲板上的貨櫃：在報關島一個個裝上去、在海外市場島一個個卸下來，回程是空船
+    const g = at.leg, f = g.stop ? (g.key === 'c' ? at.u / (g.t1 - g.t0) : 1 - at.u / (g.t1 - g.t0)) : at.k === 1 ? 1 : 0;
+    const n = Math.round(f * sh.deck.length);
+    if (n !== sh.shown) { sh.deck.forEach((m, k) => { m.visible = k < n; }); sh.shown = n; }
+    sh.label = routeLabel(S.R, s);
+  });
+}
+// 海外市場島的場內拖車（深綠車頭）：岸邊吊車放上貨櫃 → 海關查驗 → 經銷商倉庫的卸貨月台卸貨 → 空車開回碼頭
+const OV_TRUCK = (() => {
+  const R = makeRoute([
+    { x: -158, z: 15.15, key: 'crane', label: '岸邊吊車把貨櫃放上拖車' },
+    { x: -158, z: 8, label: '載著貨櫃開往海關查驗區' }, { x: -158.3, z: 4.6 }, { x: -159.6, z: 2.4 },
+    { x: -162.4, z: 2.0, key: 'gate', label: '海關查驗：關員核對文件、決定要不要開櫃' },
+    { x: -165.4, z: 2.0, label: '放行！開往經銷商倉庫' }, { x: -166.8, z: 2.9 }, { x: -167.4, z: 4.8 },
+    { x: -167.4, z: 9, key: 'dock', label: '在經銷商倉庫的卸貨月台卸貨' },
+    { x: -167.4, z: 14.5, label: '空車開回碼頭，等下一櫃' }, { x: -166.9, z: 18.6 }, { x: -165.2, z: 20.1 }, { x: -161.2, z: 20.3 }, { x: -159, z: 19.6 }, { x: -158.1, z: 17.9 },
+  ]);
+  const idx = k => R.pts.findIndex(p => p.key === k);
+  const st = { 0: 0, [idx('gate')]: 4, [idx('dock')]: 7 }, nat = makePlan(R, st).total, P = Math.ceil(nat + 8);
+  const plan = makePlan(R, { ...st, 0: P - nat }), T = buildTruck(OV_COLOR, '拖車');
+  T.cont.material = CONT_MATS[4];
+  const legOf = key => plan.legs.findIndex(l => l.stop && l.key === key);
+  return { R, plan, P, gate: legOf('gate'), dock: legOf('dock'), ...T, at: {}, label: '', bar: 0 };
+})();
+function updateOverseasTruck(rdt) {
+  const T = OV_TRUCK, t = AMB.t, at = planAt(T.plan, t, _tp), s = at.s, P = T.P;
+  routePos(T.R, s, _ta); routePos(T.R, s + 0.8, _tb); const bx = _tb.x, bz = _tb.z; routePos(T.R, s - 0.8, _tb);
+  T.g.position.set(_ta.x, groundY(_ta.x, _ta.z), _ta.z);
+  T.g.rotation.y = Math.atan2(bx - _tb.x, bz - _tb.z);
+  T.at = { x: _ta.x, z: _ta.z, k: at.k, u: at.u };
+  // 吊車：拖車到之前先去船艙吊一櫃，車一到就放上去；船不在就不吊，拖車空車跑一圈
+  const ti = mod(t, P), fetch0 = P - 9.6;
+  const loadedAt = fs => shipDocked('o', fs) && shipDocked('o', fs + 8.8);   // fs：吊車開始去船艙吊貨的時間
+  const cyc = loadedAt(t - ti - 9.6), dl = T.plan.legs[T.dock];
+  T.cont.visible = cyc && ((at.k === 0 && at.u >= 1.2) || (at.k > 0 && at.k < T.dock) || (at.k === T.dock && at.u < dl.t1 - dl.t0 - 3));
+  T.label = !cyc && at.k <= T.dock ? '這一趟沒有貨：等下一艘貨船靠岸' : routeLabel(T.R, s);
+  const C = OV_ANIM.crane;
+  if (ti < 2.6) { if (cyc) { const [x, y] = keyAt(CRANE_IM_DROP, ti); setCrane(C, x, y, ti < 1.2, T.cont.material); } else setCrane(C, QX, SP_UP, false); }
+  else if (ti >= fetch0 && loadedAt(t - (ti - fetch0))) { const u = ti - fetch0, [x, y] = u < 8.8 ? keyAt(CRANE_IM_FETCH, u) : [QX, SP_UP]; setCrane(C, x, y, u >= 4.4, T.cont.material); }
+  else setCrane(C, QX, SP_UP, false);
+  // 放行柵欄：拖車查驗完、要開走時抬起來
+  const g = T.plan.legs[T.gate], up = (at.k === T.gate && at.u > g.t1 - g.t0 - 1.2) || (at.k === T.gate + 1 && at.u < 3.2);
+  T.bar += ((up ? 1.35 : 0) - T.bar) * (1 - Math.exp(-rdt * 5)); OV_ANIM.bar.rotation.x = -T.bar;
+}
 // 吊車動作的關鍵影格：[開始秒, 結束秒, 小車 x 起, 迄, 吊具高度 起, 迄]
 const QX = QUAY_X, SX = SHIP_POS.x;
 const CRANE_EX_KEYS = [[0, 1.0, QX, QX, SP_UP, SP_TRUCK], [1.0, 1.4, QX, QX, SP_TRUCK, SP_TRUCK], [1.4, 2.6, QX, QX, SP_TRUCK, SP_UP], [2.6, 5.4, QX, SX, SP_UP, SP_UP],
@@ -4983,6 +5471,8 @@ function setCrane(C, x, sy, carry, mat) {          // 小車移到 x、吊具降
   C.carry.visible = carry; if (mat) C.carry.material = mat;
 }
 const _tp = {}, _ta = {}, _tb = {};
+const exLoaded = tc => shipDocked('c', tc + 1.2) && shipDocked('c', tc + 8.6);   // tc 抵達吊車的貨櫃車，貨櫃有沒有吊上船（吊起來和放進船艙時，船都要在）
+const imLoaded = fs => shipDocked('c', fs) && shipDocked('c', fs + 8.8);           // fs 吊車去船艙吊零件櫃，船有沒有在
 function updateCustoms(rdt, now) {
   const t = AMB.t, blink = Math.sin(now * 9) > 0;
   let c2Stop = false, xScan = -1, imGate = false;
@@ -4994,11 +5484,12 @@ function updateCustoms(rdt, now) {
     T.at = { x: _ta.x, z: _ta.z, k: at.k, u: at.u };
     T.label = routeLabel(T.R, s);
     if (T.kind === 'ex') {                         // 貨櫃：在吊車被吊走（1.2 秒）→ 到貨櫃場領空櫃（1 秒）之間，車上沒有貨櫃
-      T.cont.visible = at.k < T.crane || at.k > T.yard || (at.k === T.crane && at.u < 1.2) || (at.k === T.yard && at.u >= 1.0);
+      T.cont.visible = at.k < T.crane || at.k > T.yard || (at.k === T.crane && at.u < 1.2) || (at.k === T.yard && at.u >= 1.0)
+        || !exLoaded(t - mod(t - T.off - TP.legs[T.crane].t0, CI.exP));   // 碼頭沒有船（換船中）：貨櫃先載去貨櫃場，等下一班
       if (at.k === T.gate && T.lane === 'c2') c2Stop = true;
       if (at.k === T.gate && T.lane === 'c3') xScan = at.u;
     } else {                                       // 進口：吊車放上貨櫃（1.2 秒）→ 保稅倉卸貨（停一半）之間，車上有貨櫃
-      T.cont.visible = (at.k === 0 && at.u >= 1.2) || (at.k > 0 && at.k < T.ware) || (at.k === T.ware && at.u < TP.legs[T.ware].t1 - TP.legs[T.ware].t0 - 3);
+      T.cont.visible = imLoaded(t - mod(t - T.off, CI.imP) - 9.6) && ((at.k === 0 && at.u >= 1.2) || (at.k > 0 && at.k < T.ware) || (at.k === T.ware && at.u < TP.legs[T.ware].t1 - TP.legs[T.ware].t0 - 3));
       if (at.k === T.gate) imGate = true;
     }
   }
@@ -5016,16 +5507,14 @@ function updateCustoms(rdt, now) {
   // 出口吊車：跟著「最近一台抵達的貨櫃車」做動作
   let tau = Infinity, who = null;
   TRUCKS.forEach(T => { if (T.kind === 'ex') { const d = mod(t - T.off - T.plan.legs[T.crane].t0, CI.exP); if (d < tau) { tau = d; who = T; } } });
-  if (tau < CRANE_EX_KEYS[CRANE_EX_KEYS.length - 1][1]) { const [x, y] = keyAt(CRANE_EX_KEYS, tau); setCrane(CI.craneEx, x, y, tau >= 1.2 && tau < 6.9, who.cont.material); }
+  if (tau < CRANE_EX_KEYS[CRANE_EX_KEYS.length - 1][1] && exLoaded(t - tau)) { const [x, y] = keyAt(CRANE_EX_KEYS, tau); setCrane(CI.craneEx, x, y, tau >= 1.2 && tau < 6.9, who.cont.material); }
   else setCrane(CI.craneEx, QX, SP_UP, false);
   // 進口吊車：貨櫃車到之前先去船艙吊一櫃，車一到就放上去
   const Ti = TRUCKS.find(x => x.kind === 'im'), Pi = CI.imP, ti = mod(t - Ti.off, Pi), fetch0 = Pi - 9.6;
-  if (ti < 2.6) { const [x, y] = keyAt(CRANE_IM_DROP, ti); setCrane(CI.craneIm, x, y, ti < 1.2, Ti.cont.material); }
-  else if (ti >= fetch0) { const u = ti - fetch0, [x, y] = u < 8.8 ? keyAt(CRANE_IM_FETCH, u) : [QX, SP_UP]; setCrane(CI.craneIm, x, y, u >= 4.4, Ti.cont.material); }
+  if (ti < 2.6 && imLoaded(t - ti - 9.6)) { const [x, y] = keyAt(CRANE_IM_DROP, ti); setCrane(CI.craneIm, x, y, ti < 1.2, Ti.cont.material); }
+  else if (ti >= fetch0 && imLoaded(t - (ti - fetch0))) { const u = ti - fetch0, [x, y] = u < 8.8 ? keyAt(CRANE_IM_FETCH, u) : [QX, SP_UP]; setCrane(CI.craneIm, x, y, u >= 4.4, Ti.cont.material); }
   else setCrane(CI.craneIm, QX, SP_UP, false);
-  // 闖關結束：貨船載著放行的筆電開走（往南駛向外海）
-  if (CI.depart) { const e = clamp01((now - CI.depart) / 26); CI.ship.position.z = SHIP_POS.z + 90 * e * e; }
-  else CI.ship.position.z = SHIP_POS.z;
+  // （v18 起貨船自己跑航線，見 updateShips；闖關結束不再另外讓貨船往南開走）
 }
 
 /* =====================================================================
@@ -5088,9 +5577,9 @@ const NPI_OFF_S = new THREE.Vector3(-3.2, 7.2, 7.0), NPI_OFF_N = new THREE.Vecto
 let dayOff = DAY_OFF_S, followKey = '';
 const PLAY_OFF = new THREE.Vector3(0, 7.8, 9.2);   // 下場走走：鏡頭在玩家後上方（可以拖曳轉動）
 const OVERVIEW = { pos: new THREE.Vector3(23.7, 64, 72.6), tgt: new THREE.Vector3(5, -1, 0) };   // 工廠全景（闖關第 2 關看 6 大區用）
-// 園區全景（全景按鈕、開場、闖關開頭）：報關島、工廠、NPI 研發島三座島一起看
+// 園區全景（全景按鈕、開場、闖關開頭）：五座島（海外市場島、報關島、工廠、NPI 研發島、模具島）一起看
 //   橫的畫面：從南方斜上方看，三座島左右排（鏡頭中心偏右一點，留位置給右邊的首頁小卡）；直的手機：改從東方高處往西看，由下到上是 NPI 島、工廠、報關島
-const PARK = { tgt: new THREE.Vector3(14, -1, -36), off: new THREE.Vector3(0, 196, 186), tgtM: new THREE.Vector3(-8, -1, -25), offM: new THREE.Vector3(215, 285, 24) };
+const PARK = { tgt: new THREE.Vector3(-44, -1, -30), off: new THREE.Vector3(0, 272, 258), tgtM: new THREE.Vector3(-58, -1, -22), offM: new THREE.Vector3(300, 392, 30) };   // v18：加了最西邊的海外市場島，鏡頭往西移、拉遠
 function parkView() {
   if (camera.aspect < 1) return { tgt: PARK.tgtM.clone(), pos: PARK.tgtM.clone().add(PARK.offM) };
   const k = clamp(1.78 / camera.aspect, 1, 1.45);   // 畫面比 16:9 窄（例如 4:3 的平板）：鏡頭拉遠一點，三座島才放得下
@@ -5242,8 +5731,8 @@ function avatarHTML(p, cls) {
 }
 // 人員名單分成三區（上方分頁）：工廠（含園區路人）、報關島、NPI 研發島；看 NPI 島的人時，名單就不會混著工廠的人
 let peopleArea = 'factory';
-const AREAS = [['factory', '🏭 工廠'], ['isle', '🛃 報關'], ['npi', '🧪 NPI'], ['tool', '🧰 模具']];
-const areaOf = p => p.area || (p.npi ? 'npi' : p.tl ? 'tool' : p.isle ? 'isle' : 'factory');   // area：例外指定（例如採購的行程跟模具島一起排，但人坐在研發島）
+const AREAS = [['factory', '🏭 工廠'], ['isle', '🛃 報關'], ['npi', '🧪 NPI'], ['tool', '🧰 模具'], ['ov', '🌍 海外']];
+const areaOf = p => p.area || (p.npi ? 'npi' : p.tl ? 'tool' : p.ov ? 'ov' : p.isle ? 'isle' : 'factory');   // area：例外指定（例如採購的行程跟模具島一起排，但人坐在研發島）
 const ppItem = p => `<button class="pp-item" data-id="${p.id}">${avatarHTML(p, 'av')}<span class="pp-txt"><b>${displayName(p)}</b><small id="pa-${p.id}">${ROLES[p.role].title}</small></span><span class="met" id="pm-${p.id}">${DLG.met.has(p.id) ? '✓' : ''}</span></button>`;
 const ppHead = (c, t) => `<div class="zone-head"><span class="dot" style="background:${c}"></span>${t}</div>`;
 const ppTabs = (list, cur, key) => `<div class="pp-tabs">${list.map(([a, t]) => `<button class="pp-tab${a === cur ? ' on' : ''}" data-${key}="${a}">${t}</button>`).join('')}</div>`;
@@ -5251,11 +5740,16 @@ const NPI_GROUPS = [['#B84F2D', '專案、採購與試產', ['pm', 'tl_buyer', '
   ['#0F766E', '韌體與軟體', ['bios', 'sw']], ['#EA580C', '測試與認證', ['tester', 'cert']]];
 const TL_GROUPS = [[TL_COLOR, '模具廠', ['tdesign', 'cnc', 'edm', 'polish', 'tryout', 'moldkeeper']]];
 const tlPeopleHTML = () => TL_GROUPS.map(([c, t, roles]) => ppHead(c, t) + roles.map(r => ppItem(PEOPLE_BY_ID['tl_' + r])).join('')).join('');
+const OV_GROUPS = [['#24476B', '進口碼頭與海關', ['ocustoms']], ['#15803D', '經銷商倉庫', ['whkeeper', 'picker']], ['#BE185D', '零售店與維修中心', ['clerk', 'repair']]];
+const ovPeopleHTML = () => OV_GROUPS.map(([c, t, roles]) => ppHead(c, t) + roles.map(r => ppItem(PEOPLE_BY_ID['ov_' + r])).join('')).join('')
+  + ppHead('#8074A7', '顧客') + AMBIENT.filter(p => p.ov).map(ppItem).join('');
 const npiPeopleHTML = () => NPI_GROUPS.map(([c, t, roles]) => ppHead(c, t) + roles.map(r => ppItem(PEOPLE_BY_ID[r.includes('_') ? r : 'npi_' + r])).join('')).join('');
 function buildPeopleList() {
   listMode = 'people'; $('panelTitle').textContent = state.play ? '🎯 聊天任務' : '👷 人員名單';
   const a = peopleArea;
-  const body = a === 'tool'
+  const body = a === 'ov'
+    ? ppHead(OV_COLOR, state.play ? '海外市場島（在報關島南岸搭渡輪）' : '海外市場島：5 個人＋2 位顧客（點一下看他的一天）') + ovPeopleHTML()
+    : a === 'tool'
     ? ppHead(TL_COLOR, state.play ? '模具島（從研發島往北過步行橋）' : '模具島：6 個人（點一下看他的一天）') + tlPeopleHTML()
     : a === 'npi'
     ? ppHead('#8074A7', state.play ? 'NPI 研發島（從員工出入口往東過步行橋）' : 'NPI 研發島：12 位研發人員＋NPI 採購（點一下看他的一天）') + npiPeopleHTML()
@@ -5264,7 +5758,7 @@ function buildPeopleList() {
       : ppHead('#D96B45', state.play ? '主要人物（點名字就會走過去找他）' : '主要人物（點一下聽他說話）')
         + MAIN_ORDER.map(id => ppItem(PEOPLE_BY_ID[id])).join('')
         + ppHead('#A39E94', '其他人員') + PEOPLE.filter(p => p.generic).map(ppItem).join('')
-        + ppHead('#6F9B78', '園區路人') + AMBIENT.filter(p => !p.isle).map(ppItem).join('');
+        + ppHead('#6F9B78', '園區路人') + AMBIENT.filter(p => !p.isle && !p.ov).map(ppItem).join('');
   $('stationList').innerHTML = (state.play ? '<div class="quest" id="questBar"></div><div class="quest" id="gemBar"></div>' : '') + ppTabs(AREAS, a, 'area') + body;
   $('stationList').querySelectorAll('.pp-tab').forEach(b => b.addEventListener('click', () => pickArea(b.dataset.area)));
   $('stationList').querySelectorAll('.pp-item').forEach(b => b.addEventListener('click', () => {
@@ -5282,6 +5776,7 @@ const AREA_VIEW = {                            // 點分頁時，鏡頭飛到那
   isle: () => qView(new THREE.Vector3(-86, 0, 6), new THREE.Vector3(8, 30, 30)),
   npi: () => qView(new THREE.Vector3(81, 0, -16), new THREE.Vector3(4, 32, 30)),
   tool: () => qView(new THREE.Vector3(80, 0, -64), new THREE.Vector3(4, 30, 28)),
+  ov: () => qView(new THREE.Vector3(-180, 0, 6), new THREE.Vector3(6, 34, 32)),
 };
 function pickArea(a) {                         // 使用者點了名單上方的分頁
   useArea(a);
@@ -5313,7 +5808,7 @@ function personHTML(p) {
   const top = `<button class="mini close-x" id="btnUnsel" title="回到整體狀況">✕</button>
     <div class="person-head">${avatarHTML(p, 'portrait')}
       <div><span class="zone-tag" style="--c:${R.color}">${R.title}・${R.en}</span>
-      <h2>${displayName(p)}</h2>${p.portrait ? '<div class="en">虛構人物・肖像由 Codex 繪製</div>' : p.ambient ? `<div class="en">${p.isle ? '報關島' : '園區路人'}</div>` : p.walker ? `<div class="en">虛構人物・${areaOf(p) === 'npi' ? 'NPI 研發島' : '模具島'}</div>` : ''}</div></div>
+      <h2>${displayName(p)}</h2>${p.portrait ? '<div class="en">虛構人物・肖像由 Codex 繪製</div>' : p.ambient ? `<div class="en">${p.isle ? '報關島' : p.ov ? '海外市場島' : '園區路人'}</div>` : p.walker ? `<div class="en">虛構人物・${{ npi: 'NPI 研發島', tool: '模具島', ov: '海外市場島' }[areaOf(p)]}</div>` : ''}</div></div>
     <div class="status" id="infoStatus"></div>
     ${state.play ? '' : '<button class="btn follow" id="btnFollow">🎥 鏡頭跟隨</button>'}
     <h3>🧑‍🏭 工作內容</h3><p>${R.duty}</p>`;
@@ -5327,7 +5822,7 @@ function sceneHTML(s) {
     <h2>${s.name}</h2>
     <div class="status" id="infoStatus"></div>
     <p style="margin-top:10px">${s.desc}</p>
-    <h3>👀 ${{ npi: '研發島上', isle: '報關島上', tool: '模具島上' }[peopleArea] || '現在'}大家在做什麼？</h3><ul class="who" id="whoList"></ul>
+    <h3>👀 ${{ npi: '研發島上', isle: '報關島上', tool: '模具島上', ov: '海外市場島上' }[peopleArea] || '現在'}大家在做什麼？</h3><ul class="who" id="whoList"></ul>
     <p class="hint">點左邊名單或畫面中的人物，可以聽他說現在在做什麼，鏡頭也會跟著他走。想親自走進工廠、撿寶物，按上方的「🎮 下場走走」。</p>`;
 }
 function playHTML() {                          // 下場走走：還沒選人時，右邊顯示玩法說明
@@ -5345,7 +5840,7 @@ function playHTML() {                          // 下場走走：還沒選人時
 
 // ---- NPC 對話框：說的話依照他「現在正在做的事」而定 ----
 const DLG = { open: false, who: null, pages: [], i: 0, shown: 0, met: new Set() };
-const TALK_TOTAL = MAIN_ORDER.length + PEOPLE.filter(p => p.generic).length + AMBIENT.length + NPI_PEOPLE.length + TL_PEOPLE.length;
+const TALK_TOTAL = MAIN_ORDER.length + PEOPLE.filter(p => p.generic).length + AMBIENT.length + NPI_PEOPLE.length + TL_PEOPLE.length + OV_PEOPLE.length;
 function sayOf(p) {
   const o = p.o;
   for (let k = o.i ?? -1; k >= 0; k--) {
@@ -5446,7 +5941,7 @@ function setPlay(on) {                         // 打開／關掉「下場走走
   const b = $('btnPlayMode'); b.textContent = on ? '🚪 離開遊戲' : '🎮 下場走走'; b.classList.toggle('on', on);
   closeTalk();
   PLAYER.path = null; PLAYER.chase = null; PLAYER.keys.clear(); PLAYER.near = null; GOAL.visible = false;
-  $('talkHint').style.display = 'none';
+  $('talkHint').style.display = 'none'; $('ferryHint').style.display = 'none'; PLAYER.pier = null;
   if (on) {
     state.follow = null; state.selPerson = null;
     PLAYER.pos.y = groundY(PLAYER.pos.x, PLAYER.pos.z);
@@ -5510,7 +6005,7 @@ function updateDayUI() {
   } else {
     setInfo('sc-' + si + peopleArea, sceneHTML(s));
     $('infoStatus').innerHTML = `${alarm ? '🔴 <b>異常停線</b>' : run ? '🟢 <b>產線運轉中</b>' : '🟡 <b>產線停止</b>'}　今日產量 <b>${out}</b> 台`;
-    const who = peopleArea === 'tool' || peopleArea === 'npi' ? PEOPLE.filter(p => p.walker && areaOf(p) === peopleArea) : peopleArea === 'isle' ? AMBIENT.filter(p => p.isle) : MAIN_ORDER.map(id => PEOPLE_BY_ID[id]);   // 跟著名單的分區
+    const who = peopleArea === 'tool' || peopleArea === 'npi' || peopleArea === 'ov' ? PEOPLE.filter(p => p.walker && areaOf(p) === peopleArea) : peopleArea === 'isle' ? AMBIENT.filter(p => p.isle) : MAIN_ORDER.map(id => PEOPLE_BY_ID[id]);   // 跟著名單的分區
     $('whoList').innerHTML = who.map(p => `<li><b>${displayName(p)}</b>${p.ambient ? '' : `（${ROLES[p.role].title}）`}：${activityText(p)}</li>`).join('');
   }
 }
@@ -5576,9 +6071,9 @@ function updateUI(rdt) {
       if (el && state.placeKey === 'customs') el.innerHTML = customsLive(CUSTOMS_STEPS[state.place]);   // 報關島：順便看島上的貨櫃車正在做什麼
     } else if (state.selected < 0) {
       setInfo('welcome', `<div class="welcome"><h2>🧭 自由參觀模式</h2>
-        <p>現在可以自己在工廠和三座島（報關島、NPI 研發島、模具島）走走看：</p>
-        <ul>${TOUCH ? '<li><b>單指拖曳</b>：旋轉視角</li><li><b>雙指</b>：放大縮小、平移</li><li><b>點機器或島上的設備、建築</b>：飛過去看說明（島上的設備有自己的介紹）</li><li>☰ 清單上方有<b>工廠和三座島的分頁</b>，點地點名稱也會飛過去</li>'
-          : '<li><b>左鍵拖曳</b>：旋轉視角</li><li><b>右鍵拖曳</b>：平移</li><li><b>滾輪</b>：放大縮小</li><li><b>點機器或島上的設備、建築</b>：飛過去看說明（島上的設備有自己的介紹）</li><li>左邊清單上方有<b>工廠和三座島的分頁</b>，點地點名稱也會飛過去</li>'}</ul>
+        <p>現在可以自己在工廠和四座島（報關島、NPI 研發島、模具島、海外市場島）走走看：</p>
+        <ul>${TOUCH ? '<li><b>單指拖曳</b>：旋轉視角</li><li><b>雙指</b>：放大縮小、平移</li><li><b>點機器或島上的設備、建築</b>：飛過去看說明（島上的設備有自己的介紹）</li><li>☰ 清單上方有<b>工廠和四座島的分頁</b>，點地點名稱也會飛過去</li>'
+          : '<li><b>左鍵拖曳</b>：旋轉視角</li><li><b>右鍵拖曳</b>：平移</li><li><b>滾輪</b>：放大縮小</li><li><b>點機器或島上的設備、建築</b>：飛過去看說明（島上的設備有自己的介紹）</li><li>左邊清單上方有<b>工廠和四座島的分頁</b>，點地點名稱也會飛過去</li>'}</ul>
         <p style="margin-top:10px">想照順序看完整流程，按上方的 <b>🎬 導覽模式</b>，或各島的導覽（🛃、🧪、🧰）。</p></div>`);
     } else {
       const st = STATIONS[state.selected];
@@ -5606,6 +6101,7 @@ function setMode(m) {
   $('btnCustoms').classList.toggle('active', m === 'customs');
   $('btnNpi').classList.toggle('active', m === 'npi');
   $('btnTool').classList.toggle('active', m === 'tool');
+  $('btnOv').classList.toggle('active', m === 'ov');
   $('btnOverview').classList.toggle('active', m === 'home');
   controls.enablePan = m !== 'tour';
   document.body.classList.toggle('home-mode', m === 'home');   // 首頁：藏起名單、說明卡、控制列，畫面乾淨
@@ -5613,13 +6109,14 @@ function setMode(m) {
   document.body.classList.toggle('customs-mode', m === 'customs');
   document.body.classList.toggle('npi-mode', m === 'npi');
   document.body.classList.toggle('tool-mode', m === 'tool');
+  document.body.classList.toggle('ov-mode', m === 'ov');
   const unit = m === 'day' ? '段' : m === 'customs' || ISLE_TOURS[m] ? '步' : '站';   // 人員一日一段一段、報關島和 NPI 島一步一步、產線一站一站
   $('autoPauseLabel').textContent = `每${unit}自動暫停`;
   $('btnPrev').querySelector('.lbl').textContent = ` 上一${unit}`;
   $('btnNext').querySelector('.lbl').textContent = `下一${unit} `;
   $('btnPrev').title = `上一${unit}`; $('btnNext').title = `下一${unit}`;
   if (m === 'day') {
-    if (prev !== 'day') useArea(prev === 'npi' || prev === 'tool' ? prev : prev === 'customs' ? 'isle' : 'factory');   // 從哪座島進來，名單就先列那座島的人
+    if (prev !== 'day') useArea(prev === 'npi' || prev === 'tool' || prev === 'ov' ? prev : prev === 'customs' ? 'isle' : 'factory');   // 從哪座島進來，名單就先列那座島的人
     if (listMode !== 'people') buildPeopleList();
     buildDayTimeline();
     if (!state.follow && !state.selPerson && peopleArea === 'factory') state.follow = 'leader';   // 預設跟著線長走一天（從報關島、NPI 島進來時，鏡頭留在島上）
@@ -5908,22 +6405,77 @@ const NZ = { step: 0 }, TZ = { step: 0 };
 const NPI_PHASE = { design: ['#8074A7', '🧭 設計', '設計'], verify: ['#D19A35', '🧪 驗證（三次試產）', '驗證'], mp: ['#4D9C97', '🏭 量產', '量產'] };   // [顏色, 標題, 簡稱]
 const TL_PHASE = { plan: [TL_COLOR, '📝 開模', '開模'], make: ['#3F73AE', '⚙️ 做模具', '做模具'], try: ['#D97706', '🧪 試模與修模', '試模'], mp: ['#4D9C97', '📦 交模', '交模'] };
 // 島嶼導覽的共用設定：每座有人員的島一份（mode 模式名稱、steps 步驟、phase 分段、z 目前第幾步、prefix 人物代號開頭、flag 人物旗標）
+const OV_STEPS = [
+  { phase: 'port', title: '貨船靠岸，卸下貨櫃', en: 'Arrival & Unloading', at: new THREE.Vector3(-156, 3, 16), off: new THREE.Vector3(26, 16, 20), clock: '09:00',
+    who: '船公司、碼頭的吊車司機', docs: '提單（B/L）、到貨通知',
+    what: '貨船從報關島開過來，靠在海外市場島的進口碼頭。岸邊吊車把貨櫃一個一個吊下來，放上場內拖車。船公司也會寄「到貨通知」給收貨的經銷商。',
+    why: '經銷商要拿著提單才能領貨：提單就像這批貨的「提貨券」，在報關島上船時由船公司開出。',
+    tip: '卸完貨的船不會空著太久：它會開回報關島，再裝下一批筆電。航線上通常有好幾艘船輪流跑，碼頭才不會閒著。',
+    meet: [['whkeeper', '09:00']] },
+  { phase: 'port', title: '進口報關與海關查驗', en: 'Import Customs Clearance', at: new THREE.Vector3(-164.4, 1, 5), off: new THREE.Vector3(9, 14, -14), clock: '11:00',
+    who: '進口國海關關員、經銷商（進口商）', docs: '進口報單、放行通知',
+    what: '經銷商（或它委託的報關行）送出進口報單。海關依照風險決定要不要查驗：有的只審文件，有的要打開貨櫃，核對品名、數量，也確認產品有沒有這個國家要求的認證標章。',
+    why: '進口國要保護自己的消費者，也要收關稅和營業稅。沒有認證標章的電器，不能在這個國家賣。',
+    tip: '出口國查一次、進口國再查一次：同一櫃筆電，會經過兩個國家的海關。',
+    meet: [['ocustoms', '11:00']] },
+  { phase: 'dist', title: '經銷商倉庫：卸貨、點收', en: 'Receiving at the Distributor', at: new THREE.Vector3(-171.5, 1, 9), off: new THREE.Vector3(10, 12, 13), clock: '09:10',
+    who: '經銷商倉管', docs: '到貨通知、入庫單',
+    what: '放行的貨櫃由拖車載到經銷商倉庫的卸貨月台。倉管照著到貨通知一箱一箱點收：數量對不對、外箱有沒有壓傷，有問題當場拍照記錄。',
+    why: '點收是「責任交接」：簽收之後，少了、壞了就變成經銷商自己的損失，所以一定要當場看清楚。',
+    tip: '經銷商（Distributor）向品牌買進一大批貨，再分批賣給各地的零售店，是品牌和門市之間的「中盤」。',
+    meet: [['whkeeper', '09:10']] },
+  { phase: 'dist', title: '上架：每一箱都有儲位', en: 'Put-away & Storage', at: new THREE.Vector3(-179, 1, -3.6), off: new THREE.Vector3(9, 14, 13), clock: '11:05',
+    who: '經銷商倉管', docs: '入庫單、庫存表',
+    what: '點收完的筆電，每一箱都掃條碼，放上有儲位編號的貨架。系統記得每一台在哪一排、哪一格、哪一層。',
+    why: '倉庫裡有好幾千箱貨，沒有儲位就找不到；系統的庫存數字也要和架上一樣，業務才知道還能賣多少。',
+    tip: '倉庫常用「先進先出」：先到的貨先出，才不會有舊型號一直壓在倉庫裡。',
+    meet: [['whkeeper', '11:05'], ['picker', '09:05']] },
+  { phase: 'dist', title: '揀貨、包裝，送到門市', en: 'Picking & Store Delivery', at: new THREE.Vector3(-181, 1, 12), off: new THREE.Vector3(10, 13, 13), clock: '10:45',
+    who: '揀貨員、經銷商倉管', docs: '揀貨單、出貨單',
+    what: '倉管依照門市的訂單開「揀貨單」。揀貨員到貨架把貨拿齊、掃條碼確認，再到包裝台裝箱、貼出貨標籤，送到門市補貨。',
+    why: '門市的空間有限，不能放太多庫存；經銷商的倉庫就像門市的「後台」，賣了多少就補多少。',
+    tip: '揀貨最怕揀錯：不同規格的筆電外箱長得很像，所以每一箱都要掃條碼。',
+    meet: [['picker', '10:45'], ['whkeeper', '13:00']] },
+  { phase: 'retail', title: '零售店：陳列與銷售', en: 'Retail Display & Sales', at: new THREE.Vector3(-195, 1, 4), off: new THREE.Vector3(12, 14, 12), clock: '10:35',
+    who: '門市店員、顧客', docs: '價格標示、商品型錄',
+    what: '新機種放在櫥窗的轉台上，吸引路過的人；展示桌上的筆電都開著，讓顧客實際摸摸看：重量、鍵盤手感、螢幕亮度。店員先問清楚顧客要做什麼，再推薦適合的機型。',
+    why: '工廠做得再好，顧客沒看到、沒摸到，就不會買。門市是顧客第一次「親眼看到」這台筆電的地方。',
+    tip: '櫥窗和展示桌的位置都經過設計：最想賣的新機種，放在顧客一進門就看得到的地方。',
+    meet: [['clerk', '10:35']] },
+  { phase: 'retail', title: '結帳與保固', en: 'Checkout & Warranty', at: new THREE.Vector3(-196.6, 1, 12.4), off: new THREE.Vector3(8, 10, 10), clock: '11:35',
+    who: '門市店員、顧客', docs: '發票（收據）、保固卡',
+    what: '顧客在櫃檯結帳，拿到發票和保固卡。店員會說明保固：一年內正常使用壞了，可以免費維修，記得保留發票。',
+    why: '保固是品牌對顧客的承諾。發票上的日期，就是保固開始的那一天。',
+    tip: '每一台筆電都有「序號」：從工廠第 21 站貼的標籤，一路到門市的發票、維修中心的維修單，都靠它追蹤。',
+    meet: [['clerk', '11:35']] },
+  { phase: 'after', title: '維修中心：售後服務', en: 'After-sales Repair', at: new THREE.Vector3(-205, 1, 1), off: new THREE.Vector3(10, 13, 13), clock: '10:35',
+    who: '維修技師、NPI 試產工程師（視訊）', docs: '維修單（RMA）、故障分析報告',
+    what: '顧客把故障的筆電送到維修中心。技師確認保固、開維修單，拆機找出原因、換零件，修好再測一次。常見的故障，技師會整理好回報給工廠和研發。',
+    why: '維修中心是「顧客的聲音」：同一種故障一直出現，研發和工廠就要一起改設計或製程，下一批才不會再壞。',
+    tip: '這就是一個循環：工廠做筆電 → 出國 → 顧客使用 → 維修中心回報問題 → 研發和工廠改善。',
+    links: [['npi', '🧪', '回到 NPI 研發島', '看研發怎麼改設計'], ['tour', '🏭', '回到工廠產線', '從第 1 站重新看一次']] },
+];
+const OV_PHASE = { port: ['#24476B', '🚢 進口', '進口'], dist: ['#15803D', '📦 經銷商', '經銷商'], retail: ['#BE185D', '🛍️ 零售', '零售'], after: ['#0F766E', '🔧 售後', '售後'] };
+const OZ = { step: 0 };
 const ISLE_TOURS = {
   npi: { mode: 'npi', title: '🧪 NPI 研發島', isle: 'NPI 研發島', steps: NPI_STEPS, phase: NPI_PHASE, z: NZ, prefix: 'npi_', flag: 'npi', tab: 'steps',
     tabs: [['steps', '📋 NPI 流程'], ['people', '👥 研發人員']], people: () => npiPeopleHTML(), list: () => NPI_PEOPLE },
   tool: { mode: 'tool', title: '🧰 模具島', isle: '模具島', steps: TL_STEPS, phase: TL_PHASE, z: TZ, prefix: 'tl_', flag: 'tl', tab: 'steps',
     tabs: [['steps', '📋 模具開發'], ['people', '👥 模具島人員']], people: () => tlPeopleHTML(), list: () => TL_PEOPLE },
+  ov: { mode: 'ov', title: '🌍 海外市場島', isle: '海外市場島', steps: OV_STEPS, phase: OV_PHASE, z: OZ, prefix: 'ov_', flag: 'ov', tab: 'steps',
+    tabs: [['steps', '📋 到顧客手上'], ['people', '👥 海外島人員']], people: () => ovPeopleHTML(), list: () => OV_PEOPLE },
 };
 // ---- 自由參觀的分頁：工廠 23 站＋三座島；島上的地點直接用各島導覽的步驟（地點、鏡頭角度、說明都不用重寫）----
 //   box：島的範圍（點到島上就找最近的地點）；groups：清單的分組 [顏色, 標題, 這一步屬不屬於這組]
 //   新增島嶼時，要在這裡加一筆，自由參觀才逛得到新島
-const FREE_TABS = [['factory', '🏭 工廠'], ['customs', '🛃 報關'], ['npi', '🧪 NPI'], ['tool', '🧰 模具']];   // 和人員名單的分頁一樣短，4 個才排得下
+const FREE_TABS = [['factory', '🏭 工廠'], ['customs', '🛃 報關'], ['npi', '🧪 NPI'], ['tool', '🧰 模具'], ['ov', '🌍 海外']];   // 和人員名單的分頁一樣短，5 個才排得下
 const isleGroups = T => () => Object.entries(T.phase).map(([ph, [c, t]]) => [c, t, S => S.phase === ph]);
 const FREE_ISLES = {
   customs: { box: ISLE2, steps: CUSTOMS_STEPS, html: i => customsHTML(i),
     groups: () => [['#DB6A41', '📤 出口：筆電送出國', S => S.flow === 'ex'], ['#3F73AE', '📥 進口：零件送進來', S => S.flow === 'im']] },
   npi: { box: ISLE3, steps: NPI_STEPS, html: i => isleHTML(ISLE_TOURS.npi, i), groups: isleGroups(ISLE_TOURS.npi) },
   tool: { box: ISLE4, steps: TL_STEPS, html: i => isleHTML(ISLE_TOURS.tool, i), groups: isleGroups(ISLE_TOURS.tool) },
+  ov: { box: ISLE5, steps: OV_STEPS, html: i => isleHTML(ISLE_TOURS.ov, i), groups: isleGroups(ISLE_TOURS.ov) },
 };
 let freeTab = 'factory';                        // 自由參觀清單目前在哪個分頁
 
@@ -5931,7 +6483,8 @@ let freeTab = 'factory';                        // 自由參觀清單目前在�
 //   pts：設備在地圖上的位置（可以好幾個點，例如兩台吊車）；r：點在多近算點到；look／off：鏡頭看哪裡、從哪個方向看
 //   step：卡片下方「看這一步流程」連到那座島導覽的第幾步（從 0 算）；內容在 v17 上網查過（來源記在開發時間紀錄）
 const DEV = (isle, area, ic, color, name, en, pts, r, look, off, step, what, how, why, who, tip) =>
-  ({ isle, area, ic, color, name, en, pts, r, look, off, step, what, how, why, who, tip });
+  ({ isle, area, ic, color, name, en, r, look, off, step, what, how, why, who, tip,
+    pts: pts.some(([x, z]) => Math.hypot(x - look[0], z - look[2]) < r) ? pts : [...pts, [look[0], look[2]]] });   // 一張卡有好幾個點（例如兩張展示桌）時，鏡頭對準的中間也算點到這台設備
 const DEVICES = [
   DEV('npi', 'ID 設計室', '🖨️', '#DB6A41', '3D 列印機', '3D Printer', [[73.4, -30.4]], 1.4, [73.4, 1, -30.4], [3.5, 5.5, 6.5], 1,
     '把電腦裡的 3D 設計圖，一層一層「印」成拿得到的實體零件。',
@@ -6059,8 +6612,64 @@ const DEVICES = [
     '工廠可以先把零件備好，不用一次付一大筆稅，資金比較靈活。',
     '倉管人員、報關行、海關',
     '保稅倉有「公用型」（很多公司一起用）和「自用型」（公司自己申請、只放自己的貨）。'),
+  // ---- 海外市場島（v18）----
+  DEV('ov', '進口碼頭', '🏗️', '#2F6F8F', '岸邊吊車（進口碼頭）', 'Ship-to-Shore Crane', [[-157, OV_CRANE_Z]], 4, [-155, 7, OV_CRANE_Z], [-22, 12, 20], 0,
+    '把貨櫃從貨船上吊下來，放上場內拖車。',
+    '和報關島的吊車是同一種，只是方向相反：小車沿著吊臂開到船的上方，吊具抓住貨櫃的四個角吊起來，再開回碼頭放到拖車上。',
+    '船停在港口越久越花錢。吊車卸得快，船就能早一點開回報關島，載下一批筆電。',
+    '吊車司機、碼頭的調度人員',
+    '同一艘船在報關島「裝」，到這裡「卸」；卸完的空船再開回去，兩艘船輪流跑，碼頭才不會閒著。'),
+  DEV('ov', '海關查驗區', '🛂', '#24476B', '海關查驗站', 'Import Inspection', [[-164.4, -3.4], [-164.4, 9.6]], 2.6, [-164.4, 1, 4], [10, 13, 15], 1,
+    '進口國的海關在這裡審文件、抽查貨櫃，沒問題才放行。',
+    '電腦依照風險分級：大部分只審文件就放行；被抽中的拖車停在查驗亭前，必要時打開貨櫃，核對品名和數量，也看產品和包裝上有沒有這個國家要求的認證標章。',
+    '進口國要保護自己的消費者，也要收關稅和營業稅。文件和貨對不上，或少了認證標章，貨就會被扣下來。',
+    '進口國的海關關員',
+    '每個國家要求的認證不一樣：美國看 FCC、歐盟看 CE，也有國家有自己的強制認證。工廠出貨前，就要先確定這批貨要賣到哪裡。'),
+  DEV('ov', '經銷商倉庫', '🚛', '#15803D', '卸貨月台', 'Loading Dock', [[-169.6, 9]], 1.6, [-169.6, 0.8, 9], [8, 7, 8], 2,
+    '倉庫和貨車之間的平台，高度和車斗差不多，貨可以直接推進倉庫。',
+    '拖車靠著月台停好，搬運車直接從月台進出車斗。倉管照著到貨通知點收數量、檢查外箱。',
+    '簽收之後，少了、壞了就變成自己的損失。所以有壓傷要當場寫在簽收單上、拍照，才能向船公司或保險公司求償。',
+    '經銷商倉管',
+    '很多月台裝有「月台調整板」（dock leveler），可以補平月台和車斗之間的高低差。'),
+  DEV('ov', '經銷商倉庫', '🗄️', '#15803D', '貨架（儲位）', 'Racks & Bin Locations',
+    [-182.6, -179, -175.4].flatMap(x => [[x, -7], [x, -3.6], [x, 0]]), 1.8, [-179, 1, -3.6], [9, 12, 12], 3,
+    '放筆電的貨架，每一格都有自己的儲位編號和條碼。',
+    '上架時先掃儲位的條碼、再掃貨，系統就記得這箱放在哪一格；揀貨時照著單子找到儲位，再掃一次確認。',
+    '倉庫裡有好幾千箱貨，沒有儲位就找不到。每一次搬動都掃條碼，可以擋掉「放錯格」和「拿錯貨」。',
+    '經銷商倉管、揀貨員',
+    '儲位編號就像地址：「B-03-2」代表 B 排、第 3 格、第 2 層。'),
+  DEV('ov', '經銷商倉庫', '🧺', '#CA8A04', '揀貨區', 'Picking & Packing', [[-181.4, 8.6], [-179, 14.6]], 1.6, [-180.2, 1, 11.6], [7, 9, 10], 4,
+    '照著揀貨單，把各家門市要的貨拿齊、裝箱、貼出貨標籤。',
+    '揀貨單照貨架的順序排好，揀貨員才不用走冤枉路；每拿一箱就掃一次，型號或數量不對，掃描器會馬上提醒；最後在包裝台裝箱、貼標籤。',
+    '揀錯貨，門市就會收到錯的機型，退換貨又要多跑一趟，很花錢。',
+    '揀貨員',
+    '倉庫常用「每一千次揀貨，錯幾次」來看揀貨準不準。'),
+  DEV('ov', '零售店', '🪟', '#BE185D', '櫥窗', 'Shop Window', [[-192, 1.6], [-191.5, 12.6]], 1.6, [-191.5, 1.2, 4], [10, 6, 6], 5,
+    '面向街道的玻璃窗，展示最新的機種，吸引路過的人走進店裡。',
+    '新機種放在慢慢轉的展示台上，旁邊貼著「現正開賣」的海報；櫥窗的佈置會跟著新產品、節日一起換。',
+    '很多顧客是路過時被櫥窗吸引，才決定走進來看看。',
+    '門市店員',
+    '最想賣的新機種，要擺在顧客一抬頭、一進門就看得到的地方。'),
+  DEV('ov', '零售店', '💻', '#BE185D', '展示桌', 'Display Table', [[-195.2, 0.6], [-195.2, 5.4]], 1.5, [-195.2, 1, 3], [6, 7, 7], 5,
+    '桌上的筆電都開著機，讓顧客實際試用。',
+    '每一台都接好電、打開畫面、標好價格；展示機通常用防盜線固定，但還是拿得起來、打得了字。',
+    '重量、鍵盤手感、螢幕亮度，只有親手摸過才知道。網路上看規格，感覺不到這些。',
+    '門市店員、顧客',
+    '展示桌要常常整理：畫面要乾淨、電量要充足，壞掉的展示機會讓顧客對整個品牌打折扣。'),
+  DEV('ov', '零售店', '🧾', '#BE185D', '收銀櫃檯', 'Checkout Counter', [[-196.6, 12.4]], 1.6, [-196.6, 1, 12.4], [5, 7, -7], 6,
+    '結帳、開發票，並且說明保固。',
+    '收銀系統（POS）掃商品條碼、刷卡付款，同時記下這台筆電的序號；發票上的日期，就是保固開始的那一天。',
+    '保固是品牌對顧客的承諾：一年內正常使用壞了，可以免費維修。',
+    '門市店員',
+    '每一台筆電都有序號：從工廠貼的標籤、門市的發票，到維修中心的維修單，都靠它追蹤。'),
+  DEV('ov', '維修中心', '🔧', '#0F766E', '維修工作台', 'Repair Bench', [[-207, -4.6], [-203.4, -4.6]], 1.6, [-205.2, 1, -4.4], [4, 8, 9], 7,
+    '拆開故障的筆電，找出原因、換零件。',
+    '收件時先開「維修單」（RMA），確認保固；在防靜電墊上拆機檢查、換零件，修好之後再跑一次測試，全部通過才交還給顧客。',
+    '同一種故障一直出現，技師會把資料整理好回報給原廠，研發和工廠就能找到根本原因、改善下一批。',
+    '維修技師',
+    '送修前要先備份資料：維修時，硬碟可能會被清除或更換。'),
 ];
-const DEV_ISLE = { npi: 'NPI 研發島', tool: '模具島', customs: '報關島' };
+const DEV_ISLE = { npi: 'NPI 研發島', tool: '模具島', customs: '報關島', ov: '海外市場島' };
 function deviceHTML(d) {
   const D = DEVICES[d], I = FREE_ISLES[D.isle], S = I.steps[D.step];
   return `<span class="zone-tag" style="--c:${D.color}">🔧 設備 · ${DEV_ISLE[D.isle]} · ${D.area}</span>
@@ -6081,7 +6690,7 @@ function goIsle(T, i) {                        // 跳到第 i 步，鏡頭飛過
   const S = T.steps[T.z.step], v = S.park ? parkView() : qView(S.at.clone(), S.off);
   flyTo(v.pos, v.tgt, 1.6);
 }
-const goNpi = i => goIsle(ISLE_TOURS.npi, i), goTool = i => goIsle(ISLE_TOURS.tool, i);
+const goNpi = i => goIsle(ISLE_TOURS.npi, i), goTool = i => goIsle(ISLE_TOURS.tool, i), goOv = i => goIsle(ISLE_TOURS.ov, i);
 function buildIsleList(T) {
   listMode = T.mode; $('panelTitle').textContent = T.title;
   const item = (S, i) => `<button class="st-item" data-n="${i}"><span class="num" style="--c:${tColor(T, S)}">${String(i + 1).padStart(2, '0')}</span><span class="nm">${S.title}</span><span class="ck">✓</span></button>`;
@@ -6132,7 +6741,7 @@ function updateIsleUI(T) {
   setInfo(T.mode + i, isleHTML(T, i));
 }
 
-// ---- 新人闖關：7 分鐘、7 關（報到 → 認識產線 → 找對的人 → 品檢找碴 → 出貨防呆 → 通關放行 → 模具問題找對人），最後拿結業證書 ----
+// ---- 新人闖關：8 關（報到 → 認識產線 → 找對的人 → 品檢找碴 → 出貨防呆 → 通關放行 → 模具問題找對人 → 送到顧客手上），最後拿結業證書 ----
 //   每關最多 100 分：一次都沒錯 100 分；錯的次數在 slack 以內 60 分；再多就 30 分；每過一關，寶箱多一個徽章
 //   排行榜下一版再接資料庫；這一版先把「這台裝置的最佳紀錄」存在瀏覽器裡
 const qStore = {
@@ -6190,7 +6799,7 @@ const Q_LEVELS = [
     ],
     done: '判斷正確！文件和貨對得上，海關才會放行；對不上的貨櫃會被扣下來補件，很可能就趕不上這班船。' },
   { title: '模具問題找對人', slack: 1, clock: '14:50', pause: true, type: 'match', view: () => qView(new THREE.Vector3(86, 0.8, -52.4), new THREE.Vector3(5, 9, 11)),
-    say: '最後一關到模具島！新外殼的模具出狀況了，這種事要採購、機構工程師和 PM 一起處理。下面這件事，誰負責？',
+    say: '第 7 關到模具島！新外殼的模具出狀況了，這種事要採購、機構工程師和 PM 一起處理。下面這件事，誰負責？',
     roles: ['tl_buyer', 'npi_me', 'npi_pm'],
     tasks: [
       { q: '模具廠的修模報價，比預算高了 20%（成本）', a: 'tl_buyer', hint: '要找負責和廠商談價錢的人。', why: '採購負責比價、議價，把成本控制在預算裡。' },
@@ -6198,6 +6807,13 @@ const Q_LEVELS = [
       { q: '修模要多 5 天，可能趕不上 PVT（SCHEDULE）', a: 'npi_pm', hint: '要找管整個專案時程的人。', why: 'PM 管整個專案的時程：和機構工程師一起確認修模要多久，再決定能延幾天，或請模具廠加班趕工。' },
     ],
     done: '全對！採購顧成本、機構工程師解問題、PM 顧時程。三個人把資訊對齊，模具才能又快又省地交出來。' },
+  { title: '送到顧客手上', slack: 1, clock: '11:00', type: 'order', view: () => qView(new THREE.Vector3(-180, 0, 6), new THREE.Vector3(10, 40, 34)),
+    say: '最後一關到海外市場島！筆電在報關島上了貨船之後，還要經過哪些步驟，才會到顧客手上？請照順序點出來：',
+    items: ['貨船靠岸，吊車卸下貨櫃', '進口國海關查驗、放行', '經銷商倉庫點收、上架', '揀貨、送到零售店', '顧客在零售店買下筆電'],
+    colors: ['#2F6F8F', '#24476B', '#15803D', '#CA8A04', '#BE185D'],
+    hints: ['貨要先從船上下來。', '進口的貨，要先通過這個國家的海關。', '放行之後，貨先送進經銷商的倉庫。', '倉庫照門市的訂單揀貨、送貨。', '最後，顧客才在店裡買到。'],
+    decoys: ['送回工廠重新包裝'], decoyHint: '筆電在工廠就包好了，不用送回去喔！',
+    done: '完全正確！卸櫃 → 海關放行 → 經銷商倉庫 → 揀貨送到門市 → 顧客買下。之後如果壞了，維修中心還會把問題回報給工廠，整條供應鏈就串起來了。' },
 ];
 const QZ = { on: false, done: false, step: -1, name: '', scores: [], miss: 0, pos: 0, ti: 0, found: [], passed: false, t0: 0, t1: 0, prevMode: 'tour' };
 function qSay(text) {                          // 導師（線長）說話的框框，用 Codex 畫的寫實肖像
@@ -6371,8 +6987,8 @@ function qLaptopSVG() {                        // 左：打開的筆電正面；
     <g id="qMarks"></g>
   </svg>`;
 }
-const QMAX = () => Q_LEVELS.length * 100;      // 滿分（7 關 = 700 分）
-function qBest() { const b = qStore.get('nbQuestBest'); return b && b.max === QMAX() ? b : null; }   // 舊版（5 關 500 分、6 關 600 分）的紀錄不拿來比
+const QMAX = () => Q_LEVELS.length * 100;      // 滿分（8 關 = 800 分）
+function qBest() { const b = qStore.get('nbQuestBest'); return b && b.max === QMAX() ? b : null; }   // 舊版（5 關 500 分、6 關 600 分、7 關 700 分）的紀錄不拿來比
 function questFinish() {                       // 成績、結業證書、排行榜預留位置；貨船載著放行的筆電開走
   QZ.done = true; QZ.t1 = performance.now();
   const max = QMAX(), total = qTotal(), ms = QZ.t1 - QZ.t0, stars = total >= max * 0.9 ? 3 : total >= max * 2 / 3 ? 2 : 1;
@@ -6386,7 +7002,7 @@ function questFinish() {                       // 成績、結業證書、排行
   const v = qView(new THREE.Vector3(-114, 0, 26), new THREE.Vector3(-46, 20, 6)); flyTo(v.pos, v.tgt, 2.2);   // 從外海看：貨船往右（南）開出港口
   const cert = qCertificate(total, ms, stars);
   qRender(`<div class="q-title">闖關完成</div>`
-    + qSay(`太厲害了，${esc(QZ.name)}！你已經知道一台筆電怎麼從電路板一路做到出貨、通關出國，也知道產線上誰負責什麼。看，貨船正載著你放行的筆電出發了！`)
+    + qSay(`太厲害了，${esc(QZ.name)}！你已經知道一台筆電怎麼從電路板一路做到出貨、通關出國，再送到海外的顧客手上，也知道每一站誰負責什麼。你放行的筆電，會跟著貨船開往海外市場島！`)
     + `<div class="q-result"><span class="q-big">${total}</span> / ${max} 分　<span class="q-stars">${'★'.repeat(stars)}${'☆'.repeat(3 - stars)}</span><br><small>用時 ${qTimeText(ms)}${isBest ? '・🎉 新的最佳紀錄' : ''}</small></div>`
     + `<div class="q-slots">${Q_LEVELS.map((L, k) => `<div class="q-slot fill"><i>${k + 1}</i><span>${L.title}</span><b style="margin-left:auto">${QZ.scores[k]} 分</b></div>`).join('')}</div>`
     + `<div class="q-board">🎒 <b>你的闖關徽章</b>（亮起來的已經放進寶箱）<div class="q-badges">${qBadgeRow()}</div>`
@@ -6413,7 +7029,7 @@ function qCertificate(total, ms, stars) {      // 用 Canvas 畫一張結業證�
   g.fillStyle = '#282322'; g.font = `900 72px ${FONT}`; g.fillText(QZ.name, W / 2, 428);
   g.strokeStyle = '#DB6A41'; g.lineWidth = 3; g.beginPath(); g.moveTo(W / 2 - 280, 456); g.lineTo(W / 2 + 280, 456); g.stroke();
   g.fillStyle = '#4A423F'; g.font = `32px ${FONT}`;
-  g.fillText(`完成 ${Q_LEVELS.length} 道關卡，認識了筆電從電路板、組裝到通關出口的流程，`, W / 2, 526);
+  g.fillText(`完成 ${Q_LEVELS.length} 道關卡，認識了筆電從電路板、組裝、通關，到送進顧客手上的流程，`, W / 2, 526);
   g.fillText('也知道產線上的線長、技術員、品檢員各自負責什麼。', W / 2, 574);
   g.fillStyle = '#DB6A41'; g.font = `bold 56px ${FONT}`; g.fillText('★'.repeat(stars) + '☆'.repeat(3 - stars), W / 2, 654);
   g.fillStyle = '#282322'; g.font = `bold 36px ${FONT}`; g.fillText(`總分 ${total} / ${QMAX()}　用時 ${qTimeText(ms)}`, W / 2, 716);
@@ -6452,13 +7068,13 @@ $('qCard').addEventListener('click', e => {    // 關卡卡片裡的所有按鈕
 });
 $('qCard').addEventListener('keydown', e => { if (e.target.id === 'qName' && e.key === 'Enter') questStart(); });
 
-// ---- 寶物收集（像寶可夢圖鑑）：零件卡、文件卡、人物卡、闖關徽章、傳說寶物，一共 77 個（第 9 版加了 NPI 研發島的 19 個、第 13 版加了模具島的 14 個）----
+// ---- 寶物收集（像寶可夢圖鑑）：零件卡、文件卡、人物卡、闖關徽章、傳說寶物，一共 88 個（第 9 版加了 NPI 研發島的 19 個、第 13 版加了模具島的 14 個、第 18 版加了海外市場島的 11 個）----
 //   零件卡、文件卡：下場走走時，走到地上發光的寶石旁邊就撿得到；人物卡：第一次和某種角色聊天就拿到；徽章：闖關每過一關掉一個
 //   寶箱存在這台裝置的瀏覽器（localStorage），關掉再開都還在；但清除「Cookie 和其他網站資料」會一起被清掉，所以另外提供「寶箱代碼」備份
 const RARITY = [null, { name: '普通', color: '#8A7F78' }, { name: '稀有', color: '#3F73AE' }, { name: '傳說', color: '#C08A1E' }];
 const T_CATS = [
   { id: 'part', name: '零件卡', note: '下場走走時，到各工站旁邊撿藍色寶石' },
-  { id: 'doc', name: '文件卡', note: '下場走走時，到出貨碼頭、報關島、NPI 研發島和模具島撿橘色寶石' },
+  { id: 'doc', name: '文件卡', note: '下場走走時，到出貨碼頭、報關島、NPI 研發島、模具島和海外市場島撿橘色寶石' },
   { id: 'person', name: '人物卡', note: '第一次和某種角色聊天就拿得到' },
   { id: 'badge', name: '闖關徽章', note: '新人闖關每過一關掉一個' },
   { id: 'legend', name: '傳說寶物', note: '完成特別的挑戰' },
@@ -6507,9 +7123,17 @@ const TL_DOC_LIST = [
   ['moldRecord', '📇', '模具履歷卡', [66.2, -73.6], '每一套模具的身分證：編號、打了多少模次、修過幾次、放在哪一格。', '在模具倉裡'],
   ['po', '📬', '採購單（PO）', [64, -40], '採購開給廠商的正式訂單：做什麼、多少錢、什麼時候交。廠商收到採購單才會開工。', '在研發島往模具島的步行橋上'],
 ];
+// 海外市場島的文件卡（v18）：[代號, 圖示, 名稱, 位置 [x, z], 說明, 去哪裡找]
+const OV_DOC_LIST = [
+  ['arrival', '📨', '到貨通知', [-156.8, -2.6], '船公司寄給收貨人的通知：哪艘船、哪一天到港、有幾個貨櫃。經銷商收到它，就知道要準備收貨、辦進口報關了。', '在海外市場島的進口碼頭'],
+  ['grn', '📗', '入庫單', [-174.8, 9.4], '點收完成後開的單子：收了哪些貨、幾箱、放在哪個儲位。倉庫系統裡的庫存數字，就是從入庫單加上去的。', '在經銷商倉庫的收貨區'],
+  ['picklist', '🗒️', '揀貨單', [-178.4, 11.4], '倉管依照門市的訂單開出來：要揀哪些貨、幾箱、在哪個儲位。揀貨員照著它到貨架拿貨，每一箱都要掃條碼確認。', '在經銷商倉庫的揀貨區'],
+  ['receipt', '💳', '發票（收據）', [-194, 10.6], '顧客買筆電時拿到的發票：上面的日期就是保固開始的那一天，送修時要拿出來。', '在零售店的櫃檯前'],
+  ['rma', '🛠️', '維修單（RMA）', [-205.3, 8.8], '送修時開的單子：哪一台（序號）、什麼故障、修了什麼、換了哪些零件。常見的故障會整理好，回報給原廠的研發和工廠。', '在維修中心的服務櫃檯前'],
+];
 const PERSON_ROLES = ['leader', 'operator', 'ipqc', 'tech', 'material', 'night', 'guard', 'cleaner', 'dock', 'visitor', 'sales', 'office', 'broker', 'customs', 'crane', 'bonded'];
 const PERSON_WHEN = { night: '19:40 交接班時才會出現', visitor: '09:00–17:00 在園區參觀', sales: '09:00–17:00 在園區參觀', cleaner: '07:40–18:00 在南側步道' };
-const BADGE_ICONS = ['⚡', '🗺️', '🤝', '🔍', '⚖️', '🛳️', '🧰'];
+const BADGE_ICONS = ['⚡', '🗺️', '🤝', '🔍', '⚖️', '🛳️', '🧰', '🌍'];
 const TREASURES = [                            // 寶箱代碼依照這個順序記錄：以後新增寶物只能加在最後面，舊的代碼才不會亂掉
   ...PART_LIST.map(([id, icon, name, k, dx, desc, lack]) => ({ id, cat: 'part', rar: 1, icon, name, k, dx, desc, lack, hint: `第 ${k + 1} 站「${STATIONS[k].name}」附近` })),
   ...DOC_LIST.map(([id, icon, name, at, desc, hint]) => ({ id, cat: 'doc', rar: 1, icon, name, at, desc, hint })),
@@ -6526,7 +7150,12 @@ const TREASURES = [                            // 寶箱代碼依照這個順序
   ...TL_DEF.map(d => d.role).map(r => ({ id: 'p_' + r, cat: 'person', rar: 2, icon: ROLES[r].emoji, name: ROLES[r].title, desc: ROLES[r].duty,
     hint: r === 'buyer' ? '到 NPI 研發島和「NPI 採購」聊聊天（座位在 PM 旁邊，有時會走去模具島）' : `到模具島和「${ROLES[r].title}」聊聊天（從研發島往北過步行橋）` })),
   ...TL_DOC_LIST.map(([id, icon, name, at, desc, hint]) => ({ id, cat: 'doc', rar: 1, icon, name, at, desc, hint })),
-  ...Q_LEVELS.slice(6).map((L, k) => ({ id: 'q' + (k + 7), cat: 'badge', rar: 2, icon: BADGE_ICONS[k + 6], name: `${L.title}徽章`, desc: L.done, hint: `通過新人闖關第 ${k + 7} 關「${L.title}」` })),
+  ...Q_LEVELS.slice(6, 7).map((L, k) => ({ id: 'q' + (k + 7), cat: 'badge', rar: 2, icon: BADGE_ICONS[k + 6], name: `${L.title}徽章`, desc: L.done, hint: `通過新人闖關第 ${k + 7} 關「${L.title}」` })),
+  // 第 18 版新增（只能加在最後面）：海外市場島的 5 張人物卡、5 張文件卡、闖關第 8 關的徽章（上面第 7 關只取 slice(6, 7)，新關卡才不會插到中間）
+  ...OV_DEF.map(d => d.role).map(r => ({ id: 'p_' + r, cat: 'person', rar: 2, icon: ROLES[r].emoji, name: ROLES[r].title, desc: ROLES[r].duty,
+    hint: `到海外市場島和「${ROLES[r].title}」聊聊天（下場走走時，在報關島南岸搭渡輪）` })),
+  ...OV_DOC_LIST.map(([id, icon, name, at, desc, hint]) => ({ id, cat: 'doc', rar: 1, icon, name, at, desc, hint })),
+  ...Q_LEVELS.slice(7).map((L, k) => ({ id: 'q' + (k + 8), cat: 'badge', rar: 2, icon: BADGE_ICONS[k + 7], name: `${L.title}徽章`, desc: L.done, hint: `通過新人闖關第 ${k + 8} 關「${L.title}」` })),
 ];
 const T_BY_ID = Object.fromEntries(TREASURES.map(t => [t.id, t]));
 const CODE_ORDER = TREASURES.map(t => t.id);
@@ -6707,6 +7336,7 @@ $('btnDay').onclick = () => setMode('day');
 $('btnCustoms').onclick = () => setMode('customs');
 $('btnNpi').onclick = () => setMode('npi');
 $('btnTool').onclick = () => setMode('tool');
+$('btnOv').onclick = () => setMode('ov');
 $('btnOverview').onclick = () => {
   if (state.mode === 'day') { state.follow = null; if (state.play) state.camFree = true; }   // 人員一日維持在同一個模式，只是鏡頭不再跟人（玩家一走動就會再跟上）
   else { state.selected = -1; state.place = -1; state.device = -1; setMode('home'); }   // 其他模式：回到乾淨的首頁
@@ -6730,6 +7360,7 @@ $('homeGo').innerHTML = `<optgroup label="開始體驗">
     <option value="customs">🛃 報關島：筆電怎麼通關出國</option>
     <option value="npi">🧪 NPI 研發島：新筆電怎麼從設計到量產</option>
     <option value="tool">🧰 模具島：筆電外殼的模具怎麼做出來</option>
+    <option value="ov">🌍 海外市場島：筆電出國後，怎麼到顧客手上</option>
     <option value="quest">🏆 新人闖關：7 分鐘、7 個關卡</option>
     <option value="play">🎮 下場走走：自己逛工廠、撿寶物</option>
     <option value="chest">🎒 看我的寶箱</option>
@@ -6832,6 +7463,14 @@ $('dlgNext').onclick = advanceTalk;
 $('dlgText').onclick = advanceTalk;
 $('dlgClose').onclick = closeTalk;
 $('talkHint').onclick = () => { if (PLAYER.near) openTalk(PLAYER.near.id); };
+$('ferryHint').onclick = e => {                 // 搭渡輪：從一個渡輪碼頭到另一個（下場走走時才有）
+  const to = PLAYER.pier === FERRY_C ? FERRY_O : FERRY_C; if (!PLAYER.pier) return;
+  const x = (to.x0 + to.x1) / 2, z = to.z0 - 1.6;   // 下船後站在對岸的島上
+  PLAYER.path = null; PLAYER.chase = null; GOAL.visible = false; state.camFree = false;
+  PLAYER.pos.set(x, groundY(x, z), z); PLAYER.yaw = F.N;
+  toast(to === FERRY_O ? '⛴️ 渡輪開了大約 10 分鐘，到海外市場島了！' : '⛴️ 渡輪開回報關島了！');
+  e.currentTarget.blur();
+};
 // 點人物或機台
 (() => {
   const ray = new THREE.Raycaster(), ndc = new THREE.Vector2(); let down = null;
@@ -6930,7 +7569,7 @@ window.__sim = { state, STATIONS, SCHED, SC, PEOPLE_BY_ID, renderer, camera, con
   QZ, Q_LEVELS, questOpen, questLevel, questNext, questExit,
   AMB, CI, TRUCKS, CUSTOMS_STEPS, CZ, goCustoms, chest, chestGrant, chestCode, parseChestCode, GEMS, TREASURES, openChest, showGot,
   updateCustoms, evalAmbient, AMBIENT_BY_ID: Object.fromEntries(AMBIENT.map(p => [p.id, p])), PARK, parkView, scene,
-  NPI_SPOTS, NPI_PEOPLE, NPI_STEPS, NZ, goNpi, TL_PEOPLE, TL_STEPS, TZ, goTool, ISLE_TOURS, TL_TRUCK, ISLE4, evalPerson, npiRoute, ISLE3, BRIDGE3, NAV_BLOCKS };   // 方便除錯用
+  NPI_SPOTS, NPI_PEOPLE, NPI_STEPS, NZ, goNpi, TL_PEOPLE, TL_STEPS, TZ, goTool, ISLE_TOURS, TL_TRUCK, ISLE4, ISLE5, WORLD, OV_PEOPLE, OV_STEPS, OZ, goOv, OV_TRUCK, SHIPLINE, shipDocked, FERRY_C, FERRY_O, evalPerson, npiRoute, ISLE3, BRIDGE3, NAV_BLOCKS };   // 方便除錯用
 if (isMobile()) setDrawer(false);              // 手機版：名單預設收起來
 fitView();
 { const v = parkView(); camera.position.copy(v.pos); controls.target.copy(v.tgt); }   // 一打開先看整個園區
@@ -6998,10 +7637,11 @@ function updateEnvironment(time) {
   const camD = camera.position.distanceTo(controls.target), wide = camD > 125, tx = controls.target.x;
   if (wide !== shadowWide) {
     shadowWide = wide;
-    const sc = sun.shadow.camera, r = wide ? 135 : 50, t = wide ? 135 : 42;
+    const sc = sun.shadow.camera, r = wide ? 170 : 50, t = wide ? 140 : 42;   // 拉遠時陰影範圍包住五座島
     sc.left = -r; sc.right = r; sc.top = t; sc.bottom = -t; sc.far = wide ? 460 : 220; sc.updateProjectionMatrix();
   }
-  if (wide) sun.target.position.set(-6, 0, -25);
+  if (wide) sun.target.position.set(-52, 0, -25);
+  else if (tx < -140) sun.target.position.set(-180, 0, 7);   // 海外市場島
   else if (tx < -50) sun.target.position.set(-86, 0, 7);   // 報關島
   else if (tx > 52 && controls.target.z < -42) sun.target.position.set(80, 0, -64);   // 模具島
   else if (tx > 52) sun.target.position.set(81, 0, -15);   // NPI 研發島
@@ -7019,10 +7659,13 @@ function updateEnvironment(time) {
   // 背景小動畫：波紋飄移、風機轉動、小船繞島、浮標搖晃
   WORLD.ripple.material.map.offset.set(time * 0.004, time * 0.0025);
   for (const h of WORLD.blades) h.rotation.z = time * 1.2;
-  const ang = time * 0.02;                       // 小船繞著三座島（橢圓）
-  WORLD.boat.position.set(-8 + Math.cos(ang) * 150, SEA_Y + 0.2, -20 + Math.sin(ang) * 90); WORLD.boat.rotation.y = Math.atan2(-150 * Math.sin(ang), 90 * Math.cos(ang));   // 橢圓繞過四座島
+  const BR = WORLD.boatRoute, bs = time * 3.4;   // 小船繞著五座島跑（避開遠方小島和貨船航線）
+  routePos(BR, bs, _bA); routePos(BR, bs + 2, _bB);
+  WORLD.boat.position.set(_bA.x, SEA_Y + 0.2, _bA.z); WORLD.boat.rotation.y = Math.atan2(_bB.x - _bA.x, _bB.z - _bA.z);
   WORLD.buoys.forEach((bu, k) => { bu.rotation.z = 0.08 * Math.sin(time * 1.3 + k); bu.position.y = SEA_Y + 0.08 * Math.sin(time * 1.1 + k * 2); });
 }
+const _bA = {}, _bB = {};
+WORLD.boatRoute = makeRoute([[-234, -15], [-218, -62], [-162, -76], [-110, -74], [-60, -66], [-10, -90], [40, -101], [92, -100], [140, -66], [146, -2], [132, 46], [60, 62], [0, 64], [-60, 66], [-78, 66], [-100, 75], [-122, 81], [-170, 80], [-228, 48]].map(([x, z]) => ({ x, z })));   // 小船的航線：繞過五座島、遠方小島，也避開貨船的環狀航線
 let last = performance.now(), firstFrame = true;
 renderer.setAnimationLoop(now => {
   const rdt = Math.min(0.1, (now - last) / 1000); last = now;
@@ -7057,6 +7700,7 @@ renderer.setAnimationLoop(now => {
   updateCustoms(rdt, now / 1000);
   updateNpiIsland();
   updateToolingIsland(now / 1000); updateToolingTruck();
+  updateShips(); updateOverseasIsland(); updateOverseasTruck(rdt);
   updatePlayer(rdt, now / 1000);
   updateTreasures(rdt, now / 1000);
   updateMarkers(now / 1000);
