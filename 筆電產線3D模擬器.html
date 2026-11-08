@@ -1490,7 +1490,7 @@ const lineMat = std(0xE4B64B, { roughness: 0.75 });
 for (const z of [-9, 0, 9]) for (const dz of [-1.1, 1.1]) flat(scene, 36, 0.08, lineMat, -2, 0.004, z + dz);
 // 每站地面色塊
 for (const st of STATIONS) {
-  const m = flat(scene, st.tileW, 3.6, new THREE.MeshBasicMaterial({ color: st.zoneObj.color, transparent: true, opacity: 0.13, depthWrite: false }), st.x, 0.006, st.z);
+  const m = flat(scene, st.tileW, 3.6, new THREE.MeshBasicMaterial({ color: st.zoneObj.color, transparent: true, opacity: 0.13, depthWrite: false }), st.x, 0.02, st.z);
   m.renderOrder = -1;
 }
 // 區域名稱（懸浮在每一區的上方）
@@ -1635,8 +1635,8 @@ const CONT_MATS = ['#D96B45', '#6F9B78', '#5B8DB8', '#D19A35', '#8074A7', '#4D9C
   const y = -0.4, cx = (BRIDGE2.x0 + BRIDGE2.x1) / 2, L = BRIDGE2.x1 - BRIDGE2.x0, W = BRIDGE2.z1 - BRIDGE2.z0;
   const concrete = std(0xC9C2B4, { roughness: 0.9 }), asphalt = std(0x6E6B66, { roughness: 0.92 });
   box(scene, L, 0.5, W, concrete, cx, y - 0.25, (BRIDGE2.z0 + BRIDGE2.z1) / 2);
-  flat(scene, L, 7.2, asphalt, cx, y + 0.006, 13.5).receiveShadow = true;
-  for (let x = BRIDGE2.x0 + 1; x < BRIDGE2.x1 - 0.5; x += 2.2) flat(scene, 1.1, 0.12, M.white, x, y + 0.01, 13.5);   // 中線（虛線）
+  flat(scene, L, 7.2, asphalt, cx, y + 0.02, 13.5).receiveShadow = true;   // 離橋面 2 公分（太近會閃爍）
+  for (let x = BRIDGE2.x0 + 1; x < BRIDGE2.x1 - 0.5; x += 2.2) flat(scene, 1.1, 0.12, M.white, x, y + 0.04, 13.5);   // 中線（虛線）
   for (const z of [BRIDGE2.z0 + 0.15, BRIDGE2.z1 - 0.15]) {                                            // 欄杆
     box(scene, L, 0.08, 0.08, M.steel, cx, y + 0.95, z, false);
     for (let x = BRIDGE2.x0 + 0.4; x <= BRIDGE2.x1 - 0.2; x += 1.6) box(scene, 0.08, 0.95, 0.08, M.steel, x, y + 0.48, z, false);
@@ -1712,7 +1712,7 @@ const CI = {};                                  // 報關島上要做動畫的�
   for (const [k, c] of [['c1', '#3E9B5A'], ['c2', '#E2B13C'], ['c3', '#C8463A']]) {
     const m = flat(scene, 18, 3, new THREE.MeshBasicMaterial({ color: c, transparent: true, opacity: 0.32, depthWrite: false }), -83, Y + 0.02, LANE[k]); m.renderOrder = -1;
   }
-  for (const z of [10.25, 13.75]) flat(scene, 18, 0.1, M.white, -83, Y + 0.024, z);
+  for (const z of [10.25, 13.75]) flat(scene, 18, 0.1, M.white, -83, Y + 0.045, z);
   // 通道入口的號誌架：三塊牌子面向東邊（貨櫃車開過來的方向）
   const signTex = (code, text, color) => makeTex(512, 200, (g, W, H) => {
     g.fillStyle = color; rrect(g, 4, 4, W - 8, H - 8, 26); g.fill();
@@ -1879,7 +1879,7 @@ const CI = {};                                  // 報關島上要做動畫的�
       if (hatch.some(h => Math.abs(z - h) < 3)) continue;
       for (const x of [-2.15, 0, 2.15]) for (let k = 0, n = 1 + Math.floor(R() * 3); k < n; k++) deck.push({ k, m: box(ship, 1.6, 1.35, 3.9, CONT_MATS[Math.floor(R() * CONT_MATS.length)], x, 3.48 + k * 1.37, z) });
     }
-    for (const h of hatch) flat(ship, 6.2, 4.6, M.black, 0, 2.81, h);
+    for (const h of hatch) flat(ship, 6.2, 4.6, M.black, 0, 2.84, h);   // 離甲板 4 公分，船在動時才不會閃
     deck.sort((a, b) => a.k - b.k);
     NAV_SKIP.push(ship);
     return { g: ship, deck: deck.map(d => d.m), shown: deck.length };
@@ -2255,7 +2255,7 @@ const TL_ANIM = {};                                             // 會動的機�
   bridge(TBV, false); bridge(TBH, true);
   flatAt(TBV.x0, TBV.z1 - 0.2, TBV.x1, -21, road, 0.012);        // 主島：大橋接下來的一小段
   flatAt(6, -28.4, TBV.x1, -22.4, road, 0.011);                  // 主島北側車道（卸貨、迴轉）
-  for (let x = 8; x < 26; x += 2.2) flat(scene, 1.1, 0.12, line, x, Y + 0.02, -25.4);
+  for (let x = 8; x < 26; x += 2.2) flat(scene, 1.1, 0.12, line, x, Y + 0.035, -25.4);
   for (const [x, z] of [[25.6, -45], [32.4, -45], [42, -59.6], [52, -59.6], [42, -66.4], [52, -66.4]]) { cyl(scene, 0.06, 0.08, 3.4, M.bodyDark, x, Y + 1.7, z, 8); addMesh(scene, sphereGeo(0.2), WORLD.bulb, x, Y + 3.5, z, false); }
   { const sp = textSprite('模具島 貨車大橋', 'To Tooling Island：模具、試模件進出', TL_COLOR, 1.1); sp.position.set(29, 3.4, -33); scene.add(sp); }
   // ---- 工廠北側進料區：北牆外的卸貨平台、捲門、棧板 ----
@@ -2292,10 +2292,10 @@ const TL_ANIM = {};                                             // 會動的機�
   // ---- 模具廠（矮牆、沒有屋頂）：西牆是大門；室內分 CNC、放電加工、拋光、試模四區 ----
   const TF = { x0: 73, x1: 98, z0: -79, z1: -59 };
   flatAt(TF.x0, TF.z0, TF.x1, TF.z1, std(0xE4E2DC, { roughness: 0.85 }), 0.02);
-  flatAt(73.6, -78.4, 81.6, -69.6, std(0xDCE3EA, { roughness: 0.85 }), 0.028);   // CNC 區（淡藍）
-  flatAt(82.2, -78.4, 89.4, -69.6, std(0xE9E0F0, { roughness: 0.85 }), 0.028);   // 放電加工區（淡紫）
-  flatAt(90, -78.4, 97.4, -69.6, std(0xF3E7D6, { roughness: 0.85 }), 0.028);     // 拋光區（淡黃）
-  flatAt(80.2, -67.6, 97.4, -59.6, std(0xF6DFD2, { roughness: 0.85 }), 0.028);   // 試模區（淡橘）
+  flatAt(73.6, -78.4, 81.6, -69.6, std(0xDCE3EA, { roughness: 0.85 }), 0.045);   // CNC 區（淡藍）
+  flatAt(82.2, -78.4, 89.4, -69.6, std(0xE9E0F0, { roughness: 0.85 }), 0.045);   // 放電加工區（淡紫）
+  flatAt(90, -78.4, 97.4, -69.6, std(0xF3E7D6, { roughness: 0.85 }), 0.045);     // 拋光區（淡黃）
+  flatAt(80.2, -67.6, 97.4, -59.6, std(0xF6DFD2, { roughness: 0.85 }), 0.045);   // 試模區（淡橘）
   wall(TF.x0, TF.z0, TF.x1, TF.z0); wall(TF.x1, TF.z0, TF.x1, TF.z1);
   wall(TF.x0, TF.z0, TF.x0, -71); wall(TF.x0, -65, TF.x0, TF.z1);           // 西牆：大門在 z -71 ～ -65
   wall(TF.x0, TF.z1, 80, TF.z1); wall(82.2, TF.z1, TF.x1, TF.z1);           // 南牆：通往辦公室的小門
@@ -2582,7 +2582,7 @@ const OV_ANIM = {};                                             // 會動的東�
   flatAt(-169.1, 0.4, -161.4, 3.6, road, 0.013);                            // 往海關查驗區（東西向）
   flatAt(-169.1, 3.6, -166.2, 21.6, road, 0.013);                           // 倉庫卸貨月台前（南北向）
   flatAt(-166.2, 18.6, -161.4, 21.6, road, 0.013);                          // 回碼頭（東西向）
-  for (let z = -10; z < 20; z += 2.2) flat(scene, 0.12, 1.1, line, -155.2, Y + 0.02, z);   // 吊車軌道旁的白線
+  for (let z = -10; z < 20; z += 2.2) flat(scene, 0.12, 1.1, line, -155.2, Y + 0.035, z);   // 吊車軌道旁的白線
   for (let z = -10; z <= 24; z += 4) cyl(scene, 0.18, 0.22, 0.45, M.bodyDark, -152.6, Y + 0.22, z, 8);   // 繫船柱
   {
     const g = new THREE.Group(); g.position.x = OV_MIRROR; g.scale.x = -1; scene.add(g);   // 翻過來的吊車：吊臂往東伸到船上
@@ -2626,8 +2626,8 @@ const OV_ANIM = {};                                             // 會動的東�
   const WH = { x0: -184, x1: -170, z0: -9, z1: 19 };
   {
     flatAt(WH.x0, WH.z0, WH.x1, WH.z1, std(0xE3E3DA, { roughness: 0.85 }), 0.02);
-    flatAt(-176, 4.4, -170.4, 14, std(0xE6EBDD, { roughness: 0.85 }), 0.028);     // 收貨區（淡綠）
-    flatAt(-183.6, 5.4, -176.6, 18.6, std(0xF1E8D6, { roughness: 0.85 }), 0.028); // 揀貨區（淡黃）
+    flatAt(-176, 4.4, -170.4, 14, std(0xE6EBDD, { roughness: 0.85 }), 0.045);     // 收貨區（淡綠）
+    flatAt(-183.6, 5.4, -176.6, 18.6, std(0xF1E8D6, { roughness: 0.85 }), 0.045); // 揀貨區（淡黃）
     wall(WH.x0, WH.z0, WH.x1, WH.z0);                                          // 北牆
     wall(WH.x1, WH.z0, WH.x1, 5); wall(WH.x1, 13, WH.x1, WH.z1);               // 東牆：中間是卸貨月台的開口
     wall(WH.x0, WH.z1, -176.4, WH.z1); wall(-174, WH.z1, WH.x1, WH.z1);        // 南牆：小門
@@ -2677,8 +2677,8 @@ const OV_ANIM = {};                                             // 會動的東�
   {
     flatAt(-189, -13, -185, 27, road, 0.013);
     flatAt(-191, -13, -189, 27, walk, 0.016); flatAt(-185, -13, -184, 27, walk, 0.016);
-    for (let z = -12; z < 26; z += 2.4) flat(scene, 0.12, 1.2, std(0xF2C14E, { roughness: 0.7 }), -187, Y + 0.025, z);   // 中線（黃色）
-    for (let x = -188.6; x < -185.2; x += 0.7) flat(scene, 0.4, 2.4, line, x, Y + 0.026, 11.3);   // 斑馬線：倉庫 ↔ 零售店
+    for (let z = -12; z < 26; z += 2.4) flat(scene, 0.12, 1.2, std(0xF2C14E, { roughness: 0.7 }), -187, Y + 0.035, z);   // 中線（黃色）
+    for (let x = -188.6; x < -185.2; x += 0.7) flat(scene, 0.4, 2.4, line, x, Y + 0.05, 11.3);   // 斑馬線：倉庫 ↔ 零售店
     for (const z of [-8, 2, 20]) lamp(-184.5, z);
     for (const z of [-6, 4, 22]) lamp(-190.6, z);
     for (const z of [-11, 24]) { tree(-184.5, z); tree(-190.5, z); }
@@ -2803,18 +2803,28 @@ const OV_ANIM = {};                                             // 會動的東�
   }
   // ---- 海外機場（貨運）：跑道、滑行道、停機坪、空運貨運站、塔台、風向袋 ----
   {
-    const runM = std(0x4A4B4F, { roughness: 0.95 }), taxiM = std(0x5C5D60, { roughness: 0.95 }), apronM = std(0xBDB8AD, { roughness: 0.9 }), yel = std(0xF2C14E, { roughness: 0.7 });
+    const taxiM = std(0x5C5D60, { roughness: 0.95 }), apronM = std(0xBDB8AD, { roughness: 0.9 }), yel = std(0xF2C14E, { roughness: 0.7 });
     const R = RUNWAY, cz = (R.z0 + R.z1) / 2;
-    flatAt(R.x0, R.z0, R.x1, R.z1, runM, 0.013);
-    for (let x = R.x0 + 12; x < R.x1 - 4; x += 6) flat(scene, 3, 0.25, line, x, Y + 0.022, cz);                         // 中心線（虛線）
-    for (const z of [R.z0 + 0.35, R.z1 - 0.35]) flat(scene, R.x1 - R.x0 - 1, 0.15, line, (R.x0 + R.x1) / 2, Y + 0.021, z);   // 邊線
-    for (let k = 0; k < 6; k++) flat(scene, 4, 0.5, line, R.x0 + 3, Y + 0.022, R.z0 + 1.6 + k * 1.2);               // 跑道頭的斑馬線
-    for (let x = R.x0 + 2; x < R.x1; x += 9) for (const z of [R.z0 - 0.3, R.z1 + 0.3]) cyl(scene, 0.08, 0.1, 0.25, std(0xFFF4C2, { emissive: 0xF2C14E, emissiveIntensity: 0.6 }), x, Y + 0.12, z, 8, false);   // 跑道燈
-    flatAt(-328, -3.4, -318, 9.4, taxiM, 0.012); flatAt(-262, -3.4, -251, 9.4, taxiM, 0.012); flatAt(-318, 2.6, -262, 9.4, taxiM, 0.012);   // 滑行道
-    for (let x = -317; x < -263; x += 3) flat(scene, 1.6, 0.15, yel, x, Y + 0.02, AIR_STAND.z);                       // 滑行道的黃色中心線
-    for (let z = -2.6; z < 6; z += 3) { flat(scene, 0.15, 1.6, yel, -256.5, Y + 0.02, z); flat(scene, 0.15, 1.6, yel, -323, Y + 0.02, z); }
-    flatAt(-331, 9.4, -243.4, 26.6, apronM, 0.011);                                                                  // 停機坪（拖車走的地方）
-    flat(scene, 0.3, 4, yel, AIR_STAND.x - 13, Y + 0.025, AIR_STAND.z); flat(scene, 2.4, 0.3, yel, AIR_STAND.x - 13.2, Y + 0.025, AIR_STAND.z);   // 停機位的停止線（機頭停在這裡）
+    // 機場的地面一層一層往上疊，每一層至少隔 2 公分：島面 → 停機坪 2 → 滑行道 3 → 跑道 4 公分
+    // 跑道的白線畫在同一張貼圖上（v20）：原本是一條條很細的白色長條（邊線只有 15 公分寬），從遠處看比一個像素還細，鏡頭一動就斷斷續續地閃；
+    //   畫成貼圖之後，顯示卡會自動用縮小版的貼圖（mipmap）把細線柔化，遠看就不會閃
+    const RL = R.x1 - R.x0, RW = R.z1 - R.z0;
+    const rwTex = makeTex(2048, 160, (c, W, H) => {
+      const px = W / RL, pz = H / RW;
+      c.fillStyle = '#4A4B4F'; c.fillRect(0, 0, W, H);
+      c.fillStyle = '#E9E6DF';
+      c.fillRect(0, 0.35 * pz, W, 0.4 * pz); c.fillRect(0, H - 0.75 * pz, W, 0.4 * pz);                     // 邊線（40 公分）
+      for (let x = 12; x < RL - 6; x += 6) c.fillRect(x * px, H / 2 - 0.25 * pz, 3 * px, 0.5 * pz);           // 中心線（虛線，50 公分）
+      for (let k = 0; k < 6; k++) c.fillRect(1 * px, (1.3 + k * 1.2) * pz, 4 * px, 0.6 * pz);                 // 跑道頭的斑馬線
+    });
+    rwTex.anisotropy = Math.max(8, renderer.capabilities.getMaxAnisotropy());
+    flatAt(R.x0, R.z0, R.x1, R.z1, std(0xffffff, { map: rwTex, roughness: 0.95 }), 0.04);
+    for (let x = R.x0 + 2; x < R.x1; x += 9) for (const z of [R.z0 - 0.3, R.z1 + 0.3]) cyl(scene, 0.14, 0.16, 0.3, std(0xFFF4C2, { emissive: 0xF2C14E, emissiveIntensity: 0.3 }), x, Y + 0.15, z, 10, false);   // 跑道燈（大一點、暗一點，遠看才不會一閃一閃）
+    flatAt(-328, -3.4, -318, 9.4, taxiM, 0.03); flatAt(-262, -3.4, -251, 9.4, taxiM, 0.03); flatAt(-318, 2.6, -262, 9.4, taxiM, 0.03);   // 滑行道
+    for (let x = -317; x < -263; x += 3) flat(scene, 1.6, 0.3, yel, x, Y + 0.06, AIR_STAND.z);                        // 滑行道的黃色中心線（30 公分寬，太細遠看會閃）
+    for (let z = -2.6; z < 6; z += 3) { flat(scene, 0.3, 1.6, yel, -256.5, Y + 0.06, z); flat(scene, 0.3, 1.6, yel, -323, Y + 0.06, z); }
+    flatAt(-331, 9.4, -243.4, 26.6, apronM, 0.02);                                                                  // 停機坪（拖車走的地方）
+    flat(scene, 0.3, 4, yel, AIR_STAND.x - 13, Y + 0.085, AIR_STAND.z); flat(scene, 2.4, 0.3, yel, AIR_STAND.x - 13.2, Y + 0.085, AIR_STAND.z);   // 停機位的停止線（機頭停在這裡）
     devTag('跑道', 'Runway：貨機從西邊降落、往東起飛', '#4C5554', -300, 2.2, -8, 0.7);
     devTag('停機位', 'Cargo Stand：貨機在這裡卸貨', OV_COLOR, AIR_STAND.x, 9.6, AIR_STAND.z + 3.5, 0.6);
     // 塔台
@@ -2828,7 +2838,7 @@ const OV_ANIM = {};                                             // 會動的東�
     // 空運貨運站：西邊是大門（拖車進出）、東邊小門通往市區；裡面有拆盤區、空運海關櫃台、貨運站的辦公桌
     const TM = { x0: -241, x1: -220, z0: 3, z1: 25 };
     flatAt(TM.x0, TM.z0, TM.x1, TM.z1, std(0xE5E7E0, { roughness: 0.85 }), 0.02);
-    flatAt(TM.x0 + 0.6, 9, -230, 24.4, std(0xDDE6EE, { roughness: 0.85 }), 0.028);   // 拆盤區（淡藍）
+    flatAt(TM.x0 + 0.6, 9, -230, 24.4, std(0xDDE6EE, { roughness: 0.85 }), 0.045);   // 拆盤區（淡藍）
     wall(TM.x0, TM.z0, TM.x1, TM.z0); wall(TM.x0, TM.z1, TM.x1, TM.z1);
     wall(TM.x0, TM.z0, TM.x0, 15); wall(TM.x1, TM.z0, TM.x1, 5); wall(TM.x1, 8, TM.x1, TM.z1);
     for (let i = 0; i < 6; i++) for (const z of [12, 15.5]) cyl(scene, 0.08, 0.08, 1.8, M.steel, -238.6 + i * 0.6, Y + 0.45, z, 10, false).rotation.x = Math.PI / 2;   // 滾輪輸送台
@@ -4586,7 +4596,7 @@ function buildStaffArea() {
   box(scene, 0.7, 0.02, 0.6, M.yellow, 27.95, 0.01, -4.4, false);
   for (const dz of [-0.55, 0.55]) box(scene, 0.06, 0.95, 0.06, M.steel, 27.5, 0.475, -4.4 + dz);
   // 早會區（白板）
-  flat(scene, 3.6, 4.6, new THREE.MeshBasicMaterial({ color: 0x8b5cf6, transparent: true, opacity: 0.12, depthWrite: false }), 28.3, 0.007, 1.2).renderOrder = -1;
+  flat(scene, 3.6, 4.6, new THREE.MeshBasicMaterial({ color: 0x8b5cf6, transparent: true, opacity: 0.12, depthWrite: false }), 28.3, 0.02, 1.2).renderOrder = -1;
   const wb = new THREE.Group(); wb.position.set(30.3, 0, 1.2); scene.add(wb);
   for (const dz of [-0.85, 0.85]) box(wb, 0.05, 1.9, 0.05, M.steel, 0, 0.95, dz);
   box(wb, 0.05, 1.05, 1.85, M.white, 0, 1.45, 0);
@@ -4598,7 +4608,7 @@ function buildStaffArea() {
   }) }));
   wbt.rotation.y = -Math.PI / 2; wbt.position.set(-0.03, 1.45, 0); wb.add(wbt);
   // 休息區（餐廳）
-  flat(scene, 5.0, 8.8, new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.1, depthWrite: false }), 28.0, 0.007, 9.6).renderOrder = -1;
+  flat(scene, 5.0, 8.8, new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.1, depthWrite: false }), 28.0, 0.02, 9.6).renderOrder = -1;
   for (const tz of TABLES) {
     box(scene, 1.6, 0.05, 0.72, M.white, 27.5, 0.74, tz);
     for (const dx of [-0.7, 0.7]) box(scene, 0.06, 0.72, 0.56, M.steel, 27.5 + dx, 0.36, tz, false);
@@ -7855,6 +7865,7 @@ function playAt(i) {                           // 到選好的島上走走（還
   if (!walkable(x, z)) { const c = nearestOpen(x, z, 6); if (c >= 0) { x = NAVG.X0 + (c % NAVG.NX + 0.5) * NAVG.C; z = NAVG.Z0 + (Math.floor(c / NAVG.NX) + 0.5) * NAVG.C; } }
   PLAYER.path = null; PLAYER.chase = null; GOAL.visible = false; state.camFree = false;
   PLAYER.pos.set(x, groundY(x, z), z); PLAYER.yaw = yaw;
+  useArea({ factory: 'factory', customs: 'isle', npi: 'npi', tool: 'tool', ov: 'ov', air: 'ov' }[PLAY_SPAWNS[i][0]]);   // 左邊名單換成這座島的人
   toast(`📍 你在${name}了！點地板走路，靠近人就可以聊天`);
 }
 $('isleGrid').addEventListener('click', e => { const b = e.target.closest('[data-spawn]'); if (b) playAt(+b.dataset.spawn); });
@@ -7871,6 +7882,7 @@ $('ferryHint').onclick = e => {                 // 搭渡輪：從一個渡輪�
   const x = (to.x0 + to.x1) / 2, z = to.z0 - 1.6;   // 下船後站在對岸的島上
   PLAYER.path = null; PLAYER.chase = null; GOAL.visible = false; state.camFree = false;
   PLAYER.pos.set(x, groundY(x, z), z); PLAYER.yaw = F.N;
+  useArea(to === FERRY_O ? 'ov' : 'isle');   // 左邊名單換成到達那座島的人
   toast(to === FERRY_O ? '⛴️ 渡輪開了大約 10 分鐘，到海外市場島了！' : '⛴️ 渡輪開回報關島了！');
   e.currentTarget.blur();
 };
@@ -7972,7 +7984,7 @@ window.__sim = { state, STATIONS, SCHED, SC, PEOPLE_BY_ID, renderer, camera, con
   QZ, Q_LEVELS, questOpen, questLevel, questNext, questExit,
   AMB, CI, TRUCKS, CUSTOMS_STEPS, CZ, goCustoms, chest, chestGrant, chestCode, parseChestCode, GEMS, TREASURES, openChest, showGot,
   updateCustoms, evalAmbient, AMBIENT_BY_ID: Object.fromEntries(AMBIENT.map(p => [p.id, p])), PARK, parkView, scene,
-  NPI_SPOTS, NPI_PEOPLE, NPI_STEPS, NZ, goNpi, TL_PEOPLE, TL_STEPS, TZ, goTool, ISLE_TOURS, TL_TRUCK, ISLE4, ISLE5, WORLD, PLANE, planeAt, updatePlane, updateUldTrain, ULD_TRAIN, PROMOS, setPromo, RUNWAY, OV_PEOPLE, OV_STEPS, OZ, goOv, OV_TRUCK, SHIPLINE, shipDocked, FERRY_C, FERRY_O, evalPerson, npiRoute, ISLE3, BRIDGE3, NAV_BLOCKS };   // 方便除錯用
+  NPI_SPOTS, NPI_PEOPLE, NPI_STEPS, NZ, goNpi, TL_PEOPLE, TL_STEPS, TZ, goTool, ISLE_TOURS, TL_TRUCK, ISLE4, ISLE5, WORLD, PLANE, planeAt, updatePlane, updateEnvironment, updateUldTrain, ULD_TRAIN, PROMOS, setPromo, RUNWAY, OV_PEOPLE, OV_STEPS, OZ, goOv, OV_TRUCK, SHIPLINE, shipDocked, FERRY_C, FERRY_O, evalPerson, npiRoute, ISLE3, BRIDGE3, NAV_BLOCKS };   // 方便除錯用
 if (isMobile()) setDrawer(false);              // 手機版：名單預設收起來
 fitView();
 { const v = parkView(); camera.position.copy(v.pos); controls.target.copy(v.tgt); }   // 一打開先看整個園區
