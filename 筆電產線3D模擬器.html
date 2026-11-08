@@ -1894,7 +1894,7 @@ const npiSpot = (id, x, z, face, place) => (NPI_SPOTS[id] = { id, x, z, face, pl
   // 步行橋（木頭橋面＋欄杆＋路燈）
   {
     const L = BRIDGE3.x1 - BRIDGE3.x0, cx = (BRIDGE3.x0 + BRIDGE3.x1) / 2, cz = (BRIDGE3.z0 + BRIDGE3.z1) / 2;
-    box(scene, L, 0.3, BRIDGE3.z1 - BRIDGE3.z0, M.wood, cx, Y - 0.15, cz);
+    box(scene, L, 0.3, BRIDGE3.z1 - BRIDGE3.z0, M.wood, cx, Y - 0.17, cz);   // 橋面比島面低 2 公分：兩端疊在島上的地方才不會和島面搶著畫（閃爍）
     for (const z of [BRIDGE3.z0 + 0.1, BRIDGE3.z1 - 0.1]) {
       box(scene, L, 0.07, 0.07, M.steel, cx, Y + 0.95, z, false);
       for (let x = BRIDGE3.x0 + 0.5; x <= BRIDGE3.x1 - 0.3; x += 1.5) box(scene, 0.07, 0.95, 0.07, M.steel, x, Y + 0.48, z, false);
@@ -2209,7 +2209,7 @@ const TL_ANIM = {};                                             // 會動的機�
   // ---- L 形貨車大橋（水泥橋面、中線、欄杆、橋墩、路燈）＋主島北側的車道 ----
   const bridge = (B, alongX) => {
     const L = alongX ? B.x1 - B.x0 : B.z1 - B.z0, W = alongX ? B.z1 - B.z0 : B.x1 - B.x0, cx = (B.x0 + B.x1) / 2, cz = (B.z0 + B.z1) / 2;
-    box(scene, alongX ? L : W, 0.5, alongX ? W : L, deck, cx, Y - 0.25, cz);
+    box(scene, alongX ? L : W, 0.5, alongX ? W : L, deck, cx, Y - 0.27, cz);   // 橋面比島面低 2 公分，橋頭才不會閃爍
     for (let k = 1; k < L - 1; k += 2.2) alongX ? flat(scene, 1.1, 0.12, line, B.x0 + k, Y + 0.01, cz) : flat(scene, 0.12, 1.1, line, cx, Y + 0.01, B.z0 + k);
     for (const e of [-1, 1]) {                   // 兩側欄杆
       const off = e * (W / 2 - 0.12);
@@ -2247,7 +2247,7 @@ const TL_ANIM = {};                                             // 會動的機�
   // ---- 步行橋：研發島 ↔ 模具島（木頭橋面、欄杆、路燈）----
   {
     const L = FOOT4.z1 - FOOT4.z0, cz = (FOOT4.z0 + FOOT4.z1) / 2, cx = (FOOT4.x0 + FOOT4.x1) / 2;
-    box(scene, FOOT4.x1 - FOOT4.x0, 0.3, L, M.wood, cx, Y - 0.15, cz);
+    box(scene, FOOT4.x1 - FOOT4.x0, 0.3, L, M.wood, cx, Y - 0.17, cz);   // 橋面比島面低 2 公分，橋頭才不會閃爍
     for (const x of [FOOT4.x0 + 0.1, FOOT4.x1 - 0.1]) {
       box(scene, 0.07, 0.07, L - 2.4, M.steel, x, Y + 0.95, cz, false);
       for (let z = FOOT4.z0 + 1.6; z <= FOOT4.z1 - 1.2; z += 1.5) box(scene, 0.07, 0.95, 0.07, M.steel, x, Y + 0.48, z, false);
