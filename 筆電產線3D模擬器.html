@@ -561,7 +561,7 @@
     <ul>
       <li><b>🗺️ 首頁／全景</b>：一打開是乾淨的園區全景（報關島＋工廠＋NPI 研發島）。在「我想去哪裡？」選一種體驗或一個地方，按「出發」；隨時按上方的「全景」回到這裡。</li>
       <li><b>🎬 導覽模式</b>：鏡頭自動跟著「示範機」（頭上有黃色箭頭）走完全程，右邊的卡片會解說每一站。</li>
-      <li><b>🧭 自由參觀</b>：滑鼠<b>左鍵拖曳</b>旋轉、<b>右鍵拖曳</b>平移、<b>滾輪</b>縮放（手機：<b>單指拖曳</b>旋轉、<b>雙指</b>縮放與平移）；<b>點任一台機器</b>就會飛過去並顯示說明。</li>
+      <li><b>🧭 自由參觀</b>：滑鼠<b>左鍵拖曳</b>旋轉、<b>右鍵拖曳</b>平移、<b>滾輪</b>縮放（手機：<b>單指拖曳</b>旋轉、<b>雙指</b>縮放與平移）；<b>點任一台機器或島上的設備、建築</b>就會飛過去並顯示說明（島上的設備有自己的介紹）；清單上方有工廠、報關島、NPI 島、模具島四個分頁。</li>
       <li><b>🏆 新人闖關</b>：7 分鐘、7 個關卡，用遊戲認識筆電工廠：報到流程、6 大區的順序、出事要找誰、品檢找碴、出貨防呆、到報關島通關放行，最後到模具島處理模具問題。每過一關會掉一個寶物，完成後可以下載結業證書（排行榜下一版開放）。</li>
       <li><b>🛃 報關島</b>：筆電做好之後怎麼合法出國？跟著 10 個步驟看出口通關（C1／C2／C3、X 光查驗、放行、吊上船），以及零件進口、保稅倉。島上貨櫃車的車頭顏色，就是它被分到的通道。</li>
       <li><b>🧰 模具島</b>：筆電外殼是塑膠打進「模具」做出來的。跟著 8 個步驟看模具怎麼報價下單、設計、CNC 加工、放電加工、拋光、試模、修模，最後入模具倉、用貨車送到工廠北側的進料區；左邊「模具島人員」分頁可以直接選人，看採購怎麼在模具廠、機構工程師和 PM 之間協調成本、問題和時程。</li>
@@ -5035,6 +5035,8 @@ const state = {
   mode: 'tour', paused: false, speed: 1, autoPause: false,
   heroN: 100, T: 100 * SPAWN - 0.5,
   selected: -1, lastHeroK: -1,
+  place: -1, placeKey: '',                              // 自由參觀：選了哪座島（customs／npi／tool）的第幾個地點
+  device: -1,                                           // 自由參觀：選了哪一台島上的設備（DEVICES 的第幾台）
   D: 0, follow: null, selPerson: null, lastScene: -1,   // 人員一日：時間軸位置（秒）、鏡頭跟隨誰、選了誰、上一個場景
   play: false, talkHold: false, camFree: false,         // 下場走走：是否在玩、聊天時暫停時間、按了全景（鏡頭暫時不跟玩家）
 };
@@ -5188,8 +5190,24 @@ function updateCamera(rdt) {
 const $ = id => document.getElementById(id);
 let listMode = '';   // 左側清單目前顯示「站點」還是「人員」
 function buildStationList() {
-  listMode = 'stations'; $('panelTitle').textContent = '🏭 產線站點';
-  let html = '';
+  const free = state.mode === 'free';           // 自由參觀：清單上方多了工廠和三座島的分頁；導覽模式只列產線站點
+  listMode = free ? 'free' : 'stations'; $('panelTitle').textContent = free ? '🧭 自由參觀' : '🏭 產線站點';
+  if (free && freeTab !== 'factory') {           // 島上的地點：就是那座島導覽的每一步
+    const I = FREE_ISLES[freeTab];
+    $('stationList').innerHTML = ppTabs(FREE_TABS, freeTab, 'ftab')
+      + '<p class="pp-note">導覽裡的每一步，就是島上的一個地點。點一下，鏡頭飛過去並顯示說明；也可以直接點島上的建築。</p>'
+      + I.groups().map(([c, t, has]) => ppHead(c, t) + I.steps.map((S, i) => has(S)
+        ? `<button class="st-item" data-p="${i}"><span class="num" style="--c:${c}">${String(i + 1).padStart(2, '0')}</span><span class="nm">${S.title}</span><span class="ck">✓</span></button>` : '').join('')).join('')
+      + ppHead('#64748B', '🔧 設備（點設備看介紹）') + DEVICES.map((D, d) => D.isle === freeTab
+        ? `<button class="st-item" data-d="${d}"><span class="num" style="--c:${D.color}">${D.ic}</span><span class="nm">${D.name}</span><span class="ck">✓</span></button>` : '').join('');
+    bindFreeTabs();
+    $('stationList').querySelectorAll('.st-item').forEach(b => b.addEventListener('click', () => {
+      if (b.dataset.d !== undefined) pickDevice(+b.dataset.d); else pickPlace(freeTab, +b.dataset.p);
+      if (isMobile()) setDrawer(false);
+    }));
+    return;
+  }
+  let html = free ? ppTabs(FREE_TABS, freeTab, 'ftab') : '';
   ZONES.forEach((z, zi) => {
     html += `<div class="zone-head"><span class="dot" style="background:${z.color}"></span>${zi + 1}. ${z.name}</div>`;
     STATIONS.forEach((st, k) => {
@@ -5197,8 +5215,10 @@ function buildStationList() {
     });
   });
   $('stationList').innerHTML = html;
+  if (free) bindFreeTabs();
   $('stationList').querySelectorAll('.st-item').forEach(b => b.addEventListener('click', () => { pickStation(+b.dataset.k); if (isMobile()) setDrawer(false); }));
 }
+const bindFreeTabs = () => $('stationList').querySelectorAll('.pp-tab').forEach(b => b.addEventListener('click', () => { freeTab = b.dataset.ftab; buildStationList(); }));
 const stItems = () => $('stationList').querySelectorAll('.st-item');
 function buildTimeline() {
   const T = SCHED.total; let z = '', fill = '', ticks = '';
@@ -5546,13 +5566,20 @@ function updateUI(rdt) {
         : `🚚 <b>移動中</b>，即將抵達這一站（第 ${curK + 1} 站）<br>${prod}`;
     }
   } else {
-    items.forEach((el, i) => { el.classList.remove('done'); el.classList.toggle('current', i === state.selected); });
-    if (state.selected < 0) {
+    const cur = freeTab === 'factory' ? state.selected : state.placeKey === freeTab ? state.place : -1;   // 清單只列一個分頁：亮起這個分頁裡選中的那一項
+    items.forEach(el => { el.classList.remove('done'); el.classList.toggle('current', el.dataset.d !== undefined ? +el.dataset.d === state.device : +(el.dataset.k ?? el.dataset.p) === cur); });
+    if (state.device >= 0) setInfo('dv' + state.device, deviceHTML(state.device));
+    else if (state.place >= 0) {
+      const I = FREE_ISLES[state.placeKey];
+      setInfo('fp' + state.placeKey + state.place, I.html(state.place));
+      const el = $('infoStatus');
+      if (el && state.placeKey === 'customs') el.innerHTML = customsLive(CUSTOMS_STEPS[state.place]);   // 報關島：順便看島上的貨櫃車正在做什麼
+    } else if (state.selected < 0) {
       setInfo('welcome', `<div class="welcome"><h2>🧭 自由參觀模式</h2>
-        <p>現在可以自己在工廠裡走走看：</p>
-        <ul>${TOUCH ? '<li><b>單指拖曳</b>：旋轉視角</li><li><b>雙指</b>：放大縮小、平移</li><li><b>點任一台機器</b>或 ☰ 清單裡的站名：飛過去看說明</li>'
-          : '<li><b>左鍵拖曳</b>：旋轉視角</li><li><b>右鍵拖曳</b>：平移</li><li><b>滾輪</b>：放大縮小</li><li><b>點任一台機器</b>或左邊的站名：飛過去看說明</li>'}</ul>
-        <p style="margin-top:10px">想看完整流程，按上方的 <b>🎬 導覽模式</b>。</p></div>`);
+        <p>現在可以自己在工廠和三座島（報關島、NPI 研發島、模具島）走走看：</p>
+        <ul>${TOUCH ? '<li><b>單指拖曳</b>：旋轉視角</li><li><b>雙指</b>：放大縮小、平移</li><li><b>點機器或島上的設備、建築</b>：飛過去看說明（島上的設備有自己的介紹）</li><li>☰ 清單上方有<b>工廠和三座島的分頁</b>，點地點名稱也會飛過去</li>'
+          : '<li><b>左鍵拖曳</b>：旋轉視角</li><li><b>右鍵拖曳</b>：平移</li><li><b>滾輪</b>：放大縮小</li><li><b>點機器或島上的設備、建築</b>：飛過去看說明（島上的設備有自己的介紹）</li><li>左邊清單上方有<b>工廠和三座島的分頁</b>，點地點名稱也會飛過去</li>'}</ul>
+        <p style="margin-top:10px">想照順序看完整流程，按上方的 <b>🎬 導覽模式</b>，或各島的導覽（🛃、🧪、🧰）。</p></div>`);
     } else {
       const st = STATIONS[state.selected];
       setInfo('fs' + state.selected, stationHTML(state.selected));
@@ -5607,7 +5634,7 @@ function setMode(m) {
     buildIsleTimeline(T);
     goIsle(T, T.z.step);
   } else {
-    if (listMode !== 'stations') buildStationList();
+    if (listMode !== (m === 'free' ? 'free' : 'stations')) buildStationList();
     if (prev === 'day' || prev === 'customs' || ISLE_TOURS[prev]) buildTimeline();
   }
   if (m === 'tour' && getHeroPos(heroPos)) flyTo(heroPos.clone().add(sOff(tourOff())), heroPos.clone(), 1.6, true);
@@ -5620,8 +5647,22 @@ function seekHeroToStation(k) {
 }
 function pickStation(k) {
   if (state.mode === 'tour') { seekHeroToStation(k); return; }
-  state.selected = k; infoKey = '';
+  state.selected = k; state.place = -1; state.device = -1; infoKey = '';
+  if (freeTab !== 'factory') { freeTab = 'factory'; if (listMode === 'free') buildStationList(); }   // 清單跟著切回工廠分頁
   const v = stationView(STATIONS[k]); flyTo(v.pos, v.tgt, 1.3);
+}
+function pickPlace(key, i) {                    // 自由參觀：飛到某座島的第 i 個地點（不會像導覽一樣讓島上的人停在某個時刻）
+  const I = FREE_ISLES[key];
+  state.selected = -1; state.device = -1; state.placeKey = key; state.place = clamp(i, 0, I.steps.length - 1); infoKey = '';
+  if (freeTab !== key) { freeTab = key; if (listMode === 'free') buildStationList(); }
+  const S = I.steps[state.place], v = S.park ? parkView() : qView(S.at.clone(), S.off);
+  flyTo(v.pos, v.tgt, 1.3);
+}
+function pickDevice(d) {                        // 自由參觀：飛到島上的某台設備，說明卡介紹這台設備
+  const D = DEVICES[d];
+  state.selected = -1; state.place = -1; state.device = d; infoKey = '';
+  if (freeTab !== D.isle) { freeTab = D.isle; if (listMode === 'free') buildStationList(); }
+  const v = qView(new THREE.Vector3(...D.look), new THREE.Vector3(...D.off)); flyTo(v.pos, v.tgt, 1.3);
 }
 function stepStation(dir) {
   if (state.mode === 'home') return;           // 首頁沒有上一站／下一站
@@ -5632,7 +5673,11 @@ function stepStation(dir) {
     const tau = heroTau(); let cur = STATIONS.length;
     if (tau <= SCHED.total) { lookup(Math.max(0, tau), info); cur = info.next; }
     seekHeroToStation(cur + dir);
-  } else pickStation(clamp((state.selected < 0 ? 0 : state.selected + dir), 0, STATIONS.length - 1));
+  } else if (state.device >= 0) {               // 選了設備：換到同一座島的上一台／下一台設備
+    const isle = DEVICES[state.device].isle, list = DEVICES.map((D, d) => D.isle === isle ? d : -1).filter(d => d >= 0);
+    pickDevice(list[clamp(list.indexOf(state.device) + dir, 0, list.length - 1)]);
+  } else if (state.place >= 0) pickPlace(state.placeKey, state.place + dir);   // 自由參觀選了島上的地點：上一個／下一個地點
+  else pickStation(clamp((state.selected < 0 ? 0 : state.selected + dir), 0, STATIONS.length - 1));
 }
 function restartTour() {
   if (state.mode === 'customs') { goCustoms(0); return; }                     // 報關島：回到第 1 步
@@ -5869,7 +5914,166 @@ const ISLE_TOURS = {
   tool: { mode: 'tool', title: '🧰 模具島', isle: '模具島', steps: TL_STEPS, phase: TL_PHASE, z: TZ, prefix: 'tl_', flag: 'tl', tab: 'steps',
     tabs: [['steps', '📋 模具開發'], ['people', '👥 模具島人員']], people: () => tlPeopleHTML(), list: () => TL_PEOPLE },
 };
-const isleStepD = T => dAtClock(hm(T.steps[T.z.step].clock));   // 這一步要呈現的時刻（人員一日的縮時秒數）
+// ---- 自由參觀的分頁：工廠 23 站＋三座島；島上的地點直接用各島導覽的步驟（地點、鏡頭角度、說明都不用重寫）----
+//   box：島的範圍（點到島上就找最近的地點）；groups：清單的分組 [顏色, 標題, 這一步屬不屬於這組]
+//   新增島嶼時，要在這裡加一筆，自由參觀才逛得到新島
+const FREE_TABS = [['factory', '🏭 工廠'], ['customs', '🛃 報關'], ['npi', '🧪 NPI'], ['tool', '🧰 模具']];   // 和人員名單的分頁一樣短，4 個才排得下
+const isleGroups = T => () => Object.entries(T.phase).map(([ph, [c, t]]) => [c, t, S => S.phase === ph]);
+const FREE_ISLES = {
+  customs: { box: ISLE2, steps: CUSTOMS_STEPS, html: i => customsHTML(i),
+    groups: () => [['#DB6A41', '📤 出口：筆電送出國', S => S.flow === 'ex'], ['#3F73AE', '📥 進口：零件送進來', S => S.flow === 'im']] },
+  npi: { box: ISLE3, steps: NPI_STEPS, html: i => isleHTML(ISLE_TOURS.npi, i), groups: isleGroups(ISLE_TOURS.npi) },
+  tool: { box: ISLE4, steps: TL_STEPS, html: i => isleHTML(ISLE_TOURS.tool, i), groups: isleGroups(ISLE_TOURS.tool) },
+};
+let freeTab = 'factory';                        // 自由參觀清單目前在哪個分頁
+
+// ---- 島上的設備卡：在畫面上點設備（或清單「🔧 設備」裡的名稱），說明卡就介紹這台設備 ----
+//   pts：設備在地圖上的位置（可以好幾個點，例如兩台吊車）；r：點在多近算點到；look／off：鏡頭看哪裡、從哪個方向看
+//   step：卡片下方「看這一步流程」連到那座島導覽的第幾步（從 0 算）；內容在 v17 上網查過（來源記在開發時間紀錄）
+const DEV = (isle, area, ic, color, name, en, pts, r, look, off, step, what, how, why, who, tip) =>
+  ({ isle, area, ic, color, name, en, pts, r, look, off, step, what, how, why, who, tip });
+const DEVICES = [
+  DEV('npi', 'ID 設計室', '🖨️', '#DB6A41', '3D 列印機', '3D Printer', [[73.4, -30.4]], 1.4, [73.4, 1, -30.4], [3.5, 5.5, 6.5], 1,
+    '把電腦裡的 3D 設計圖，一層一層「印」成拿得到的實體零件。',
+    '這台是光固化（SLA）：用光照液態樹脂，照到的地方變硬，一層疊一層。和常見的「擠塑膠線」（FDM）比，細節和表面更細，連外殼上的細紋都印得出來。',
+    '開一套模具要好幾週、花很多錢。先印出來試裝，看看轉軸、卡勾、螺絲柱對不對得上；設計改了，重印就好。',
+    'ID 工業設計師、機構工程師',
+    '印好的零件噴漆、印上 Logo，就能做成和真的很像的外觀模型。'),
+  DEV('npi', 'ID 設計室', '💻', '#DB6A41', '外觀模型', 'Appearance Mock-up', [[70.4, -27.6]], 1.4, [70.4, 1, -27.6], [3.5, 5.5, 6.5], 1,
+    '不能開機的「假筆電」：只用來看造型、拿在手上的感覺和顏色。桌上四台就是四種配色。',
+    '用 3D 列印或 CNC 做出外殼，再噴漆、做表面處理，做出設計的 CMF（Color 顏色、Material 材質、Finish 表面處理）。',
+    '螢幕上看起來好看，拿在手上不一定好看。厚度、重量感、邊角的圓弧，摸過才知道；客戶也是看外觀模型決定要哪一款。',
+    'ID 工業設計師、PM、客戶',
+    '今天客戶回饋「顏色想再亮一點」，ID 設計師就要重新調色、再做一次外觀模型。'),
+  DEV('npi', 'EE 實驗室', '📈', '#3E9B5A', 'EE 實驗台（示波器）', 'Oscilloscope', [[87.7, -29.6]], 1.5, [87.7, 1.1, -29.6], [3.5, 5.5, 6.5], 2,
+    '量主機板上的電壓和訊號對不對，找出開不了機、當機的原因。',
+    '示波器把看不見、變化很快的電壓畫成波形。工程師用探棒點在電路上，看電源有沒有照順序開起來、訊號有沒有雜訊或變形。',
+    '筆電開機時，好幾組電壓要照順序一組一組起來；只要一組慢了一點點，就可能開不了機。這種問題只看電路圖看不出來，一定要量。',
+    'EE 硬體工程師（電路設計），常和 Layout 工程師一起看',
+    '量到的問題如果是走線太長、靠太近造成的，就要請 Layout 工程師改電路板的佈線。'),
+  DEV('npi', '天線實驗室', '📡', '#0EA5E9', '天線量測（轉台＋量測天線）', 'OTA Antenna Measurement', [[67.6, -7.6], [64.9, -7.6], [66.6, -12.8]], 2, [66.4, 1, -9], [3, 10, 9], 3,
+    '量筆電的 Wi-Fi、藍牙天線，在每一個方向收發訊號好不好。',
+    '筆電放在轉台上慢慢轉，對面的量測天線在每個角度記錄訊號強度；控制桌的電腦把結果畫成立體圖。牆上的吸波材料把反射吸掉，就像在空曠的地方量。',
+    '天線藏在螢幕框或機身裡，金屬外殼、螢幕、甚至手放的位置都會擋到訊號。要每個方向都量過，才知道哪裡收不好。',
+    'RF 天線工程師',
+    '常看兩個數字：TRP（發射的總功率，越大越好）和 TIS（接收靈敏度，數字越負代表越靈敏）。'),
+  DEV('npi', '可靠度實驗室', '⬇️', '#F97316', '落摔機', 'Drop Tester', [[85.2, -6.6]], 1.5, [85.2, 1.3, -6.6], [3.5, 6, 7], 6,
+    '把筆電升高再摔下來，看摔完還能不能用。',
+    '夾住筆電升到設定的高度，放開讓它自由落下。很多品牌參考美國軍規 MIL-STD-810 的落摔方法：每一面、每一個角、每一條邊都要摔，共 26 次（6 面＋8 角＋12 邊）。摔完檢查能不能開機、外殼有沒有裂、轉軸有沒有鬆。',
+    '使用者難免會把筆電摔到地上。研發時先摔壞、找出弱點、改設計，量產後才不會大量退貨。',
+    '測試工程師操作；找到問題交給機構工程師分析',
+    '各品牌摔的高度、地板材質不一樣，所以看到「通過軍規」，要再看是哪一項、怎麼測的。今天的問題 #132「落摔轉軸鬆」就是在這台摔出來的。'),
+  DEV('npi', '可靠度實驗室', '🔁', '#F97316', '轉軸開闔機', 'Hinge Cycle Tester', [[80.4, -7.4]], 1.4, [80.4, 1, -7.4], [3.5, 5.5, 6.5], 6,
+    '一直幫筆電「開螢幕、關螢幕」，看轉軸用久了會不會壞。',
+    '機器夾住螢幕，自動打開、闔上，一次又一次；每隔幾千次停下來檢查轉軸有沒有變鬆、變緊、發出異音，螢幕排線有沒有斷。',
+    '轉軸是筆電最常動的地方。轉軸鬆了，螢幕就立不住；排線磨斷，螢幕就不亮。',
+    '測試工程師；設計問題交給機構工程師',
+    '次數各品牌不同，常見 2 萬到 5 萬次。一天開闔 10 次的話，2 萬次大約是 5 年半。'),
+  DEV('npi', '可靠度實驗室', '🌡️', '#F97316', '溫箱', 'Thermal Chamber', [[76.2, -6.3]], 1.5, [76.2, 1.2, -6.3], [3.5, 5.5, 6.5], 6,
+    '把筆電放進很冷或很熱（也能控制濕度）的箱子裡，看會不會開不了機、當機。',
+    '設定一條溫度曲線，例如從低溫慢慢升到高溫，筆電在裡面一邊跑測試程式；門上的燈號顯示現在是加熱還是冷卻。',
+    '筆電會被放在冬天的車上、夏天的戶外。電池、螢幕、焊點在太冷或太熱的時候最容易出問題。',
+    '測試工程師；過熱的問題會找散熱工程師',
+    '測試的溫度範圍通常比「建議使用溫度」更寬，目的是提早把弱點逼出來。'),
+  DEV('npi', '可靠度實驗室', '🔌', '#F97316', '相容性測試桌', 'Compatibility Test', [[79.6, -4.2]], 1.4, [79.6, 0.9, -4.2], [3.5, 5.5, 6.5], 6,
+    '接上各種螢幕、隨身碟、耳機、擴充座、充電器，看是不是都能正常使用。',
+    '照測試清單一項一項接，而且要插拔很多次、睡眠再叫醒，記錄哪一個組合會出問題。',
+    '使用者會接各式各樣的東西。研發時只用公司的幾種周邊測，上市後就可能出現「接這台螢幕就黑畫面」。',
+    '測試工程師；問題交給 BIOS、軟體工程師修',
+    '很多問題要插拔很多次、或睡眠後叫醒才會出現，例如今天的 #133「睡眠叫不醒」。'),
+  DEV('npi', '認證實驗室', '🧲', '#14B8A6', 'EMC 測試室', 'EMC Chamber', [[96.6, -7.2]], 2.6, [96.6, 1.2, -7.2], [3, 9, 9], 6,
+    '量筆電發出的電磁雜訊會不會太大、干擾別的電器；也看它會不會被別人的雜訊干擾。',
+    '在擋住外面電波的電波暗室裡，筆電放在轉台上，用天線量各種頻率的雜訊有多強，再和法規的上限比較。',
+    '電磁相容（EMC）沒通過，就不能在那個國家賣。',
+    '認證安規工程師，常和 EE 硬體工程師一起找雜訊從哪裡來',
+    '常見的規範有國際的 CISPR 32、美國的 FCC Part 15。'),
+  DEV('npi', '認證實驗室', '⚡', '#14B8A6', '安規測試台', 'Safety Test', [[91.6, -6.0]], 1.4, [91.6, 1, -6.0], [3.5, 5.5, 6.5], 6,
+    '確認筆電和變壓器不會電到人、不會起火。',
+    '耐壓測試：在絕緣的兩邊加上比平常高很多的電壓，看絕緣會不會被擊穿；漏電流測試：量使用者摸得到的地方，有沒有電流漏出來。',
+    '安全是一定要過的關卡。沒有安規認證，產品不能上市。',
+    '認證安規工程師',
+    '資訊產品現在大多照 IEC 62368-1 測，它取代了舊的 IEC 60950-1。'),
+  DEV('tool', '模具廠', '⚙️', '#3F73AE', 'CNC 加工中心', 'CNC Machining Center', [[77.8, -74.4]], 2, [77.8, 1.3, -74.4], [4, 7, 8], 2,
+    '把一整塊鋼料，削成模具的模仁、模穴，也就是筆電外殼的形狀。',
+    '電腦照 3D 圖控制刀具的路徑和轉速：先「粗加工」很快地削掉大部分的鋼，再「精加工」把表面修到準確的尺寸。',
+    '模具的精度，決定每一個外殼的尺寸。一套模具要打出幾十萬個外殼，一開始就要做準。',
+    'CNC 技師；加工程式依照模具設計師的圖',
+    '刀具是圓的，削出來的內角一定會留下圓角。所以尖角和很深、很窄的地方，要交給旁邊的放電加工機。'),
+  DEV('tool', '模具廠', '✨', '#8074A7', '放電加工機', 'Sinker EDM', [[84.6, -74.4]], 1.6, [84.6, 1.3, -74.4], [4, 7, 8], 3,
+    '做出 CNC 刀具做不到的尖角、又深又窄的加強肋，和細小的花紋。',
+    '先做一支和要的形狀一樣的銅或石墨「電極」，放進油裡靠近鋼料。電極和鋼不碰到，中間一直產生電火花，一點一點把鋼「燒」掉。',
+    '外殼內側的螺絲柱、卡勾、加強肋又深又窄，刀具伸不進去，只能用放電加工。',
+    '放電加工技師',
+    '因為不用碰到鋼，再硬的鋼都能加工。電極燒久了角會變圓，所以精細的地方常要做好幾支電極。'),
+  DEV('tool', '模具廠', '🧵', '#8074A7', '線切割機', 'Wire EDM', [[88, -74.4]], 1.4, [88, 1.3, -74.4], [4, 7, 8], 3,
+    '用一條很細的金屬線當刀，像用線切起司一樣，切出貫穿的形狀。',
+    '細線一邊往下送，一邊和鋼料之間放電，沿著電腦設定的路徑切過去；切口很細、很準。',
+    '適合切模具裡的鑲件、滑塊、頂針孔這些「穿過去」的形狀。',
+    '放電加工技師',
+    '線一定要穿過工件，所以「沒有穿透」的凹槽切不了，那種要用放電加工機。'),
+  DEV('tool', '模具廠', '💎', '#D19A35', '拋光台', 'Mold Polishing', [[94.1, -74.6]], 1.6, [94.1, 1.2, -74.6], [4, 7, 8], 4,
+    '把模具表面磨到需要的亮度，最亮可以像鏡子一樣。',
+    '由粗到細，用油石、砂紙、鑽石膏一層一層地磨。最高的鏡面等級叫 SPI A-1，要用很細的鑽石膏。',
+    '模具表面長什麼樣子，外殼表面就長什麼樣子。模具上有一條刮痕，每一個外殼都會有。',
+    '拋光師傅',
+    '拋光很花時間，有鋼材廠商說，拋光有時會佔模具成本的三成。'),
+  DEV('tool', '試模區', '🏭', TL_COLOR, '射出機', 'Injection Molding Machine', [[88.4, -62.6]], 2.2, [88.4, 1.5, -62.6], [4.5, 7.5, 9], 5,
+    '試模：把做好的模具裝上去，打出第一批塑膠外殼。',
+    '塑膠粒加熱融化，用很高的壓力射進合起來的模具，冷卻變硬後開模，把外殼頂出來。',
+    '第一次真的打出來，才知道模具好不好。T0 是模具廠自己先試，T1 通常是第一次給客戶看的樣品。',
+    '試模技師、模具設計師、機構工程師',
+    '試模時的溫度、壓力、時間都要記下來，量產時照著設定。'),
+  DEV('tool', '試模區', '🔍', TL_COLOR, '試模件檢查桌', 'Tryout Part Inspection', [[94.6, -62.6]], 1.4, [94.6, 1, -62.6], [3.5, 5.5, 6.5], 5,
+    '檢查試模打出來的外殼：尺寸對不對、有沒有缺陷。',
+    '重要尺寸用三次元量床（CMM）量；外觀看三種常見缺陷：毛邊（多出來的薄片）、短射（塑膠沒填滿）、縮水（厚的地方凹下去）。',
+    '檢查結果決定要不要修模、修哪裡；修好再試下一次（T2…），直到可以交模。',
+    '模具設計師、機構工程師、品保',
+    '尺寸都合格還不夠，最好也實際組裝一次，確認能和其他零件裝在一起。'),
+  DEV('customs', 'C3 查驗通道', '🩻', '#C8463A', 'X 光查驗門架', 'Container X-ray Scanner', [[-84, LANE.c3]], 2.6, [-84, 1.5, LANE.c3], [8, 7, 10], 3,
+    '不用打開貨櫃，就看得到裡面裝了什麼。',
+    '高能量的 X 光穿過整個貨櫃，另一邊的偵測器拍成影像；有的機器用「雙能量」，分得出塑膠、紙箱這類東西和金屬。海關再拿影像和報單比對。',
+    '每個櫃子都打開檢查太慢了。先用 X 光掃，只有看起來可疑的才開櫃。',
+    '海關關員',
+    '很多系統會同時自動拍下貨櫃號碼和車牌，影像直接存進海關的系統。'),
+  DEV('customs', '碼頭', '🏗️', '#2F6F8F', '岸邊吊車', 'Ship-to-Shore Crane', [[-105, CRANE_EX_Z], [-105, CRANE_IM_Z]], 4, [-106, 7, CRANE_EX_Z], [24, 12, 22], 5,
+    '把貨櫃從碼頭吊上船，或從船上吊下來。北邊這台卸進口的零件，南邊這台裝出口的筆電。',
+    '兩排腳跨在碼頭車道上，吊臂伸到船的上方；小車沿著吊臂來回跑，下面的吊具抓住貨櫃四個角，吊起來再放下。',
+    '船停在港口越久越花錢，吊車吊得越快，船越早出發。',
+    '吊車司機，坐在小車旁邊的駕駛室',
+    '一台吊車常見一小時大約吊 25～30 次（吊一次叫一個 move）。'),
+  DEV('customs', '碼頭', '🚢', '#2F6F8F', '貨櫃船', 'Container Ship', [[SHIP_POS.x, SHIP_POS.z - 8], [SHIP_POS.x, SHIP_POS.z], [SHIP_POS.x, SHIP_POS.z + 8]], 4.5, [SHIP_POS.x, 2, SHIP_POS.z], [22, 18, 16], 5,
+    '把裝好筆電的貨櫃運到國外，也把進口的零件運進來。',
+    '貨櫃從船艙口一層一層放進去，再疊到甲板上；重的放下面，先到的港口要卸的放上面。',
+    '大量、不急的貨走海運最便宜；很急的貨才改走空運。',
+    '船長、船員、船公司',
+    '貨櫃用 TEU 計算：一個 20 呎貨櫃是 1 TEU，40 呎貨櫃是 2 TEU。'),
+  DEV('customs', '貨櫃場', '📦', '#4D9C97', '貨櫃場', 'Container Yard', [[-88.8, 22.5]], 5, [-88.8, 1, 22.5], [8, 12, 14], 4,
+    '海關放行的貨櫃，先排在這裡等著上船。',
+    '依照要上哪一艘船、去哪個港口、多重，排好位置；船一靠岸，就照順序送到吊車下面。',
+    '船到了才開始找櫃子就來不及了。事先排好，船一到就能馬上裝。',
+    '碼頭的調度人員、船公司',
+    '每班船都有「結關」的截止時間，櫃子要在那之前放行、進貨櫃場，不然就趕不上這班船。'),
+  DEV('customs', '保稅倉', '🏬', '#5E7F4E', '保稅倉', 'Bonded Warehouse', [[-80, -13.75]], 4, [-80, 1.5, -13.75], [6, 10, 12], 8,
+    '進口的零件先存放在這裡，暫時還不用繳進口的稅。',
+    '這是海關核准、管制的倉庫，貨在裡面還算「還沒正式進口」。要拿去用時才報關繳稅；如果直接再出口，就不用繳這筆進口稅。',
+    '工廠可以先把零件備好，不用一次付一大筆稅，資金比較靈活。',
+    '倉管人員、報關行、海關',
+    '保稅倉有「公用型」（很多公司一起用）和「自用型」（公司自己申請、只放自己的貨）。'),
+];
+const DEV_ISLE = { npi: 'NPI 研發島', tool: '模具島', customs: '報關島' };
+function deviceHTML(d) {
+  const D = DEVICES[d], I = FREE_ISLES[D.isle], S = I.steps[D.step];
+  return `<span class="zone-tag" style="--c:${D.color}">🔧 設備 · ${DEV_ISLE[D.isle]} · ${D.area}</span>
+    <h2 style="--c:${D.color}"><span class="num">${D.ic}</span>${D.name}</h2>
+    <div class="en">${D.en}</div>
+    <h3>🔧 它在做什麼？</h3><p>${D.what}</p>
+    <h3>⚙️ 怎麼運作？</h3><p>${D.how}</p>
+    <h3>🎯 為什麼重要？</h3><p>${D.why}</p>
+    <h3>👥 誰在用？</h3><p>${D.who}</p>
+    <div class="tip"><b>💡 小知識</b><p>${D.tip}</p></div>
+    <h3>👉 它在哪一步流程用到</h3><div class="npi-who"><button class="npi-chip" data-place="${D.isle}:${D.step}"><span class="gi">📋</span><span><b>${S.title}</b><small>看這一步的說明</small></span></button></div>`;
+}
+const isleStepD = T =>dAtClock(hm(T.steps[T.z.step].clock));   // 這一步要呈現的時刻（人員一日的縮時秒數）
 const npiStepD = () => isleStepD(ISLE_TOURS.npi);
 const tColor = (T, S) => T.phase[S.phase][0];
 function goIsle(T, i) {                        // 跳到第 i 步，鏡頭飛過去
@@ -6505,7 +6709,7 @@ $('btnNpi').onclick = () => setMode('npi');
 $('btnTool').onclick = () => setMode('tool');
 $('btnOverview').onclick = () => {
   if (state.mode === 'day') { state.follow = null; if (state.play) state.camFree = true; }   // 人員一日維持在同一個模式，只是鏡頭不再跟人（玩家一走動就會再跟上）
-  else { state.selected = -1; setMode('home'); }   // 其他模式：回到乾淨的首頁
+  else { state.selected = -1; state.place = -1; state.device = -1; setMode('home'); }   // 其他模式：回到乾淨的首頁
   infoKey = ''; const v = parkView(); flyTo(v.pos, v.tgt, 1.8); $('btnOverview').classList.add('active');   // 報關島、工廠、NPI 研發島一起看
 };
 // ---- 首頁「我想去哪裡？」：開始一種體驗，或直接飛到某個地方看（留在乾淨的首頁）----
@@ -6548,6 +6752,7 @@ $('infoBody').addEventListener('click', e => {
   const chip = e.target.closest('.npi-chip');   // NPI 島導覽：點人物 → 人員一日跟著他；點連結 → 換到那個模式
   if (chip && chip.dataset.np) npiMeet(chip.dataset.np, chip.dataset.t);
   else if (chip && chip.dataset.go) setMode(chip.dataset.go);
+  else if (chip && chip.dataset.place) { const [k, i] = chip.dataset.place.split(':'); pickPlace(k, +i); }   // 設備卡：看這台設備用在哪一步流程
 });
 $('btnHelp').onclick = () => $('helpModal').classList.remove('hidden');
 $('btnHelpClose').onclick = () => $('helpModal').classList.add('hidden');
@@ -6638,6 +6843,28 @@ $('talkHint').onclick = () => { if (PLAYER.near) openTalk(PLAYER.near.id); };
     plane.constant = 0.35;
     return ray.ray.intersectPlane(plane, gp);
   };
+  const deviceAt = () => {                     // 點到哪一台島上的設備：每台設備用「自己的高度」算點到的位置，取最近的
+    let best = -1, bs = 1;                     // （高的吊車用 5 公尺、桌上的設備用 1 公尺；都用地面的話，點吊車會落到後面的船上）
+    DEVICES.forEach((D, d) => {
+      plane.constant = -D.look[1];
+      if (!ray.ray.intersectPlane(plane, gp)) return;
+      for (const [x, z] of D.pts) { const sc = Math.hypot(x - gp.x, z - gp.z) / D.r; if (sc < bs) { bs = sc; best = d; } }
+    });
+    return best;
+  };
+  const islePlace = () => {                    // 點到哪座島，就找那座島上最近的地點（導覽的步驟）
+    for (const y of [-0.35, 2.5, 5]) {         // 點到建築的牆或屋頂時，地面的交點會落在建築後面，所以也用牆腰、屋頂的高度試試看
+      plane.constant = -y;
+      if (!ray.ray.intersectPlane(plane, gp)) continue;
+      for (const [key, I] of Object.entries(FREE_ISLES)) {
+        const b = I.box; if (gp.x < b.x0 || gp.x > b.x1 || gp.z < b.z0 || gp.z > b.z1) continue;
+        let best = -1, bd = Infinity;
+        I.steps.forEach((S, i) => { if (S.park) return; const d = Math.hypot(S.at.x - gp.x, S.at.z - gp.z); if (d < bd) { bd = d; best = i; } });
+        if (best >= 0) return { key, i: best };
+      }
+    }
+    return null;
+  };
   const hit = e => {
     const r = renderer.domElement.getBoundingClientRect();
     ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
@@ -6666,7 +6893,16 @@ $('talkHint').onclick = () => { if (PLAYER.near) openTalk(PLAYER.near.id); };
       const g = groundPoint(); if (g) walkTo(g.x, g.z);
       return;
     }
-    if (!h) return;
+    if (!h) {                                  // 沒點到機台或人物：看看是不是點到島上的建築
+      if (state.mode === 'day') return;
+      const dv = deviceAt();
+      if (dv >= 0) { if (state.mode !== 'free') setMode('free'); pickDevice(dv); return; }   // 點到島上的設備：看這台設備的介紹
+      const pl = islePlace(); if (!pl) return;
+      if (state.mode === pl.key) { pl.key === 'customs' ? goCustoms(pl.i) : goIsle(ISLE_TOURS[pl.key], pl.i); return; }   // 正在看這座島的導覽：跳到那一步
+      if (state.mode !== 'free') setMode('free');
+      pickPlace(pl.key, pl.i);
+      return;
+    }
     if (h.person) { selectPerson(h.person); return; }
     if (state.mode === 'day') return;          // 人員一日模式只點人物，避免誤點機台跳出模式
     if (state.mode !== 'free') setMode('free');
@@ -6675,7 +6911,7 @@ $('talkHint').onclick = () => { if (PLAYER.near) openTalk(PLAYER.near.id); };
   let lastMove = 0;
   renderer.domElement.addEventListener('pointermove', e => {
     const now = performance.now(); if (now - lastMove < 80 || e.buttons) return; lastMove = now;
-    renderer.domElement.style.cursor = hit(e) || state.play ? 'pointer' : 'default';
+    renderer.domElement.style.cursor = hit(e) || state.play || (state.mode !== 'day' && !QZ.on && (deviceAt() >= 0 || islePlace())) ? 'pointer' : 'default';
   });
 })();
 window.addEventListener('resize', () => {
